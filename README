@@ -1,0 +1,44 @@
+Для запуска вам надо указать в настройках вебсервера корневой папку www
+все остальные папки не будут доступны "из вне"
+в настройках хоста должно быть указано что-то вроде этого
+<VirtualHost *:80>
+        ServerName cabinet.local
+        DocumentRoot /path/to/utm/www
+ 
+        SetEnv APPLICATION_ENV "development"
+ 
+        <Directory /path/to/utm/www>
+                DirectoryIndex index.php
+                AllowOverride All
+                Order allow,deny
+                Allow from all
+        </Directory>
+</VirtualHost>
+
+На рабочем хосте поменять
+SetEnv APPLICATION_ENV "production"
+
+либо просто указать DocumentRoot /path/to/utm/www
+
+Далее в файле application/configs/applications.ini
+поменяйте настройки доступа к базе данных
+
+В application/configs/billing.ini
+Поменяйте настройки доступа к utm
+
+В папке /application/cache выставить права на запись
+        /application/logs/app.log выставить права на запись
+
+Прошу протестировать у кого есть возможность и отписаться о проблемах и ошибках
+
+Приложение построено на принципах используемого ZendFramework'а 
+Все основные действия производятся в файле
+/application/modules/billing/controllers/IndexController.php
+
+
+Для тех, кто хочет помочь материально
+webmoney
+ R307832830250
+ Z213611765718
+yandexmoney
+ 410011000743712

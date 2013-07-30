@@ -1,0 +1,17 @@
+log2012-09-05T19:30:55+03:00 CRIT (2): Ошибка приложения
+2012-09-05T19:30:55+03:00 CRIT (2): exception 'Urfa_Exception' with message 'Не возможно подключиться к биллингу. Попробуйте войти позже.' in /var/www/utm5_009/library/Urfa/Client.php:18
+Stack trace:
+#0 /var/www/utm5_009/library/Urfa/Auth/Adapter.php(42): Urfa_Client->__construct()
+#1 /var/www/utm5_009/library/Zend/Auth.php(117): Urfa_Auth_Adapter->authenticate()
+#2 /var/www/utm5_009/application/modules/default/controllers/IndexController.php(35): Zend_Auth->authenticate(Object(Urfa_Auth_Adapter))
+#3 /var/www/utm5_009/library/Zend/Controller/Action.php(516): Default_IndexController->indexAction()
+#4 /var/www/utm5_009/library/Zend/Controller/Dispatcher/Standard.php(308): Zend_Controller_Action->dispatch('indexAction')
+#5 /var/www/utm5_009/library/Zend/Controller/Front.php(954): Zend_Controller_Dispatcher_Standard->dispatch(Object(Zend_Controller_Request_Http), Object(Zend_Controller_Response_Http))
+#6 /var/www/utm5_009/library/Zend/Application/Bootstrap/Bootstrap.php(97): Zend_Controller_Front->dispatch()
+#7 /var/www/utm5_009/library/Zend/Application.php(366): Zend_Application_Bootstrap_Bootstrap->run()
+#8 /var/www/utm5_009/www/index.php(34): Zend_Application->run()
+#9 {main}
+2012-09-05T19:30:55+03:00 CRIT (2): module => default
+2012-09-05T19:30:55+03:00 CRIT (2): controller => index
+2012-09-05T19:30:55+03:00 CRIT (2): action => index
+2012-09-05T19:30:55+03:00 CRIT (2): bootstrap => Array

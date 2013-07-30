@@ -1,0 +1,184 @@
+<div class="well"><h2><?= $this->userData['full_name'] ?> <a class="btn" data-toggle="modal" href="#useredit"><i
+    class="icon-pencil"></i></a></h2></div>
+<table class="table table-striped">
+    <tr>
+        <td>Основной лицевой счёт:</td>
+        <td><?= $this->userData['basic_account']?> </td>
+    </tr>
+    <tr>
+        <td>Логин:</td>
+        <td><?= $this->userData['login']?></td>
+    </tr>
+    <tr>
+        <td>Адрес:</td>
+        <td><?= $this->userData['actual_address']?></td>
+    </tr>
+    <tr>
+        <td>Дата подключения:</td>
+        <td><?=  $this->userData['create_date']?></td>
+    </tr>
+    <tr>
+        <td>Домашний телефон:</td>
+        <td><?= $this->userData['home_telephone']?></td>
+    </tr>
+    <tr>
+        <td>Мобильный телефон:</td>
+        <td><?= $this->userData['mobile_telephone']?></td>
+    </tr>
+    <tr>
+        <td>Паспортные данные:</td>
+        <td><?= $this->userData['passport']?></td>
+    </tr>
+    <tr>
+        <td>E-mail:</td>
+        <td><?= $this->userData['email']?></td>
+    </tr>
+
+
+</table>
+<?php if ($this->tarrifs): ?>
+<div class="alert alert-info"><h3>Тарифы</h3></div>
+<?php
+    $promised_payments = 1;
+    $voluntary_block = 2;
+    $funds_flow = 4;
+    $change_tariff = 8;
+    ?>
+<?php foreach ($this->tarrifs as $account => $tarrifs): ?>
+    <span class="label label-info">Лицевой счет <?=$account?></span>
+
+    <?php if (count($tarrifs) > 0) : ?>
+        <?php if ($this->additional & $promised_payments): ?>
+            <a class="btn btn-mini" href="/user/promise-payment/aid/<?=$account?>">Обещанный платёж</a>
+            <?php endif; ?>
+
+        <?php if ($this->additional & $voluntary_block): ?>
+            <a class="btn btn-mini" href="/user/block/aid/<?=$account?>">Добровольная блокировка</a>
+            <?php endif; ?>
+        <?php endif; ?>
+
+
+
+    <?php if (count($tarrifs) > 0) : ?>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Название тарифа</th>
+                <th>Следующий ТП</th>
+                <th>Начало расчётного периода</th>
+                <th>Конец расчетного периода</th>
+                <?php if ($this->additional & $change_tariff): ?>
+                <th></th>
+                <?php endif;?>
+            </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($tarrifs as $tarrif): ?>
+            <tr>
+                <td><?= $tarrif['cyr_tp_name'] ?></td>
+                <td><?= $tarrif['next_tp_name']  ?> </td>
+                <td><?= $tarrif['ap_id_start']  ?> </td>
+                <td><?= $tarrif['ap_id_end']  ?> </td>
+                <?php if ($this->additional & $change_tariff): ?>
+                <td><a class="btn btn-mini" href="<?=$tarrif['link']?>">Изменить тариф</a></td>
+                <?php endif;?>
+
+            </tr>
+                <?php endforeach;?>
+            </tbody>
+        </table>
+        <?php else: ?>
+            <?= $this->bootAlert(array('info' => 'Нет подключенных тарифов')) ?>
+        <?php endif; ?>
+
+    <table class="table table-striped">
+        <tr>
+            <td class="span3">Баланс</td>
+            <td><?=$this->balance($this->accounts[$account]['balance'], $this->accounts[$account]['credit'],$this->currencyName)?></td>
+        </tr>
+        <tr>
+            <td class="span3">Статус интернета</td>
+            <td>
+                <?php $style = $this->accounts[$account]['int_status'] ? 'success' : 'important'?>
+
+                <span class="badge badge-<?=$style?>">
+                    <?= Urfa_Resolve::resolveIntStatus($this->accounts[$account]['int_status'])?>
+                </span> &nbsp;
+                <a class="btn btn-mini"
+                   href="/user/change-status/int_status/<?=(int)!$this->accounts[$account]['int_status']?>/aid/<?=$account?>">
+                    <?=Urfa_Resolve::resolveIntStatusForAccount($this->accounts[$account]['int_status'])?>
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td class="span3">Состояние блокировки</td>
+            <td>
+                <?php $style = $this->accounts[$account]['block_status'] ? 'important' : 'success'?>
+                <span class="badge badge-<?=$style?>">
+                    <?=DRG_Urfautils::blockedStatus($this->accounts[$account]['block_status'])?>
+                </span>
+            </td>
+        </tr>
+        <?php
+        $locked_in_funds_link = $this->accounts[$account]['locked_in_funds'].$this->currencyName;
+
+        if($this->accounts[$account]['locked_in_funds'] > $this->CONF_MIN_LOCKED_IN_FUNDS)
+        {
+            $locked_in_funds_link .= ' <a class="btn btn-mini" href="/user/repay/account/'.$account.'>Вернуть</a>';
+        }
+        ?>
+        <tr>
+            <td class="span3">Заблокированные средства</td>
+            <td><?= $locked_in_funds_link ?></td>
+        </tr>
+    </table>
+
+    <?php endforeach; ?>
+<?php endif; ?>
+
+<?php if ($this->services): ?>
+<div class="alert alert-info"><h3>Услуги</h3></div>
+<table class="table table-striped">
+       <?php if (count($this->services) > 0) : ?>
+        <thead>
+        <tr>
+            <th>Тип услуги</th>
+            <th>Имя услуги</th>
+            <th>Имя тарифа</th>
+            <th>Начало расч. периода</th>
+            <th>Конец расч. периода</th>
+            <th>Абон. плата</th>
+            <th>Списано</th>
+        </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($this->services as $service): ?>
+        <tr>
+            <td><?= $service['service_type_name'] ?></td>
+            <td><?= $service['link']  ?> </td>
+            <td><?= $service['tariff_name']  ?> </td>
+            <td><?= $service['discount_period_start']  ?> </td>
+            <td><?= $service['discount_period_end']  ?> </td>
+            <td><?= $service['cost']  ?> </td>
+            <td><?= $service['discounted_in_curr_period']  ?> </td>
+        </tr>
+            <?php endforeach;?>
+        </tbody>
+    </table>
+       <?php else: ?>
+           <?= $this->bootAlert(array('info' => 'Нет подключенных услуг')) ?>
+    <?php endif; ?>
+<?php endif; ?>
+
+<?= $this->cacheInfo($this->cacheData) ?>
+
+<div class="hide modal" id="useredit" style="display: none; ">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">×</a>
+
+        <h3>Редактирование профиля</h3>
+    </div>
+    <div class="modal-body">
+        <?= $this->editform?>
+    </div>
+</div>

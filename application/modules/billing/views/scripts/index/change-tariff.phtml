@@ -1,0 +1,116 @@
+<?php if ($this->tariffInfo) : ?>
+<table class="table table-striped table-bordered">
+    <thead>
+    <tr>
+        <th colspan="2">Текущая тарифная связка</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td class="span5">Текущий ТП:</td>
+        <td><?= $this->tariffInfo['cyr_tp_name']?> (действует с <?= $this->tariffInfo['ap_id_start']?>)</td>
+    </tr>
+        <?php if (!empty($this->tariffInfo['cyr_tp_descr'])): ?>
+    <tr>
+        <td>Описание:</td>
+        <td><?= $this->tariffInfo['cyr_tp_descr']?></td>
+    </tr>
+        <?php endif;?>
+    <tr>
+        <td>Следующий ТП:</td>
+        <td><?= $this->tariffInfo['next_tp_name']?> (начнёт действовать с <?= $this->tariffInfo['ap_id_end']?>)</td>
+    </tr>
+        <?php if (!empty($this->tariffInfo['next_tp_descr'])): ?>
+    <tr>
+        <td>Описание:</td>
+        <td><?= $this->tariffInfo['next_tp_descr']?></td>
+    </tr>
+        <?php endif;?>
+    </tbody>
+</table>
+    <?php if($this->tariffInfo['cur_tp_id']!=$this->tariffInfo['next_tp_id']):?>
+    <?= $this->bootAlert(array('info' => 'Вы уже изменяли тарифный план. При очередной смене стоимость тарифа вновь будет списана с вашего счёта.')) ?>
+     <?php endif?>
+<?php endif; ?>
+
+<?php if (isset($this->changeTariffInfo['tariff'])) : ?>
+<?php if (isset($this->form_error['next_tp'][0])): ?>
+    <ul class="errors">
+        <li>Вы не выбрали тарифный план</li>
+    </ul>
+    <?php endif;?>
+<form id="form_change_tariff" enctype="application/x-www-form-urlencoded" action="" method="post">
+    <div class="controls">
+        <?php $i = 1;?>
+        <?php foreach ($this->changeTariffInfo['tariff'] as $changeTariffInfo) : ?>
+        <label class="radio">
+            <input type="radio"
+                   name="next_tp"
+                   id="next_tp<?=$i++?>"
+                   value="<?=$changeTariffInfo['can_change'] == 1 ? $changeTariffInfo['id'] : ''?>"
+                <?=$changeTariffInfo['can_change'] == 1 ? '' : 'disabled'?>
+                <?=$changeTariffInfo['id'] == $this->next_tp ? 'checked' : ''?>>
+            <?=$changeTariffInfo['can_change'] == 1 ? $this->badge($changeTariffInfo['name'], 'success') : $this->badge($changeTariffInfo['name'], 'error') ?> <?= $changeTariffInfo['comments']?>
+        </label>
+        <?php if ($changeTariffInfo['cost']!=0 || $changeTariffInfo['use_min_balance'] || $changeTariffInfo['use_free_balance']): ?>
+        <table class="table table-striped table-bordered table-condensed">
+            <?php if ($changeTariffInfo['cost']!=0): ?>
+            <tr>
+                <td class="span5">Стоимость смены</td>
+                <td><?=$changeTariffInfo['cost']?> <?= $this->currencyName?></td>
+            </tr>
+            <?php endif; ?>
+            <?php if ($changeTariffInfo['use_min_balance']): ?>
+                <tr>
+                    <td class="span5">Минимальный баланс для смены тарифа</td>
+                    <td><?=$changeTariffInfo['min_balance']?> <?= $this->currencyName?></td>
+                </tr>
+                    <?php if ($changeTariffInfo['use_free_balance']): ?>
+                        <tr>
+                            <td class="span5">Баланс для бесплатной смены тарифа</td>
+                            <td><?=$changeTariffInfo['free_balance']?> <?= $this->currencyName?></td>
+                        </tr>
+                    <?php endif; ?>
+                <tr>
+                    <td class="span5">Баланс</td>
+                    <td><?=round($this->changeTariffInfo['balance'], 2)?> <?= $this->currencyName?></td>
+                </tr>
+
+            <?php elseif ($changeTariffInfo['use_free_balance']): ?>
+                <tr>
+                    <td class="span5">Баланс для бесплатной смены тарифа</td>
+                    <td><?=$changeTariffInfo['free_balance']?> <?= $this->currencyName?></td>
+                </tr>
+                <tr>
+                    <td class="span5">Баланс</td>
+                    <td><?=round($this->changeTariffInfo['balance'], 2)?> <?= $this->currencyName?></td>
+                </tr>
+            <?php endif;?>
+
+        </table>
+        <?php endif; ?>
+        <?php endforeach;?>
+    </div>
+
+    <div class="controls">
+        <label class="checkbox">
+            <input type="hidden" name="accepted" value="0">
+            <input type="checkbox" name="accepted" id="accepted" value="1">
+            Подтвердите изменение тарифного плана
+        </label>
+        <?php if (isset($this->form_error['accepted'][0])): ?>
+        <ul class="errors">
+            <li>Необходимо согласиться с условиями</li>
+        </ul>
+        <?php endif;?>
+        <p class="help-block"><strong>Замечание:</strong> Деньги снимаются при каждом изменении тарифного плана (если
+            это предусмотрено в тарифе).</p>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-large">Изменить тарифный план</button>
+    </div>
+</form>
+<?php else:?>
+    <?= $this->bootAlert(array('info' => 'У Вас не предусмотрена возможность изменения тарифного плана')) ?>
+<?php endif; ?>

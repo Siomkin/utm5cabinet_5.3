@@ -1,0 +1,27 @@
+<div id="dateForm"><?= $this->form; ?></div>
+<?php if (is_array($this->messages)): ?>
+    <?php if (count($this->messages) > 0): ?>
+    <?php $summa = 0 ?>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Дата сообщения</th>
+                <th>Тема</th>
+            </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($this->messages as $message): ?>
+            <tr>
+                <td><?= $message['send_date']?></td>
+                <td><a href="/user/message/id/<?= $message['id']?>"><?= $message['subject']?></a></td>
+            </tr>
+                <?php endforeach;?>
+            </tbody>
+        </table>
+    <?php else : ?>
+        <?= $this->bootAlert(array('success' => 'Нет сообщений за данный период')) ?>
+    <?php endif; ?>
+<?php else : ?>
+    <?= $this->bootAlert(array('info' => 'Выберите период для построения отчёта')) ?>
+<?php endif; ?>
+<?= $this->cacheInfo($this->cacheData) ?>

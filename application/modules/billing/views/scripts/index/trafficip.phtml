@@ -1,0 +1,30 @@
+<div id="dateForm"><?= $this->form; ?></div>
+<?php if (is_array($this->traffic)): ?>
+<?php if (count($this->traffic) > 0): ?>
+    <?php $summa = 0 ?>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Ip</th>
+            <th>Название</th>
+            <th>Мб</th>
+        </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($this->traffic as $traffic): ?>
+        <tr>
+            <td><?= $traffic['ip'];?></td>
+            <td><?=  $traffic['tclass_name']?></td>
+            <td><?=  $traffic['mbytes']?></td>
+        </tr>
+            <?php endforeach;?>
+        </tbody>
+    </table>
+    <?php else : ?>
+        <?= $this->bootAlert(array('success' => ' Нет данных')) ?>
+    <?php endif; ?>
+<?php else : ?>
+    <?= $this->bootAlert(array('info' => 'Выберите период для построения отчёта')) ?>
+<?php endif; ?>
+
+<?= $this->cacheInfo($this->cacheData) ?>

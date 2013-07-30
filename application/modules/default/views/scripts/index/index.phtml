@@ -1,0 +1,11 @@
+<?php echo $this->message; ?>
+
+<?php if(isset($this->notice)):?>
+    <?= $this->bootAlert(array('info' => $this->notice)) ?>
+<?php endif;?>
+
+<div class="row">
+    <div class="span6 offset3">
+        <?php echo $this->form; ?>
+    </div>
+</div>

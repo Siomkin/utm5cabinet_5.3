@@ -1,0 +1,47 @@
+<div id="dateForm"><?= $this->form; ?></div>
+<?php if (is_array($this->userPaymentData)): ?>
+<?php if (count($this->userPaymentData) > 0): ?>
+    <?php $summa = 0 ?>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Аккаунт</th>
+            <th>Дата платежа</th>
+            <th>Дата внесения</th>
+            <th>Сумма</th>
+            <th>комментарий</th>
+            <th>Метод платежа</th>
+        </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($this->userPaymentData as $j): ?>
+                <?php foreach ($j as $userPayment): ?>
+                    <tr>
+                        <td><?= $userPayment['account']?></td>
+                        <td><?= $userPayment['actual_payment_date']?></td>
+                        <td><?= $userPayment['date_of_payment']?></td>
+                        <td><?= $userPayment['volume']; $summa += $userPayment['volume']?> <?= $this->currencyName?></td>
+                        <td><?= $userPayment['comment']?></td>
+                        <td><?= $userPayment['payment_method']?></td>
+                    </tr>
+                <?php endforeach;?>
+            <?php endforeach;?>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="2">
+                <b>Итого:</b>
+            </td>
+            <td><b><?=$summa?></b> <?= $this->currencyName?></td>
+            <td colspan="2"></td>
+        </tr>
+        </tfoot>
+    </table>
+    <?php else : ?>
+        <?= $this->bootAlert(array('success' => 'Платежи отсутствуют')) ?>
+    <?php endif; ?>
+<?php else : ?>
+    <?= $this->bootAlert(array('info' => 'Выберите период для построения отчёта')) ?>
+<?php endif; ?>
+
+<?= $this->cacheInfo($this->cacheData) ?>

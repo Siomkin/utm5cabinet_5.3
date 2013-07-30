@@ -1,0 +1,20 @@
+<body id="page-error">
+<h2><?php echo $this->message ?></h2>
+
+<div class="alert alert-error">
+     <b>Сообщение:</b> <?php echo $this->exceptionMessage ?>
+ </div>
+
+  <?php if (isset($this->exception)): ?>
+
+  <h3>Exception information:</h3>
+
+
+  <h3>Stack trace:</h3>
+  <pre><?php echo $this->exception->getTraceAsString() ?>
+  </pre>
+
+  <h3>Request Parameters:</h3>
+  <pre><?php echo var_export($this->request->getParams(), true) ?>
+  </pre>
+  <?php endif ?>

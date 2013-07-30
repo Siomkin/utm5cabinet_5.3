@@ -1,0 +1,89 @@
+<?php
+//Zend_Debug::dump($this->blockInfo);
+?>
+
+<?php if ($this->blockInfo['is_blocked'] == 1) : ?>
+<table class="table table-striped">
+    <tr>
+        <td>Начало блокировки:</td>
+        <td><?= Urfa_Resolve::getDateFromTimestamp($this->blockInfo['block_start'])?></td>
+    </tr>
+    <tr>
+        <td>Окончание блокировки:</td>
+        <td><?= Urfa_Resolve::getDateFromTimestamp($this->blockInfo['block_end'])?></td>
+    </tr>
+</table>
+<?php if ($this->blockInfo['can_unblock']) : ?>
+        <?= $this->form_del ?>
+    <?php endif; ?>
+
+<?php elseif ($this->blockInfo['is_blocked'] == 0) : ?>
+<table class="table table-striped">
+    <?php if ($this->blockInfo['last_block_date']) : ?>
+    <tr>
+        <td>Дата последней добровольной блокировки:</td>
+        <td>
+            <span class="label label-info"><?= Urfa_Resolve::getDateFromTimestamp(
+                $this->blockInfo['last_block_date']
+            )?></span>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <tr>
+        <td>Минимальная длительность блокировки:</td>
+        <td><?= Urfa_Resolve::getDayFromSeconds($this->blockInfo['min_duration'])?> дней</td>
+    </tr>
+
+    <tr>
+        <td>Максимальная длительность блокировки:</td>
+        <td><?= Urfa_Resolve::getDayFromSeconds($this->blockInfo['max_duration'])?> дней</td>
+    </tr>
+    <?php if ($this->blockInfo['interval']) : ?>
+    <tr>
+        <td>Интервал между активациями :</td>
+        <td><?= Urfa_Resolve::getDayFromSeconds($this->blockInfo['interval'])?> дней</td>
+    </tr>
+    <?php endif; ?>
+
+    <tr>
+        <td>Возможность самостоятельного снятия блокировки :</td>
+        <td><?= $this->blockInfo['can_unblock'] ? 'Да' : 'Нет' ?></td>
+    </tr>
+    <?php if ($this->blockInfo['cost']) : ?>
+    <tr>
+        <td>Комиссия за установку блокировки:</td>
+        <td><?= $this->blockInfo['cost']?> <?= $this->currencyName?></td>
+    </tr>
+    <?php endif;?>
+    <tr>
+        <td>Баланс:</td>
+        <td><?= round($this->blockInfo['balance'], 2)?> <?= $this->currencyName?></td>
+    </tr>
+
+    <?php if ($this->blockInfo['use_min_balance']) : ?>
+    <tr>
+        <td>Минимальный баланс для блокировки:</td>
+        <td>
+            <?php if ($this->blockInfo['can_set_block']): ?>
+            <?= $this->blockInfo['min_balance'] ?>
+            <?php else : ?>
+            <span class="label label-important"><?= $this->blockInfo['min_balance']?> <?= $this->currencyName?></span>
+            <?php endif;?>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if ($this->blockInfo['use_free_balance']) : ?>
+    <tr>
+        <td>Баланс для бесплатного установки блокировки:</td>
+        <td><?= $this->blockInfo['free_balance']?> <?= $this->currencyName?></td>
+    </tr>
+    <?php endif; ?>
+</table>
+<?php endif; ?>
+
+
+<?php if (isset($this->blockInfo['can_set_block']) && $this->blockInfo['can_set_block']) : ?>
+    <?= $this->form ?>
+<?php endif; ?>

@@ -1,0 +1,261 @@
+<?php if (is_array($this->services)): ?>
+
+<?php if (isset($this->services['service'])): ?>
+    <div class="alert alert-info"><h3>Услуга</h3></div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Тип услуги</th>
+            <th>Имя услуги</th>
+            <th>Абон. плата</th>
+            <th>Списано</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><?= $this->services['service']['type_name']?></td>
+            <td><?= $this->services['service']['name']?></td>
+            <td><?= $this->services['service']['cost_in_period']?> </td>
+            <td><?= $this->services['service']['discounted_in_curr_period']?></td>
+        </tr>
+        </tbody>
+    </table>
+    <?php if ($this->services['service']['type'] == 6): ?>
+        <?php if (isset($this->services['telephones'])): ?>
+            <div class="alert alert-info"><h3>Телефоны</h3></div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th width="25%">Номер</th>
+                    <th width="25%">Логин</th>
+                    <th width="25%">Разрешенные CID</th>
+                    <th width="25%">Пароль</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->services['telephones'] as $id => $acc): ?>
+                <tr>
+                    <td><?= $acc['number']?></td>
+                    <td><?= $acc['login']?></td>
+                    <td><?= $acc['allowed_cid']?></td>
+                    <td><?= $acc['link']?></td>
+                </tr>
+                    <?php endforeach;?>
+                </tbody>
+            </table>
+            <?php endif; ?>
+        <?php elseif ($this->services['service']['type'] == 3): ?>
+        <?php if (isset($this->services['downloaded'])): ?>
+            <div class="alert alert-info"><h3>Скачано в текущем учетном периоде</h3></div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th width="70%">Класс трафика</th>
+                    <th>Скачано в текущем учетном периоде</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <?php $flag = FALSE;?>
+                    <?php foreach ($this->services['downloaded'] as $service): ?>
+                    <?php if ($service['mbytes'] > 0): ?>
+                        <?php $flag = TRUE; ?>
+                    <tr>
+                        <td><?= $service['tclass']?></td>
+                        <td><?= $service['mbytes']?></td>
+                    </tr>
+                        <?php endif; ?>
+                    <?php endforeach;?>
+                    <?php if (!$flag): ?>
+                <tr>
+                    <td colspan="2">
+                        <i class="icon-info-sign"></i> Нет использованного трафика
+                    </td>
+                </tr>
+                    <?php endif ?>
+                </tbody>
+            </table>
+            <?php endif; ?>
+
+        <?php if (isset($this->services['prepaid'])): ?>
+            <div class="alert alert-info"><h3>Предоплачено</h3></div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th width="70%">Класс трафика</th>
+                    <th>Предоплачено, МБ</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <?php $flag = FALSE;?>
+                    <?php foreach ($this->services['prepaid'] as $service): ?>
+
+                    <?php if ($service['mbytes'] > 0): ?>
+                        <?php $flag = TRUE; ?>
+                    <tr>
+                        <td><?= $service['tclass']?></td>
+                        <td><?= $service['mbytes']?></td>
+                    </tr>
+                        <?php endif; ?>
+                    <?php endforeach;?>
+                    <?php if (!$flag): ?>
+                <tr>
+                    <td colspan="2">
+                        <i class="icon-info-sign"></i> Нет предоплаченного трафика
+                    </td>
+                </tr>
+                    <?php endif ?>
+                </tbody>
+            </table>
+            <?php endif; ?>
+
+        <?php if (isset($this->services['transfered'])): ?>
+            <div class="alert alert-info"><h3>Перенесено предоплаченного с прошлого учетного периода</h3></div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th width="70%">Класс трафика</th>
+                    <th>Перенесено, МБ</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <?php $flag = FALSE;?>
+                    <?php foreach ($this->services['transfered'] as $service): ?>
+                    <?php if ($service['mbytes'] > 0): ?>
+                        <?php $flag = TRUE; ?>
+                    <tr>
+                        <td><?= $service['tclass']?></td>
+                        <td><?= $service['mbytes']?></td>
+                    </tr>
+                        <?php endif; ?>
+                    <?php endforeach;?>
+                    <?php if (!$flag): ?>
+                <tr>
+                    <td colspan="2">
+                        <i class="icon-info-sign"></i> Нет перенесённого трафика
+                    </td>
+                </tr>
+                    <?php endif ?>
+                </tbody>
+            </table>
+            <?php endif; ?>
+
+        <?php if (isset($this->services['borders'])): ?>
+            <div class="alert alert-info"><h3>Границы тарификации</h3></div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th width="50%">Класс трафика</th>
+                    <th width="20%">Граница, МБ</th>
+                    <th width="30%">Стоимость за МБ</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->services['borders'] as $service): ?>
+                <tr>
+                    <td><?= $service['tclass']?></td>
+                    <td><?= $service['mbytes']?></td>
+                    <td><?= $service['cost']?> <?= $this->currencyName?></td>
+                </tr>
+                    <?php endforeach;?>
+                </tbody>
+            </table>
+            <?php endif; ?>
+
+        <?php if (isset($this->services['ip_groups'])): ?>
+            <div class="alert alert-info"><h3>IP-группы</h3></div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th width="25%">IP</th>
+                    <th width="25%">Маска</th>
+                    <th width="25%">Логин</th>
+                    <th width="25%">Пароль</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->services['ip_groups'] as $service): ?>
+                <tr>
+                    <td><?= $service['ip']?></td>
+                    <td><?= $service['mask']?></td>
+                    <td><?= $service['login']?></td>
+                    <td><?php if (!empty($service['login'])) {
+                        echo $service['link'];
+                    }?></td>
+                </tr>
+                    <?php endforeach;?>
+                </tbody>
+            </table>
+            <?php endif; ?>
+
+
+
+        <?php if (isset($this->services['shaping']) && $this->services['shaping']['show_shaping'] == TRUE): ?>
+            <div class="alert alert-info"><h3>Скорость</h3></div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Входящий канал</th>
+                    <th>Исходящий канал</th>
+
+                    <?php if ($this->services['shaping']['turbo_mode_available'] != FALSE): ?>
+                    <?php if ($this->services['shaping']['turbo_mode_start'] != 0): ?>
+
+                        <th>Турбо-режим</th>
+                        <th>Начало</th>
+                        <th>Конец</th>
+
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><?= $this->services['shaping']['incoming_rate']?></td>
+                    <td><?= $this->services['shaping']['outgoing_rate']?></td>
+
+                    <?php if ($this->services['shaping']['turbo_mode_available'] != FALSE): ?>
+                    <?php if ($this->services['shaping']['turbo_mode_start'] != 0): ?>
+
+                        <td>Включен</td>
+                        <td><?= Urfa_Resolve::getDateFromTimestamp($this->services['shaping']['turbo_mode_start'])?></td>
+                        <td><?= Urfa_Resolve::getDateFromTimestamp($this->services['shaping']['turbo_mode_end'])?></td>
+
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </tr>
+                </tbody>
+            </table>
+
+            <?php if (isset($this->services['turbo'])): ?>
+                <div class="alert alert-info"><h3>Турбо-режим</h3></div>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Входящий канал</th>
+                        <th>Исходящий канал</th>
+                        <th>Цена</th>
+                        <th>Длительность</th>
+                        <th>Действие</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr>
+                        <td><?= $this->services['turbo']['incoming_rate']?></td>
+                        <td><?= $this->services['turbo']['outgoing_rate']?></td>
+                        <td><?= $this->services['turbo']['cost']?></td>
+                        <td><?= $this->services['turbo']['duration']?></td>
+                        <td><?= $this->services['turbo']['link']?></td>
+
+                    </tr>
+
+                    </tbody>
+                </table>
+                <?php endif; ?>
+            <?php endif; ?>
+
+        <?php endif; ?>
+    <?php endif; ?>
+<?php endif; ?>
+
+<?= $this->cacheInfo($this->cacheData) ?>

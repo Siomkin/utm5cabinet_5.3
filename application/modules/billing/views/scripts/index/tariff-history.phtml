@@ -1,0 +1,28 @@
+<?php if (is_array($this->tariffHistory)): ?>
+    <?php foreach ($this->tariffHistory as $aid => $tariff): ?>
+        <span class="label label-info">История смены для лицевого счета <?=$aid?></span>
+        <?php if (count($tariff) > 0): ?>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Тариф</th>
+                        <th>Дата подключения</th>
+                        <th>Дата отключения</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($tariff as $id => $acc): ?>
+                        <tr>
+                            <td><?= $acc['name']?></td>
+                            <td><?= $acc['link_date']?></td>
+                            <td><?= $acc['unlink_date'];?></td>
+                        </tr>
+                    <?php endforeach;?>
+                </tbody>
+            </table>
+        <?php else : ?>
+            <?= $this->bootAlert(array('success' => 'Смена тарифов не производилась')) ?>
+        <?php endif; ?>
+    <?php endforeach;?>
+<?php endif; ?>
+<?= $this->cacheInfo($this->cacheData) ?>

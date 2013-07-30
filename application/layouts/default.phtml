@@ -1,0 +1,98 @@
+<?php echo $this->doctype() ?>
+<html>
+
+<head>
+    <?php echo $this->headTitle() ?>
+    <?php echo $this->headMeta() ?>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <?php echo $this->headStyle() ?>
+
+    <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <style type="text/css">
+        body {
+            padding-top: 55px;
+
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+    </style>
+    <link href="/assets/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet"/>
+
+    <?php echo $this->headLink()->appendStylesheet('/assets/css/style.css')?>
+
+    <?php echo $this->JQuery()->setLocalPath('/assets/js/jquery/jquery-1.7.2.min.js')
+    ->setUiLocalPath('/assets/js/jquery/jquery-ui-1.8.custom.min.js')->enable()
+    ->addStylesheet('/assets/js/jquery/css/redmond/jquery-ui.custom.css');
+    ?>
+    <?php echo $this->headScript()->appendFile('/assets/bootstrap/js/bootstrap.min.js')
+    ->appendFile('/assets/js/jquery/jquery.timeago.js')
+    ->appendFile('/assets/js/jquery/jquery.timeago.ru.js')
+   // ->appendFile('/assets/js/jquery/jquery.ui.datepicker-ru.js')
+    ?>
+
+
+
+    <base href="/"/>
+</head>
+
+<body>
+<div id="maincontainer">
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <a class="brand" href="/">Личный кабинет</a>
+                <?php if ($this->identity): ?>
+                <div class="nav-collapse">
+                    <?php echo $this->navigation()->menu()->setUlClass('nav');?>
+
+                    <?php echo $this->render('_menu.phtml') ?>
+
+                    <ul class="nav pull-right">
+                        <li class="divider-vertical"></li>
+                        <li><a href="/logout">Выйти</a></li>
+                    </ul>
+                </div>
+                <?php endif;?>
+            </div>
+        </div>
+    </div>
+    <div id="body">
+        <div class="container">
+            <div class="outer">
+                <div class="row main-title">
+                    <div class="span12">
+                        <div class="title">
+                            <h2><?php echo $this->title ?>
+                                <?php if (isset($this->identity->login)): ?>
+                                    <span class="label label-info"><?= $this->identity->login;?></span>
+                                    <?php endif;?>
+                            </h2>
+                            <?php echo $this->timeago($this->cacheData); ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="middle">
+                    <div id="content">
+                        <?php echo $this->flashMessages();?>
+                        <?php echo $this->layout()->content ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div id="footer-floor">
+            <?php echo $this->render('_footer.phtml') ?>
+        </div>
+    </footer>
+</div>
+</body>
+
+</html>
+

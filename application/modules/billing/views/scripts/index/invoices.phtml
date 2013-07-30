@@ -1,0 +1,50 @@
+<div id="dateForm"><?= $this->form; ?></div>
+<?php if (is_array($this->invoices['report'])): ?>
+<?php if (count($this->invoices['report']) > 0): ?>
+    <?php $summa= $sum_with_tax = 0 ?>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>ID лицевого счета</th>
+            <th>Дата</th>
+            <th>Оплачен</th>
+            <th>Номер платежного документа</th>
+            <th>Сумма</th>
+            <th>Сумма с налогами</th>
+            <th>Ссылка</th>
+        </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($this->invoices['report'] as $id =>$rep): ?>
+        <tr>
+            <td><?= $rep['id']?></td>
+            <td><?= $rep['account_id']?></td>
+            <td><?= $rep['invoice_date']?></td>
+            <td><?= $rep['is_payed']?></td>
+            <td><?= $rep['ext_num']?></td>
+            <td><?= $rep['amount']; $summa += $rep['amount']?> <?= $this->currencyName?></td>
+            <td><?= $rep['total_sum_plus_total_tax']; $sum_with_tax+=$rep['total_sum_plus_total_tax'];?></td>
+            <td><a href="/user/invoice-document/id/<?= $rep['id']?>" target="_blank">Показать документ</a></td>
+        </tr>
+            <?php endforeach;?>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="5">
+                <b>Итого:</b>
+            </td>
+            <td><b><?=$summa?></b> <?= $this->currencyName?></td>
+            <td><b><?=$sum_with_tax?></b> <?= $this->currencyName?></td>
+            <td></td>
+        </tr>
+        </tfoot>
+    </table>
+    <?php else : ?>
+        <?= $this->bootAlert(array('success' => 'Счета отсутствуют')) ?>
+    <?php endif; ?>
+<?php else : ?>
+    <?= $this->bootAlert(array('info' => 'Выберите период для построения отчёта')) ?>
+<?php endif; ?>
+
+<?= $this->cacheInfo($this->cacheData) ?>

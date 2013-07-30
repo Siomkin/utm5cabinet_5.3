@@ -1,0 +1,47 @@
+<div id="dateForm"><?= $this->form; ?></div>
+<?php if (is_array($this->telephony)): ?>
+<?php if (count($this->telephony) > 0): ?>
+    <?php $sum= $sum_time = 0 ?>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>start_time</th>
+            <th>end_time</th>
+            <th>called_station</th>
+            <th>calling_station</th>
+            <th>direction</th>
+            <th>session_time</th>
+            <th>total_cost</th>
+        </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($this->telephony as $id =>$telephony): ?>
+        <tr>
+            <td><?= $telephony['start_time']?></td>
+            <td><?= $telephony['end_time']?></td>
+            <td><?= $telephony['called_station']?></td>
+            <td><?= $telephony['calling_station']?></td>
+            <td><?= $telephony['direction']?></td>
+            <td><?= $telephony['session_time']; $sum_time += $telephony['session_time']?></td>
+            <td><?= $telephony['total_cost']; $sum+=$telephony['total_cost'];?> <?= $this->currencyName?></td>
+        </tr>
+            <?php endforeach;?>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="5">
+                <b>Итого:</b>
+            </td>
+            <td><b><?=$sum_time?></b></td>
+            <td><b><?=$sum?></b> <?= $this->currencyName?></td>
+        </tr>
+        </tfoot>
+    </table>
+    <?php else : ?>
+        <?= $this->bootAlert(array('success' => 'Нет информации за данный период')) ?>
+    <?php endif; ?>
+<?php else : ?>
+    <?= $this->bootAlert(array('info' => 'Выберите период для построения отчёта')) ?>
+<?php endif; ?>
+
+<?= $this->cacheInfo($this->cacheData) ?>

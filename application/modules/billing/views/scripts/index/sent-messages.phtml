@@ -1,0 +1,24 @@
+<div id="dateForm"><?= $this->form; ?></div>
+<?php if (count($this->sent_messages) > 0): ?>
+    <?php $summa = 0 ?>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Дата сообщения</th>
+            <th>Тема</th>
+        </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($this->sent_messages as $sent_message): ?>
+        <tr>
+            <td><?= $sent_message['send_date']?></td>
+            <td><a href="/user/message/id/<?= $sent_message['id']?>"><?= $sent_message['subject']?></a></td>
+        </tr>
+            <?php endforeach;?>
+        </tbody>
+    </table>
+    <?php else : ?>
+        <?= $this->bootAlert(array('success' => 'Нет отправленных сообщений за данный период')) ?>
+    <?php endif; ?>
+
+<?= $this->cacheInfo($this->cacheData) ?>

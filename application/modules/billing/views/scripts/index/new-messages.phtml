@@ -1,0 +1,24 @@
+<div id="dateForm"><?= $this->form; ?></div>
+<?php if (count($this->new_messages) > 0): ?>
+<?php $summa = 0 ?>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Дата сообщения</th>
+        <th>Тема</th>
+    </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->new_messages as $new_message): ?>
+    <tr>
+        <td><?= $new_message['send_date']?></td>
+        <td><a href="/user/message/id/<?= $new_message['id']?>/tag/newMail/"><?= $new_message['subject']?></a></td>
+    </tr>
+        <?php endforeach;?>
+    </tbody>
+</table>
+<?php else : ?>
+    <?= $this->bootAlert(array('success' => 'Нет новых сообщений за данный период')) ?>
+<?php endif; ?>
+
+<?= $this->cacheInfo($this->cacheData) ?>

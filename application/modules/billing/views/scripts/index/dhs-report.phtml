@@ -1,0 +1,75 @@
+<div id="dateForm"><?= $this->form; ?></div>
+<?php if (is_array($this->DHSReport)): ?>
+<?php if (count($this->DHSReport) > 0): ?>
+    <?php $summa = 0 ?>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID сессии</th>
+            <th>ID лицевого счета</th>
+            <th>Время начала</th>
+            <th>Время окончания</th>
+            <th>Имя пользователя</th>
+            <th>Входящих байт</th>
+            <th>Исходящих байт</th>
+            <th>Время сессии</th>
+            <th>Общая стоимость</th>
+        </tr>
+        </thead>
+        <tbody>
+
+            <?php
+                $sum = 0;
+                $sum_input_bytes = 0;
+                $sum_output_bytes = 0;
+                $sum_session_time = 0;
+            ?>
+
+            <?php foreach ($this->DHSReport as $id => $session): ?>
+                <?php
+                    $sum += $session['total_cost'];
+                    $sum_input_bytes += $session['input_bytes'];
+                    $sum_output_bytes += $session['output_bytes'];
+                   // $sum_session_time += $session['session_time'];
+                ?>
+                <tr>
+                    <td><?= $session['session_id']?></td>
+                    <td><?= $session['account_id']?></td>
+                    <td><?= $session['start_time']?></td>
+                    <td><?= $session['end_time']?></td>
+                    <td><?= $session['username']?></td>
+                    <td><?= $session['input_bytes']?></td>
+                    <td><?= $session['output_bytes'];?></td>
+                    <td><?= $session['session_time']?></td>
+                    <td><?= $session['total_cost']?></td>
+                </tr>
+            <?php endforeach;?>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="5">
+                <b>Итого:</b>
+            </td>
+            <td><?=$sum_input_bytes?><br></td>
+            <td><?=$sum_output_bytes?></td>
+            <td><? //=$sum_session_time?></td>
+            <td><?=$sum?></td>
+        </tr>
+        <tr>
+            <td colspan="5">
+            </td>
+            <td>(<?=Urfa_Resolve::getMb($sum_input_bytes)?> Мб)</td>
+            <td>(<?=Urfa_Resolve::getMb($sum_output_bytes)?> Мб)</td>
+            <td></td>
+            <td></td>
+        </tr>
+        </tfoot>
+    </table>
+    <?php else : ?>
+        <?= $this->bootAlert(array('success' => 'За данный период не было пользовательских сессий')) ?>
+    <?php endif; ?>
+<?php else : ?>
+    <?= $this->bootAlert(array('info' => 'Выберите период для построения отчёта')) ?>
+<?php endif; ?>
+
+<?= $this->cacheInfo($this->cacheData) ?>

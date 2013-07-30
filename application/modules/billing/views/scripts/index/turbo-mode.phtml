@@ -1,0 +1,21 @@
+<table class="table table-striped">
+    <tr>
+        <td>Входящий канал:</td>
+        <td><?= $this->turboModeInfo['incoming_rate']?> </td>
+    </tr>
+    <tr>
+        <td>Исходящий канал:</td>
+        <td><?= $this->turboModeInfo['outgoing_rate']?></td>
+    </tr>
+    <tr>
+        <td>Цена:</td>
+        <td><?= $this->turboModeInfo['cost']?></td>
+    </tr>
+    <tr>
+        <td>Длительность:</td>
+        <td><?= $this->turboModeInfo['duration']?></td>
+    </tr>
+</table>
+
+<?= $this->bootAlert(array('info' => 'Включение турбо-режима приведет к списанию средств.')) ?>
+<?= $this->form ?>

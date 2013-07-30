@@ -1,0 +1,45 @@
+<div id="dateForm"><?= $this->form; ?></div>
+<?php if (is_array($this->otherCharges)): ?>
+<?php if (count($this->otherCharges) > 0): ?>
+    <?php $sum = 0 ?>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID лицевого счета</th>
+            <th>Логин</th>
+            <th>ФИО</th>
+            <th>Дата</th>
+            <th>Сумма</th>
+            <th>Тип услуги</th>
+        </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($this->otherCharges as $id => $rep): ?>
+        <tr>
+            <td><?= $rep['account_id']?></td>
+            <td><?= $rep['login']?></td>
+            <td><?= $rep['full_name']?></td>
+            <td><?= $rep['date']?></td>
+            <td><?= $rep['amount']; $sum += $rep['amount']?></td>
+            <td><?= $rep['service_type']?></td>
+        </tr>
+            <?php endforeach;?>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="4">
+                <b>Итого:</b>
+            </td>
+            <td><b><?=$sum?></b> <?= $this->currencyName?></td>
+            <td></td>
+        </tr>
+        </tfoot>
+    </table>
+    <?php else : ?>
+        <?= $this->bootAlert(array('success' => 'Нет информации за данный период')) ?>
+    <?php endif; ?>
+<?php else : ?>
+    <?= $this->bootAlert(array('info' => 'Выберите период для построения отчёта')) ?>
+<?php endif; ?>
+
+<?= $this->cacheInfo($this->cacheData) ?>

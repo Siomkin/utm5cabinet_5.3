@@ -1,0 +1,68 @@
+<?php
+//Zend_Debug::dump($this->promiseCreditInfo);
+?>
+<table class="table table-striped">
+    <?php if ($this->promiseCreditInfo['last_payment_date']) : ?>
+        <tr>
+            <td>Дата последнего платежа:</td>
+            <td>
+                <span class="label label-info"><?= Urfa_Resolve::getDateFromTimestamp($this->promiseCreditInfo['last_payment_date'])?></span>
+            </td>
+        </tr>
+    <?php endif; ?>
+
+    <tr>
+        <td>Баланс:</td>
+        <td><?= round($this->promiseCreditInfo['balance'], 2)?> <?= $this->currencyName?></td>
+    </tr>
+
+    <?php if ($this->promiseCreditInfo['use_free_balance']) : ?>
+    <tr>
+        <td>Баланс для бесплатного внесения платежа:</td>
+        <td><?= $this->promiseCreditInfo['free_balance']?> <?= $this->currencyName?></td>
+    </tr>
+    <?php endif; ?>
+
+    <tr>
+        <td>Максимальная сумма кредита:</td>
+        <td><?= $this->promiseCreditInfo['value']?> <?= $this->currencyName?></td>
+    </tr>
+    <?php if ($this->promiseCreditInfo['use_min_balance']) : ?>
+    <tr>
+        <td>Минимальный баланс для платежа:</td>
+        <td>
+            <?php if ($this->promiseCreditInfo['can_change']): ?>
+                <?= $this->promiseCreditInfo['min_balance'] ?>  <?= $this->currencyName?>
+            <?php else : ?>
+                <span class="label label-important"><?= $this->promiseCreditInfo['min_balance']?> <?= $this->currencyName?></span>
+            <?php endif;?>
+        </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if ($this->promiseCreditInfo['cost']) : ?>
+    <tr>
+        <td>Комиссия за внесение платежа:</td>
+        <td><?= $this->promiseCreditInfo['cost']?> <?= $this->currencyName?></td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if ($this->promiseCreditInfo['duration']) : ?>
+    <tr>
+        <td>Продолжительность действия кредита (дней):</td>
+        <td><?= Urfa_Resolve::getDayFromSeconds($this->promiseCreditInfo['duration'])?> </td>
+    </tr>
+    <?php endif; ?>
+
+    <?php if ($this->promiseCreditInfo['interval']) : ?>
+    <tr>
+        <td>Интервал между платежами (дней):</td>
+        <td><?= Urfa_Resolve::getDayFromSeconds($this->promiseCreditInfo['interval'])?> </td>
+    </tr>
+    <?php endif; ?>
+
+</table>
+
+<?php if ($this->promiseCreditInfo['can_change']) : ?>
+    <?= $this->form ?>
+<?php endif; ?>
