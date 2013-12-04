@@ -1340,7 +1340,9 @@ class Urfa_Client
                 $tmp = array();
                 $tmp['start_time'] = Urfa_Resolve::getDateFromTimestamp($this->urfa->get_int());
                 $tmp['end_time'] = Urfa_Resolve::getDateFromTimestamp($this->urfa->get_int());
+                $tmp['time'] = $this->urfa->get_int();
                 $tmp['session_time'] = Urfa_Resolve::getTimeFromSec($this->urfa->get_int());
+                $tmp['setup_time'] = Urfa_Resolve::getDateFromTimestamp($this->urfa->get_int());
                 $tmp['calling_station'] = $this->urfa->get_string();
                 $tmp['called_station'] = $this->urfa->get_string();
                 $tmp['direction'] = $this->urfa->get_string();

@@ -5,24 +5,26 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>start_time</th>
-            <th>end_time</th>
-            <th>called_station</th>
-            <th>calling_station</th>
-            <th>direction</th>
-            <th>session_time</th>
-            <th>total_cost</th>
+            <th>Время регистрации</th>
+            <th>Время начала</th>
+            <th>Время окончания</th>
+            <th>Вызываемый номер</th>
+            <th>Вызывающий номер</th>
+            <th>Направление</th>
+            <th>Время сессии</th>
+            <th>Общая стоимость</th>
         </tr>
         </thead>
         <tbody>
             <?php foreach ($this->telephony as $id =>$telephony): ?>
         <tr>
             <td><?= $telephony['start_time']?></td>
+            <td><?= $telephony['setup_time']?></td>
             <td><?= $telephony['end_time']?></td>
             <td><?= $telephony['called_station']?></td>
             <td><?= $telephony['calling_station']?></td>
             <td><?= $telephony['direction']?></td>
-            <td><?= $telephony['session_time']; $sum_time += $telephony['session_time']?></td>
+            <td><?= $telephony['session_time']; $sum_time += $telephony['time']?></td>
             <td><?= $telephony['total_cost']; $sum+=$telephony['total_cost'];?> <?= $this->currencyName?></td>
         </tr>
             <?php endforeach;?>
@@ -32,7 +34,7 @@
             <td colspan="5">
                 <b>Итого:</b>
             </td>
-            <td><b><?=$sum_time?></b></td>
+            <td><b><?=Urfa_Resolve::getTimeFromSec($sum_time)?></b></td>
             <td><b><?=$sum?></b> <?= $this->currencyName?></td>
         </tr>
         </tfoot>
