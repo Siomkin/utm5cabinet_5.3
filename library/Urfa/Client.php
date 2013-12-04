@@ -1381,7 +1381,7 @@ class Urfa_Client
     {
         $data = array();
         $this->urfa->call(-0x1200b);
-        $this->urfa->put_int(slink_id);
+        $this->urfa->put_int($slink_id);
         $this->urfa->send();
         $data['incoming_rate'] = $this->urfa->get_int();
         $data['outgoing_rate'] = $this->urfa->get_int();
@@ -1410,7 +1410,7 @@ class Urfa_Client
     public function setTurboMode($slink_id)
     {
         $this->urfa->call(-0x1200a);
-        $this->urfa->put_int(slink_id);
+        $this->urfa->put_int($slink_id);
         $this->urfa->send();
         $data = $this->urfa->get_int();
         $this->urfa->finish();
