@@ -113,7 +113,7 @@
         <tr>
             <td class="span3">Состояние блокировки</td>
             <td>
-                <?php $style = $this->accounts[$account]['block_status'] ? 'important' : 'success'?>
+                <?php $style = $this->accounts[$account]['block_status'] < 3 ? 'important' : 'success'?>
                 <span class="badge badge-<?=$style?>">
                     <?=Urfa_Resolve::resolveBlockState($this->accounts[$account]['block_status'])?>
                 </span>
