@@ -1,4 +1,5 @@
 <?php
+
 class Urfa_Resolve
 {
     static function getSenderName($id)
@@ -13,10 +14,10 @@ class Urfa_Resolve
     static function getTimeFromSec($secs)
     {
         $vals = array('н' => (int)($secs / 86400 / 7),
-                      'д' => $secs / 86400 % 7,
-                      'ч' => $secs / 3600 % 24,
-                      'м' => $secs / 60 % 60,
-                      'с' => $secs % 60);
+            'д' => $secs / 86400 % 7,
+            'ч' => $secs / 3600 % 24,
+            'м' => $secs / 60 % 60,
+            'с' => $secs % 60);
 
         $ret = array();
 
@@ -75,17 +76,14 @@ class Urfa_Resolve
     {
         if ($state == 0) {
             return 'Пользовательская блокировка';
+        } elseif ($state == 1) {
+            return 'Системная блокировка';
+        } elseif ($state == 2) {
+            return 'Администраторская блокировка';
         } else {
-            if ($state == 1) {
-                return 'Системная блокировка';
-            } else {
-                if ($state == 2) {
-                    return 'Администраторская блокировка';
-                } else {
-                    return "";
-                }
-            }
+            return "";
         }
+
     }
 
     static function resolveBlockItem($item)
@@ -163,7 +161,7 @@ class Urfa_Resolve
     static function getLinkToServicePass($slink_id, $item_id, $service_name)
     {
         return '<a HREF="/user/change-service-password/slink_id/' . $slink_id . '/item_id/' . $item_id . '">'
-            . htmlspecialchars($service_name) . '</a>';
+        . htmlspecialchars($service_name) . '</a>';
     }
 
     static function getLinkToTariff($aid, $tlink_id)

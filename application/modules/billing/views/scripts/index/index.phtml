@@ -115,7 +115,7 @@
             <td>
                 <?php $style = $this->accounts[$account]['block_status'] ? 'important' : 'success'?>
                 <span class="badge badge-<?=$style?>">
-                    <?=DRG_Urfautils::blockedStatus($this->accounts[$account]['block_status'])?>
+                    <?=Urfa_Resolve::resolveBlockState($this->accounts[$account]['block_status'])?>
                 </span>
             </td>
         </tr>
