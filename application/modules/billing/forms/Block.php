@@ -14,7 +14,7 @@ class Billing_Form_Block extends Zend_Form
     public function __construct($startDate = FALSE, $endDate = FALSE)
     {
         $this->setName('form_block');
-        $this->setAttrib('class', 'wellform');
+        $this->setAttrib('class', 'well col-md-6');
         $this->removeDecorator('HtmlTag');
         parent::__construct();
 
@@ -36,6 +36,7 @@ class Billing_Form_Block extends Zend_Form
 
         $startDate = new ZendX_JQuery_Form_Element_DatePicker('startDate');
         $startDate->setLabel('Начало действия блокировки')
+            ->setAttribs(array('class' => 'form-control'))
             ->setJQueryParam('defaultDate', $start_Date)
             ->setJQueryParam('dateFormat', 'dd.mm.yy')
             ->setJQueryParam('changeYear', 'true')
@@ -51,6 +52,7 @@ class Billing_Form_Block extends Zend_Form
 
         $endDate = new ZendX_JQuery_Form_Element_DatePicker('endDate');
         $endDate->setLabel('Окончание действия блокировки')
+            ->setAttribs(array('class' => 'form-control'))
             ->setJQueryParam('dateFormat', 'dd.mm.yy')
             ->setJQueryParam('defaultDate', $end_Date)
             ->setJQueryParam('changeYear', 'true')
@@ -79,7 +81,7 @@ class Billing_Form_Block extends Zend_Form
                                     )
         );
 
-        $submit = new Zend_Form_Element_Submit('submit', array('class'=> 'btn btn-large'));
+        $submit = new Zend_Form_Element_Submit('submit', array('class'=> 'btn btn-primary'));
         $submit->setLabel('Установить')
             ->removeDecorator('DtDdWrapper');
 

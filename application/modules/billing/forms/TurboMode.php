@@ -40,7 +40,7 @@ class Billing_Form_TurboMode extends Twitter_Bootstrap_Form_Horizontal
         $this->addElement(
             'button', 'send', array(
                                    'label'      => 'Отправить',
-                                   'class'      => 'btn btn-large',
+                                   'class'      => 'btn btn-primary',
                                    'type'       => 'submit',
                                    'buttonType' => 'success',
                                    'icon'       => 'ok',

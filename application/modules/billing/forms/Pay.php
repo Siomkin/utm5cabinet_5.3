@@ -16,7 +16,7 @@ class Billing_Form_Pay extends Twitter_Bootstrap_Form_Horizontal
         $this->addElement(
             'select', 'account', array(
                                       'label'        => 'Аккаунт',
-                                      'class'        => 'focused span3',
+                                      'class'        => 'form-control',
                                       'required'     => TRUE,
                                       'filters'      => array('StringTrim', 'StripTags'),
                                       'multioptions' => $accounts,
@@ -31,7 +31,7 @@ class Billing_Form_Pay extends Twitter_Bootstrap_Form_Horizontal
         $this->addElement(
             'text', 'sum', array(
                                 'label'      => 'Сумма',
-                                'class'      => 'span3',
+                                'class'      => 'form-control',
                                 'required'   => TRUE,
                                 'filters'    => array('StringTrim', 'StripTags'),
                                 'validators' => array('Float')
@@ -42,7 +42,7 @@ class Billing_Form_Pay extends Twitter_Bootstrap_Form_Horizontal
         $this->addElement(
             'button', 'send', array(
                                    'label'      => 'Отправить',
-                                   'class'      => 'btn btn-large',
+                                   'class'      => 'btn btn-primary',
                                    'type'       => 'submit',
                                    'buttonType' => 'success',
                                    'icon'       => 'ok',

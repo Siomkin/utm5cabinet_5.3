@@ -17,7 +17,7 @@ class Billing_Form_ChangeServicePassword extends Twitter_Bootstrap_Form_Horizont
         $this->addElement(
             'text', 'old_password', array(
                                          'label'      => 'Старый пароль',
-                                         'class'      => 'focused span4',
+                                         'class'      => 'form-control',
                                          'required'   => TRUE,
                                          'filters'    => array('StringTrim', 'StripTags'),
                                          'validators' => array(
@@ -29,7 +29,7 @@ class Billing_Form_ChangeServicePassword extends Twitter_Bootstrap_Form_Horizont
         $this->addElement(
             'password', 'new_password', array(
                                              'label'      => 'Новый пароль',
-                                             'class'      => 'span4',
+                                             'class'      => 'form-control',
                                              'required'   => TRUE,
                                              'filters'    => array('StringTrim', 'StripTags'),
                                              'validators' => array(
@@ -42,7 +42,7 @@ class Billing_Form_ChangeServicePassword extends Twitter_Bootstrap_Form_Horizont
         $this->addElement(
             'password', 'new_password_repeat', array(
                                                     'label'      => 'Повторите новый пароль',
-                                                    'class'      => 'span4',
+                                                    'class'      => 'form-control',
                                                     'required'   => TRUE,
                                                     'filters'    => array('StringTrim', 'StripTags'),
                                                     'prefixPath' => array(
@@ -61,7 +61,7 @@ class Billing_Form_ChangeServicePassword extends Twitter_Bootstrap_Form_Horizont
         $this->addElement(
             'button', 'send', array(
                                    'label'      => 'Отправить',
-                                   'class'      => 'btn btn-large',
+                                   'class'      => 'btn btn-primary',
                                    'type'       => 'submit',
                                    'buttonType' => 'success',
                                    'icon'       => 'ok',

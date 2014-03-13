@@ -63,6 +63,6 @@
 
 </table>
 
-<?php if ($this->promiseCreditInfo['can_change'] > 0 && !($this->promiseCreditInfo['flags'] & 1)) : ?>
+<?php if ($this->promiseCreditInfo['can_change']) : ?>
     <?= $this->form ?>
 <?php endif; ?>

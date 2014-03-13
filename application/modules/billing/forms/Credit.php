@@ -7,7 +7,7 @@
  *            http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
 
-class Billing_Form_Credit extends Twitter_Bootstrap_Form_Horizontal
+class Billing_Form_Credit extends Zend_Form
 {
     public function __construct($max_credit_sum)
     {
@@ -17,7 +17,7 @@ class Billing_Form_Credit extends Twitter_Bootstrap_Form_Horizontal
         $this->addElement(
             'text', 'credit_sum', array(
                                        'label'      => 'Сумма обещанного платежа',
-                                       'class'      => 'focused span3',
+                                       'class'      => 'form-control',
                                        'required'   => TRUE,
                                        'filters'    => array('StringTrim', 'StripTags'),
                                        'validators' => array(
@@ -42,7 +42,7 @@ class Billing_Form_Credit extends Twitter_Bootstrap_Form_Horizontal
         $this->addElement(
             'button', 'send', array(
                                    'label'      => 'Отправить',
-                                   'class'      => 'btn btn-large',
+                                   'class'      => 'btn btn-primary',
                                    'type'       => 'submit',
                                    'buttonType' => 'success',
                                    'icon'       => 'ok',
@@ -50,21 +50,12 @@ class Billing_Form_Credit extends Twitter_Bootstrap_Form_Horizontal
                               )
         );
 
-        $this->addDisplayGroup(
-            array('send', 'reset'),
-            'actions',
-            array(
-                 'disableLoadDefaultDecorators' => TRUE,
-                 'decorators'                   => array('Actions')
-            )
-        );
     }
 
     public function init()
     {
         $this->setIsArray(TRUE);
-
-        $this->_addClassNames('well');
+        $this->addAttribs(array('class'=>'well col-md-6'));
 
     }
 }

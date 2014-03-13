@@ -52,7 +52,7 @@ class DRG_View_Helper_NewMessages extends Zend_View_Helper_Abstract
         $output = '';
 
         if (count($new_messages)>0) {
-            $output .= '<span class="badge badge-info">' . count($new_messages) . '</span>';
+            $output .= '<span class="badge">' . count($new_messages) . '</span>';
         }
         return $output;
     }

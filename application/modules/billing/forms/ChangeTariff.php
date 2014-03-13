@@ -12,10 +12,10 @@ class Billing_Form_ChangeTariff extends Zend_Form
 
     public function __construct($tariffInfo)
     {
-        $this->setName('form_change_tariff');
-        $this->setAttrib('class', 'wellform');
-        $this->removeDecorator('HtmlTag');
         parent::__construct();
+        $this->setName('form_change_tariff');
+        //$this->removeDecorator('HtmlTag');
+
         $data = array();
 
         foreach ($tariffInfo['tariff'] as $tariff) {
@@ -41,12 +41,15 @@ class Billing_Form_ChangeTariff extends Zend_Form
                                     )
         );
 
-        $submit = new Zend_Form_Element_Submit('submit', array('class' => 'btn btn-large'));
-        $submit->setLabel('Установить')
-            ->removeDecorator('DtDdWrapper');
+        $submit = new Zend_Form_Element_Submit('submit', array('class' => 'btn btn-primary'));
+        $submit->setLabel('Установить')->removeDecorator('DtDdWrapper');
 
         $this->addElement($submit);
 
+    }
+    public function init()
+    {
+        $this->addAttribs(array('class' => 'well col-md-6'));
     }
 
 }

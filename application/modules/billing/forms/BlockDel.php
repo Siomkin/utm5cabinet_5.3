@@ -14,7 +14,7 @@ class Billing_Form_BlockDel extends Zend_Form
     public function __construct()
     {
         $this->setName('form_blockdel');
-        $this->setAttrib('class', 'wellform');
+        $this->setAttrib('class', 'well');
         $this->removeDecorator('HtmlTag');
         parent::__construct();
 
@@ -35,7 +35,7 @@ class Billing_Form_BlockDel extends Zend_Form
                                     )
         );
 
-        $submit = new Zend_Form_Element_Submit('submit', array('class'=> 'btn btn-large'));
+        $submit = new Zend_Form_Element_Submit('submit', array('class'=> 'btn btn-primary'));
         $submit->setLabel('Снять блокировку')
             ->removeDecorator('DtDdWrapper');
 

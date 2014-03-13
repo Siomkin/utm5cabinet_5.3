@@ -8,7 +8,7 @@
  *            http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
 
-class Billing_Form_Card extends Twitter_Bootstrap_Form_Horizontal
+class Billing_Form_Card extends Zend_Form
 {
     public function __construct($accounts)
     {
@@ -16,7 +16,7 @@ class Billing_Form_Card extends Twitter_Bootstrap_Form_Horizontal
         $this->addElement(
             'select', 'account', array(
                                       'label'        => 'Аккаунт',
-                                      'class'        => 'focused span3',
+                                      'class'        => 'form-control col-md-4',
                                       'required'     => TRUE,
                                       'filters'      => array('StringTrim', 'StripTags'),
                                       'multioptions' => $accounts,
@@ -31,7 +31,7 @@ class Billing_Form_Card extends Twitter_Bootstrap_Form_Horizontal
         $this->addElement(
             'text', 'card', array(
                                  'label'      => 'Карта',
-                                 'class'      => 'span3',
+                                 'class'      => 'form-control col-md-4',
                                  'required'   => TRUE,
                                  'filters'    => array('StringTrim', 'StripTags'),
                                  'validators' => array('Int')
@@ -41,7 +41,7 @@ class Billing_Form_Card extends Twitter_Bootstrap_Form_Horizontal
         $this->addElement(
             'text', 'pin', array(
                                 'label'      => 'ПИН',
-                                'class'      => 'span3',
+                                'class'      => 'form-control col-md-4',
                                 'required'   => TRUE,
                                 'filters'    => array('StringTrim', 'StripTags'),
                            )
@@ -50,7 +50,7 @@ class Billing_Form_Card extends Twitter_Bootstrap_Form_Horizontal
         $this->addElement(
             'button', 'send', array(
                                    'label'      => 'Отправить',
-                                   'class'      => 'btn btn-large',
+                                   'class'      => 'btn btn-primary',
                                    'type'       => 'submit',
                                    'buttonType' => 'success',
                                    'icon'       => 'ok',
@@ -58,23 +58,12 @@ class Billing_Form_Card extends Twitter_Bootstrap_Form_Horizontal
                               )
         );
 
-        $this->addDisplayGroup(
-            array('send', 'reset'),
-            'actions',
-            array(
-                 'disableLoadDefaultDecorators' => TRUE,
-                 'decorators'                   => array('Actions')
-            )
-        );
 
         parent::__construct();
     }
 
     public function init()
     {
-        // $this->setName('credit_form');
-
-        $this->_addClassNames('well');
-
+        $this->addAttribs(array('class'=>'well col-md-4'));
     }
 }

@@ -7,7 +7,7 @@
  *            http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
 
-class Billing_Form_Message extends Twitter_Bootstrap_Form_Horizontal
+class Billing_Form_Message extends Zend_Form
 {
     public function __construct()
     {
@@ -17,7 +17,7 @@ class Billing_Form_Message extends Twitter_Bootstrap_Form_Horizontal
             'text', 'subject', array(
                                     'label'         => 'Тема',
                                     'placeholder'   => 'Тема',
-                                    'class'         => 'focused span4',
+                                    'class'         => 'form-control',
                                     'required'      => TRUE,
                                     'filters'       => array('StringTrim', 'StripTags'),
                                )
@@ -27,7 +27,7 @@ class Billing_Form_Message extends Twitter_Bootstrap_Form_Horizontal
             'textarea', 'message', array(
                                         'label'         => 'Сообщение',
                                         'placeholder'   => 'Текст сообщения',
-                                        'class'         => 'span4',
+                                        'class'         => 'form-control',
                                         'required'      => TRUE,
                                         'cols'          => '20',
                                         'rows'          => '6',
@@ -38,7 +38,7 @@ class Billing_Form_Message extends Twitter_Bootstrap_Form_Horizontal
         $this->addElement(
             'button', 'send', array(
                                    'label'      => 'Отправить',
-                                   'class'      => 'btn btn-large',
+                                   'class'      => 'btn btn-primary',
                                    'type'       => 'submit',
                                    'buttonType' => 'success',
                                    'icon'       => 'ok',
@@ -46,21 +46,11 @@ class Billing_Form_Message extends Twitter_Bootstrap_Form_Horizontal
                               )
         );
 
-        $this->addDisplayGroup(
-            array('send', 'reset'),
-            'actions',
-            array(
-                 'disableLoadDefaultDecorators' => TRUE,
-                 'decorators'                   => array('Actions')
-            )
-        );
     }
 
     public function init()
     {
-        $this->_addClassNames('well ajax');
-
+        $this->addAttribs(array('class'=>'well col-md-6'));
         $this->setAction('/user/new-message/');
-
     }
 }

@@ -7,19 +7,19 @@
  *            http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
 
-class Default_Form_Login extends Twitter_Bootstrap_Form_Horizontal
+class Default_Form_Login extends Zend_Form
 {
     public function init()
     {
         $this->setIsArray(TRUE);
-        $this->setElementsBelongTo('bootstrap');
+        //$this->setElementsBelongTo('bootstrap');
 
-        $this->_addClassNames('well');
+       // $this->_addClassNames('well');
 
         $this->addElement(
             'text', 'username', array(
                                      'label'      => 'Имя пользователя',
-                                     'class'      => 'focused span3',
+                                     'class'      => 'form-control',
                                      'required'   => TRUE,
                                      'filters'    => array('StringTrim', 'StripTags'),
                                      'validators' => array(
@@ -37,25 +37,25 @@ class Default_Form_Login extends Twitter_Bootstrap_Form_Horizontal
         $this->addElement(
             'password', 'password', array(
                                          'label'    => 'Пароль',
-                                         'class'    => 'span3',
+                                         'class'    => 'form-control',
                                          'required' => TRUE,
                                          'required' => TRUE,
                                          'filters'  => array('StringTrim', 'StripTags'),
                                          //'validators' => array('alnum'),
                                     )
         );
-        $this->addDisplayGroup(
+      /*  $this->addDisplayGroup(
             array('username', 'password'),
             'login',
             array(
                  'legend' => 'Вход в личный кабинет'
             )
-        );
+        );*/
 
         $this->addElement(
             'button', 'send', array(
                                    'label'      => 'Войти',
-                                   'class'      => 'btn btn-large',
+                                   'class'      => 'btn btn-primary',
                                    'type'       => 'submit',
                                    'buttonType' => 'success',
                                    'icon'       => 'ok',
@@ -63,14 +63,14 @@ class Default_Form_Login extends Twitter_Bootstrap_Form_Horizontal
                               )
         );
 
-        $this->addDisplayGroup(
+      /*  $this->addDisplayGroup(
             array('send', 'reset'),
             'actions',
             array(
                  'disableLoadDefaultDecorators' => TRUE,
                  'decorators'                   => array('Actions')
             )
-        );
+        );*/
     }
 
 }

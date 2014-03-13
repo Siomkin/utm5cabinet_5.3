@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author    Siomkin Alexandr <mail@mg7.by>
  * @link      http://www.jext.biz/
@@ -6,14 +7,13 @@
  * @license   GNU General Public License, version 2:
  *            http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
-
 class Billing_Form_Traffic extends Zend_Form
 {
 
     public function __construct($startDate = FALSE, $endDate = FALSE)
     {
         $this->setName('form_traffic');
-        $this->setAttrib('class', 'wellform');
+        $this->setAttrib('class', 'form-inline well');
         $this->removeDecorator('HtmlTag');
         parent::__construct();
 
@@ -33,6 +33,7 @@ class Billing_Form_Traffic extends Zend_Form
         $startDate->setLabel('C')
             ->removeDecorator('label')
             ->removeDecorator('HtmlTag')
+            ->setAttribs(array('class' => 'form-control'))
             ->setJQueryParam('defaultDate', $start_Date)
             ->setJQueryParam('dateFormat', 'dd.mm.yy')
             ->setJQueryParam('changeYear', 'true')
@@ -41,15 +42,16 @@ class Billing_Form_Traffic extends Zend_Form
             ->setJqueryParam('showOtherMonths', 'true')
             ->setJqueryParam('selectOtherMonths', 'true')
             ->addValidator(
-            new Zend_Validate_Date(
-                array('format' => 'dd.mm.yy'))
-        )
+                new Zend_Validate_Date(
+                    array('format' => 'dd.mm.yy'))
+            )
             ->setRequired(TRUE);
 
         $endDate = new ZendX_JQuery_Form_Element_DatePicker('endDate');
         $endDate->setLabel('по')
             ->removeDecorator('label')
             ->removeDecorator('HtmlTag')
+            ->setAttribs(array('class' => 'form-control'))
             ->setJQueryParam('dateFormat', 'dd.mm.yy')
             ->setJQueryParam('defaultDate', $end_Date)
             ->setJQueryParam('changeYear', 'true')
@@ -58,15 +60,16 @@ class Billing_Form_Traffic extends Zend_Form
             ->setJqueryParam('selectOtherMonths', 'true')
             ->setJqueryParam('regional', 'ru')
             ->addValidator(
-            new Zend_Validate_Date(
-                array('format' => 'dd.mm.yy'))
-        )
+                new Zend_Validate_Date(
+                    array('format' => 'dd.mm.yy'))
+            )
             ->setRequired(TRUE);
 
         $serviceType = new Zend_Form_Element_Select('serviceType');
-        $serviceType->setLabel('Кол-во объявлений')
+        $serviceType->setLabel('Тип')
             ->removeDecorator('label')
             ->removeDecorator('HtmlTag')
+            ->setAttribs(array('class' => 'form-control'))
             ->addFilter('StringTrim')
             ->addFilter('StripTags')
             ->addMultiOption('1', 'Общий')
@@ -74,7 +77,7 @@ class Billing_Form_Traffic extends Zend_Form
             ->addMultiOption('3', 'По IP')
             ->addValidator(new Zend_Validate_InArray(array(1, 2, 3)), FALSE);
 
-        $submit = new Zend_Form_Element_Submit('submit', array('class' => 'btn btn-large'));
+        $submit = new Zend_Form_Element_Submit('submit', array('class' => 'btn btn-primary'));
         $submit->setLabel('Показать')
             ->removeDecorator('DtDdWrapper');
         $this->addElements(

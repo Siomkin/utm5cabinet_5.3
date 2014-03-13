@@ -15,7 +15,7 @@ class DRG_View_Helper_CacheInfo extends Zend_View_Helper_Abstract
 
         if (is_array($cache)) {
             $output
-                .= '<br/><div class="alert alert-block fade in alert-sign"><a class="close" data-dismiss="alert">×</a><i class="icon-info-sign"></i>
+                .= '<br/><div class="alert alert-warning fade in"><a class="close" data-dismiss="alert">×</a><i class="icon-info-sign"></i>
                  По состоянию на ' . date('H:i:s d.m.Y', $cache['mtime']) . ' (обновится после ' . date(
                 'H:i:s', $cache['expire']
             ) . ')</div>';

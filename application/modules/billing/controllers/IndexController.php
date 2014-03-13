@@ -1108,7 +1108,7 @@ class Billing_IndexController extends Zend_Controller_Action
     }
 
     /**
-     * Возврат заблокированных средств
+     * Турборежим
      * @since 5.2.1-009
      */
     public function turboModeAction()

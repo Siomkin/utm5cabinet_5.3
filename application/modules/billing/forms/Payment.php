@@ -26,7 +26,7 @@ class Billing_Form_Payment extends Zend_Form
             ->setRequired(TRUE);
 
 
-        $submit = new Zend_Form_Element_Submit('submit', array('class'=> 'btn btn-large'));
+        $submit = new Zend_Form_Element_Submit('submit', array('class'=> 'btn btn-primary'));
         $submit->setLabel('Показать квитанцию')
             ->removeDecorator('DtDdWrapper');
         $this->addElements(array($sum, $submit));

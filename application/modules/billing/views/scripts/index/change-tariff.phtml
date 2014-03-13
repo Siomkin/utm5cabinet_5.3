@@ -39,7 +39,7 @@
         <li>Вы не выбрали тарифный план</li>
     </ul>
     <?php endif;?>
-<form id="form_change_tariff" enctype="application/x-www-form-urlencoded" action="" method="post">
+<form id="form_change_tariff" enctype="application/x-www-form-urlencoded" action="" class="well" method="post">
     <div class="controls">
         <?php $i = 1;?>
         <?php foreach ($this->changeTariffInfo['tariff'] as $changeTariffInfo) : ?>
@@ -108,7 +108,7 @@
     </div>
 
     <div class="form-actions">
-        <button type="submit" class="btn btn-large">Изменить тарифный план</button>
+        <button type="submit" class="btn btn-primary">Изменить тарифный план</button>
     </div>
 </form>
 <?php else:?>

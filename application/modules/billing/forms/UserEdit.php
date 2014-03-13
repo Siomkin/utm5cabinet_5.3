@@ -53,7 +53,7 @@ class Billing_Form_UserEdit extends Zend_Form
         $this->addElement($accepted);
 
 
-        $submit = new Zend_Form_Element_Submit('submit', array('class' => 'btn btn-large'));
+        $submit = new Zend_Form_Element_Submit('submit', array('class' => 'btn btn-primary'));
         $submit->setLabel('Отправить')
             ->removeDecorator('DtDdWrapper');
         $this->addElement($submit);

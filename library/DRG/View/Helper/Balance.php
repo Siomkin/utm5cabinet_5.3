@@ -12,20 +12,20 @@ class DRG_View_Helper_Balance extends Zend_View_Helper_Abstract
     public function balance($balance = '', $credit = FALSE, $currency)
     {
         if ($balance > 0) {
-            $style = 'badge-success';
+            $style = 'label-success';
         } elseif ($balance + $credit > 0) {
-            $style = 'badge-warning';
+            $style = 'label-warning';
         } elseif ($balance == 0) {
             $style = '';
         }
         else {
-            $style = 'badge-important';
+            $style = 'label-danger';
         }
-        $output = '<span class="badge ' . $style . '">' . $balance;
+        $output = '<h4><span class="label ' . $style . '">' . $balance;
         if ($credit) {
             $output .= ' (+' . $credit . ')';
         }
-        $output .= ' '.$currency.'</span>';
+        $output .= ' '.$currency.'</span></h4>';
 
         return $output;
     }

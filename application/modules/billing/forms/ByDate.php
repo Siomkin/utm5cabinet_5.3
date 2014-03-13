@@ -14,7 +14,7 @@ class Billing_Form_ByDate extends Zend_Form
     public function __construct($startDate = FALSE, $endDate = FALSE)
     {
         $this->setName('form_byDate');
-        $this->setAttrib('class', 'wellform');
+        $this->setAttrib('class', 'form-inline well');
         $this->removeDecorator('HtmlTag');
         parent::__construct();
 
@@ -34,6 +34,7 @@ class Billing_Form_ByDate extends Zend_Form
         $startDate->setLabel('C')
             ->removeDecorator('label')
             ->removeDecorator('HtmlTag')
+            ->setAttribs(array('class' => 'form-control'))
             ->setJQueryParam('defaultDate', $start_Date)
             ->setJQueryParam('dateFormat', 'dd.mm.yy')
             ->setJQueryParam('changeYear', 'true')
@@ -51,6 +52,7 @@ class Billing_Form_ByDate extends Zend_Form
         $endDate->setLabel('по')
             ->removeDecorator('label')
             ->removeDecorator('HtmlTag')
+            ->setAttribs(array('class' => 'form-control'))
             ->setJQueryParam('dateFormat', 'dd.mm.yy')
             ->setJQueryParam('defaultDate', $end_Date)
             ->setJQueryParam('changeYear', 'true')
@@ -64,7 +66,7 @@ class Billing_Form_ByDate extends Zend_Form
         )
             ->setRequired(TRUE);
 
-        $submit = new Zend_Form_Element_Submit('submit', array('class'=> 'btn btn-large'));
+        $submit = new Zend_Form_Element_Submit('submit', array('class'=> 'btn btn-primary'));
         $submit->setLabel('Показать')
             ->removeDecorator('DtDdWrapper');
         $this->addElements(array($startDate->setValue($start_Date), $endDate->setValue($end_Date), $submit));

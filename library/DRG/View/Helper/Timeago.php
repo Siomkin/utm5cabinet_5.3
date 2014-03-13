@@ -22,13 +22,11 @@ class DRG_View_Helper_Timeago extends Zend_View_Helper_Abstract
            // $time->setTimestamp($cache['mtime']);
 
             $output= '<script type="text/javascript">';
-            $output.= 'jQuery(document).ready(function() {
-                        jQuery("time.timeago").timeago();
-                    });';
+            $output.= 'jQuery(document).ready(function() { jQuery("abbr.timeago").timeago();});';
             $output .= '</script>';
 
-            $output .= '<span class="timeago">обновлено <time class="timeago" datetime="' . date('Y-m-d H:i:s',$cache['mtime']) . '">'
-                . date('d.m.Y H:i:s',$cache['mtime']) . '</time></span>';
+            $output .= '<span class="timeago">обновлено <abbr class="timeago" title="' . date('Y-m-d H:i:s',$cache['mtime']) . '">'
+                . date('d.m.Y H:i:s',$cache['mtime']) . '</abbr></span>';
 
         }
 

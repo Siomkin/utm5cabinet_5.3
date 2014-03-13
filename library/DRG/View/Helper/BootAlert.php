@@ -15,7 +15,7 @@ class DRG_View_Helper_BootAlert extends Zend_View_Helper_Abstract
 
         if (is_array($messages)) {
             foreach ($messages as $style=> $message) {
-                $output .= '<div class="alert alert-block fade in alert-' . $style
+                $output .= '<div class="alert fade in alert-' . $style
                     . '"><a class="close" data-dismiss="alert">×</a><i class="icon-info-sign"></i> ' . $message
                     . '</div>';
             }
