@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author    Siomkin Alexandr <mail@mg7.by>
  * @link      http://www.jext.biz/
@@ -6,15 +7,13 @@
  * @license   GNU General Public License, version 2:
  *            http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
-
 class DRG_Validator_Passwordconfirm extends Zend_Validate_Abstract
 {
     const NOT_MATCH = 'notMatch';
 
-    protected $_messageTemplates
-        = array(
-            self::NOT_MATCH => 'Пароли не совпадают.'
-        );
+    protected $_messageTemplates = array(
+        self::NOT_MATCH => 'Пароли не совпадают.'
+    );
 
     public function isValid($value, $context = NULL)
     {
@@ -34,6 +33,3 @@ class DRG_Validator_Passwordconfirm extends Zend_Validate_Abstract
         return FALSE;
     }
 }
-
-
-?>
