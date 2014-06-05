@@ -610,7 +610,6 @@ class Urfa_Client
     public function getAccountsInfo()
     {
         $accounts = array();
-        //$this->urfa->call(-0x4050);
         $this->urfa->call(-0x15028);
 
         $this->urfa->send();
@@ -623,7 +622,7 @@ class Urfa_Client
             $tmp['int_status'] = $this->urfa->get_int();
             $tmp['block_status'] = $this->urfa->get_int();
             $tmp['vat_rate'] = $this->urfa->get_double();
-            $tmp['locked_in_funds'] = -1.0 * Urfa_Resolve::roundDouble($this->urfa->get_double());
+            //$tmp['locked_in_funds'] = -1.0 * Urfa_Resolve::roundDouble($this->urfa->get_double());
             //$tmp['link'] = resolveIntStatusForAccount($tmp['int_status'], $account_id);
             $accounts[$account_id] = $tmp;
         }

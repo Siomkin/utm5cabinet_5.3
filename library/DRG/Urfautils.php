@@ -9,22 +9,22 @@ class DRG_Urfautils
      *
      * @return string
      */
-    public static function blockedStatus($id)
+    public static function blockedStatus($block_val)
     {
-
-        switch ($id) {
-            case 0:
+        switch($block_val){
+            case 4294967295:
+            case -1: //none
                 return "Разблокирован";
                 break;
-            case 16:
+            case 1: //system
                 return "Системная блокировка";
                 break;
-            case 256:
-            case 272:
+            case 2: //admin
                 return "Админская блокировка";
                 break;
-            default:
-                return "Блокировка";
+            case 3: //user
+                return "Пользовательская блокировка";
+                break;
         }
     }
 

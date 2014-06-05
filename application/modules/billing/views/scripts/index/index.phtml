@@ -118,18 +118,6 @@
                 </span>
             </td>
         </tr>
-        <?php
-        $locked_in_funds_link = $this->accounts[$account]['locked_in_funds'].$this->currencyName;
-
-        if($this->accounts[$account]['locked_in_funds'] > $this->CONF_MIN_LOCKED_IN_FUNDS)
-        {
-            $locked_in_funds_link .= ' <a class="btn btn-mini" href="/user/repay/account/'.$account.'>Вернуть</a>';
-        }
-        ?>
-        <tr>
-            <td class="span3">Заблокированные средства</td>
-            <td><?= $locked_in_funds_link ?></td>
-        </tr>
     </table>
 
     <?php endforeach; ?>
