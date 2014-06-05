@@ -90,6 +90,7 @@ class Billing_IndexController extends Zend_Controller_Action
             || ($userData = $this->cache->load($this->cache_basic_account)) === FALSE
             || ($accounts = $this->cache->load($this->cache_basic_account . '_accounts')) === FALSE
             || ($additional = $this->cache->load($this->cache_basic_account . '_additional')) === FALSE
+            || ($turbo = $this->cache->load($this->cache_basic_account . '_turbo')) === FALSE
         ) {
             $urfa = $this->reconnect();
 
@@ -109,6 +110,9 @@ class Billing_IndexController extends Zend_Controller_Action
             if ($accounts = $urfa->getAccountsInfo()) {
                 $this->cache->save($accounts, $this->cache_basic_account . '_accounts');
             }
+            if ($turbo = $urfa->getTurboMode()) {
+                $this->cache->save($accounts, $this->cache_basic_account . '_turbo');
+            }
             unset($urfa);
         }
         //Присваиваем данные переменным вида
@@ -122,12 +126,14 @@ class Billing_IndexController extends Zend_Controller_Action
 
         $this->view->accounts = $accounts;
 
+        $this->view->turbo = $turbo;
+
         $this->view->cacheData = $this->cache->getMetadatas($this->cache_basic_account);
 
-        $this->view->CONF_MIN_LOCKED_IN_FUNDS = $this->config->urfa->CONF_MIN_LOCKED_IN_FUNDS;
+       // $this->view->CONF_MIN_LOCKED_IN_FUNDS = $this->config->urfa->CONF_MIN_LOCKED_IN_FUNDS;
 
-        $this->view->editform = new Billing_Form_UserEdit();
-        $this->view->editform->setAction('/user/edit');
+       // $this->view->editform = new Billing_Form_UserEdit();
+        //$this->view->editform->setAction('/user/edit');
 
     }
 

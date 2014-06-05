@@ -28,19 +28,13 @@
         <td>Паспортные данные:</td>
         <td><?= $this->userData['passport']?></td>
     </tr>
-    <tr>
-        <td>E-mail:</td>
-        <td><?= $this->userData['email']?></td>
-    </tr>
-
-
 </table>
 <?php if ($this->tarrifs): ?>
 <div class="bs-callout bs-callout-info"><h4>Тарифы</h4></div>
 <?php
     $promised_payments = 1;
     $voluntary_block = 2;
-    $funds_flow = 4;
+   // $funds_flow = 4;
     $change_tariff = 8;
     ?>
 <?php foreach ($this->tarrifs as $account => $tarrifs): ?>
@@ -139,21 +133,48 @@
         </tr>
         </thead>
         <tbody>
-            <?php foreach ($this->services as $service): ?>
+            <?php foreach ($this->services as $slinks): ?>
         <tr>
-            <td><?= $service['service_type_name'] ?></td>
-            <td><?= $service['link']  ?> </td>
-            <td><?= $service['tariff_name']  ?> </td>
-            <td><?= $service['discount_period_start']  ?> </td>
-            <td><?= $service['discount_period_end']  ?> </td>
-            <td><?= $service['cost']  ?> </td>
-            <td><?= $service['discounted_in_curr_period']  ?> </td>
+            <td><?= $slinks['service_type_name'] ?></td>
+            <td><?= $slinks['link']  ?> </td>
+            <td><?= $slinks['tariff_name']  ?> </td>
+            <td><?= $slinks['discount_period_start']  ?> </td>
+            <td><?= $slinks['discount_period_end']  ?> </td>
+            <td><?= $slinks['cost']  ?> </td>
+            <td><?= $slinks['discounted_in_curr_period']  ?> </td>
         </tr>
             <?php endforeach;?>
         </tbody>
     </table>
        <?php else: ?>
            <?= $this->bootAlert(array('info' => 'Нет подключенных услуг')) ?>
+    <?php endif; ?>
+<?php endif; ?>
+
+
+<?php if ($this->turbo): ?>
+    <div class="bs-callout bs-callout-info"><h4>Турбо-режим</h4></div>
+    <table class="table table-striped">
+    <?php if (count($this->turbo) > 0) : ?>
+        <thead>
+        <tr>
+            <th>Имя</th>
+            <th>Действие</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($this->turbo as $slinks): ?>
+            <tr>
+                <td><?= $slinks['name'] ?></td>
+            <?php if ($slinks['active']): ?>
+                <td><a href="/user/service/slink/<?= $slinks['id']  ?>">Включен</a> </td>
+            <?php else: ?>
+                <td><a href="/user/turbo-mode/slink_id/<?= $slinks['id']  ?>">Включить</a> </td>
+            <?php endif; ?>
+            </tr>
+        <?php endforeach;?>
+        </tbody>
+        </table>
     <?php endif; ?>
 <?php endif; ?>
 

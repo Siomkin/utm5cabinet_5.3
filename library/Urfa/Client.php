@@ -590,14 +590,6 @@ class Urfa_Client
         $user['int_status'] = Urfa_Resolve::resolveIntStatus($this->urfa->get_int());
         $user['vat_rate'] = Urfa_Resolve::roundDouble($this->urfa->get_double());
         $user['passport'] = $this->urfa->get_string();
-        $user['funds'] = Urfa_Resolve::roundDouble($this->urfa->get_double());
-        $user['email'] = $this->urfa->get_string();
-
-        /*$locked_in_funds = Urfa_Resolve::roundDouble($this->urfa->get_double());
-        if ($locked_in_funds < 0.0) {
-            $locked_in_funds *= -1.0;
-        }
-        $user['locked_in_funds'] = $locked_in_funds;*/
 
         $this->urfa->finish();
         return $user;
@@ -1468,5 +1460,63 @@ class Urfa_Client
         }
         $this->urfa->finish();
         return $bp;
+    }
+
+    public function getTurboMode(){
+
+        define("SLINK_SHAPING_TURBO_MODE_AVAILABLE", 2);
+
+        $all_slinks = array();
+
+        $this->urfa->call(-0x402f);
+        $this->urfa->send();
+        $count = $this->urfa->get_int();
+        for($i = 0; $i < $count; $i++) {
+
+            $all_slinks[$i] = array();
+
+            $all_slinks[$i]['id'] = $this->urfa->get_int();
+            $this->urfa->get_int();//service_id
+            $this->urfa->get_int();//service_type
+            $all_slinks[$i]['name'] = $this->urfa->get_string();
+            $this->urfa->get_string();//tariff_name
+            $this->urfa->get_int();//discount_period_start
+            $this->urfa->get_int();//discount_period_end
+            $this->urfa->get_double();//cost
+            $this->urfa->get_double();//discounted_in_curr_period
+        }
+        $this->urfa->finish();
+
+        $slinks = false;
+        $slinks_cnt = 0;
+
+        for($i = 0, $size = count($all_slinks); $i < $size; $i++){
+            $slink_id = $all_slinks[$i]['id'];
+
+            $this->urfa->call(-0x404a);
+            $this->urfa->put_int($slink_id);
+            $this->urfa->send();
+            $service_type = $this->urfa->get_int();
+            $this->urfa->finish();
+
+            if($service_type == 3){
+                $this->urfa->call(-0x12009);
+                $this->urfa->put_int($slink_id);
+                $this->urfa->send();
+
+                $flags = $this->urfa->get_int();
+                $this->urfa->get_int();//incoming_rate
+                $this->urfa->get_int();//outgoing_rate
+                $turbo_mode_start = $this->urfa->get_int();
+
+                $this->urfa->finish();
+                if(($flags & SLINK_SHAPING_TURBO_MODE_AVAILABLE) != 0){
+                    $slinks[$slinks_cnt] = $all_slinks[$i];
+                    $slinks[$slinks_cnt]['active'] = $turbo_mode_start > 0;
+                    $slinks_cnt++;
+                }
+            }
+        }
+        return $slinks;
     }
 }
