@@ -1015,7 +1015,8 @@ class Urfa_Client
      */
     public function getPromisePaymentInfo($aid)
     {
-        $this->urfa->call(-0x15024);
+        //$this->urfa->call(-0x15024);
+        $this->urfa->call(-0x15031);
         $this->urfa->put_int($aid);
         $this->urfa->send();
 
@@ -1032,6 +1033,7 @@ class Urfa_Client
             $pp['free_balance'] = $this->urfa->get_double();
             $pp['use_free_balance'] = $this->urfa->get_int();
             $pp['balance'] = $this->urfa->get_double();
+            $pp['flags'] = $this->urfa->get_int();
         }
         $this->urfa->finish();
         return $pp;
