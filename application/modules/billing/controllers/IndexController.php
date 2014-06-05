@@ -198,8 +198,22 @@ class Billing_IndexController extends Zend_Controller_Action
                     //уничтожаем объект Urfaphp_URFAClientUser5
                     unset($urfa);
                 }
+
+                $cacheId = $this->cache_basic_account . '_burntPayment';
+                if (($burntPayment = $this->cache->load($cacheId)) === FALSE) {
+                    //Создаём подключение к urfe
+                    $urfa = $this->reconnect();
+                    //получаем информацию и сохраняем в кэш
+                    if ($burntPayment = $urfa->getBurntPayment()) {
+                        $this->cache->save($burntPayment, $cacheId);
+                    }
+                    //уничтожаем объект Urfaphp_URFAClientUser5
+                    unset($urfa);
+                }
+
                 //Присваиваем данные переменным вида
                 $this->view->userPaymentData = $payment;
+                $this->view->burntPaymentData = $burntPayment;
                 $this->view->cacheData = $this->cache->getMetadatas($cacheId);
             }
         }
