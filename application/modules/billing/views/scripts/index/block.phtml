@@ -66,12 +66,17 @@
         <td>Минимальный баланс для блокировки:</td>
         <td>
             <?php if ($this->blockInfo['can_set_block']): ?>
-            <?= $this->blockInfo['min_balance'] ?>
+            <?= $this->blockInfo['min_balance'] ?> <?= $this->currencyName?>
             <?php else : ?>
-            <span class="label label-important"><?= $this->blockInfo['min_balance']?> <?= $this->currencyName?></span>
+            <span class="label label-danger"><?= $this->blockInfo['min_balance']?> <?= $this->currencyName?></span>
             <?php endif;?>
         </td>
     </tr>
+        <?php if ($this->blockInfo['min_balance'] > $this->blockInfo['balance']) : ?>
+            <tr><td colspan="2">
+            <?= $this->bootAlert(array('danger' => 'Вы не можете установить блокировку, Ваш баланс меньше тебуемого')) ?>
+                </td></tr>
+        <?php endif; ?>
     <?php endif; ?>
 
     <?php if ($this->blockInfo['use_free_balance']) : ?>
