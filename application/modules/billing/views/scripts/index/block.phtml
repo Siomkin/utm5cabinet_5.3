@@ -74,7 +74,7 @@
     </tr>
         <?php if ($this->blockInfo['min_balance'] > $this->blockInfo['balance']) : ?>
             <tr><td colspan="2">
-            <?= $this->bootAlert(array('danger' => 'Вы не можете установить блокировку, Ваш баланс меньше тебуемого')) ?>
+            <?= $this->bootAlert(array('danger' => 'Вы не можете установить блокировку, Ваш баланс меньше требуемого')) ?>
                 </td></tr>
         <?php endif; ?>
     <?php endif; ?>
