@@ -34,7 +34,7 @@
             <?php if ($this->promiseCreditInfo['can_change']): ?>
                 <?= $this->promiseCreditInfo['min_balance'] ?>  <?= $this->currencyName?>
             <?php else : ?>
-                <span class="label label-important"><?= $this->promiseCreditInfo['min_balance']?> <?= $this->currencyName?></span>
+                <span class="label label-danger"><?= $this->promiseCreditInfo['min_balance']?> <?= $this->currencyName?></span>
             <?php endif;?>
         </td>
     </tr>
@@ -63,6 +63,10 @@
 
 </table>
 
-<?php if ($this->promiseCreditInfo['can_change']>0 && !($this->promiseCreditInfo['flags'] & 1)) : ?>
+<?php if ((time() - $this->promiseCreditInfo['last_payment_date'] < $this->promiseCreditInfo['interval'])) : ?>
+    <?= $this->bootAlert(array('danger' => 'Следующий обещанный платёж может быть произведён не ранее '.Urfa_Resolve::getDayFromSeconds($this->promiseCreditInfo['last_payment_date']+$this->promiseCreditInfo['interval']))) ?>
+<?php endif; ?>
+
+<?php if ($this->promiseCreditInfo['can_change'] > 0 && !($this->promiseCreditInfo['flags'] & 1)) : ?>
     <?= $this->form ?>
 <?php endif; ?>
