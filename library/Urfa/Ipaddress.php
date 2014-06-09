@@ -20,10 +20,10 @@ class Urfa_Ipaddress
         $type=null;
         switch (strlen($data = inet_pton($AddressString))) {
             case 4:
-                $type = IPaddress::IPv4;
+                $type = Urfa_Ipaddress::IPv4;
                 break;
             case 16:
-                $type = IPaddress::IPv6;
+                $type = Urfa_Ipaddress::IPv6;
                 break;
             default:
                // throw new IPaddressError("Invalid ip address type");
