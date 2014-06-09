@@ -64,7 +64,7 @@
 </table>
 
 <?php if ((time() - $this->promiseCreditInfo['last_payment_date'] < $this->promiseCreditInfo['interval'])) : ?>
-    <?= $this->bootAlert(array('danger' => 'Следующий обещанный платёж может быть произведён не ранее '.Urfa_Resolve::getDayFromSeconds($this->promiseCreditInfo['last_payment_date']+$this->promiseCreditInfo['interval']))) ?>
+    <?= $this->bootAlert(array('danger' => 'Следующий обещанный платёж может быть произведён не ранее '.Urfa_Resolve::getDateFromTimestamp($this->promiseCreditInfo['last_payment_date']+$this->promiseCreditInfo['interval']))) ?>
 <?php endif; ?>
 
 <?php if ($this->promiseCreditInfo['can_change'] > 0 && !($this->promiseCreditInfo['flags'] & 1)) : ?>
