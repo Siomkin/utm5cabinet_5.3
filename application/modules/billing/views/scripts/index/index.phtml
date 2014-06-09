@@ -106,7 +106,14 @@
         <tr>
             <td class="span3">Состояние блокировки</td>
             <td>
-                <?php $style = $this->accounts[$account]['block_status'] ? 'danger' : 'success'?>
+                <?php switch($this->accounts[$account]['block_status']){
+                        case 4294967295:
+                        case -1: //none
+                            $style =  'success';
+                        break;
+                        default: //block
+                            $style =  'danger';
+                }?>
                 <span class="label label-<?=$style?>">
                     <?=DRG_Urfautils::blockedStatus($this->accounts[$account]['block_status'])?>
                 </span>
