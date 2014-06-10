@@ -4,7 +4,7 @@
 <div><?= $this->message['sender']?></div>
 <div><?=$this->message['message']?></div>
 <?php else : ?>
-    <?= $this->bootAlert(array('error' => 'Возможно такого сообщения не существует или у вас нет доступа к нему')) ?>
+    <?= $this->bootAlert(array('danger' => 'Возможно такого сообщения не существует или у вас нет доступа к нему')) ?>
 <?php endif; ?>
 
 <?= $this->cacheInfo($this->cacheData) ?>

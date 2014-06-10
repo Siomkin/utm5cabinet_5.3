@@ -23,7 +23,7 @@ class DRG_View_Helper_Badge extends Zend_View_Helper_Abstract
         } else {
             $style = '';
         }
-        $output = '<span class="badge' . $style . '">' . $text . '</span>';
+        $output = '<span class="badge ' . $style . '">' . $text . '</span>';
         return $output;
     }
 }

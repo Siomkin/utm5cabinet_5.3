@@ -38,7 +38,7 @@ class Default_IndexController extends Zend_Controller_Action
                     $this->redirect($uri);
                 } else {
                     $this->_helper->flashMessenger->addMessage(
-                        array('error' => 'Ошибка авторизации. Не верная пара логин-пароль')
+                        array('danger' => 'Ошибка авторизации. Не верная пара логин-пароль')
                     );
                     $this->redirect('/');
                 }
@@ -57,7 +57,7 @@ class Default_IndexController extends Zend_Controller_Action
     {
         if (!$this->view->identity) {
             $this->_helper->flashMessenger->addMessage(
-                array('error' => 'Вам необходимо авторизоваться')
+                array('danger' => 'Вам необходимо авторизоваться')
             );
             $this->redirect('/');
         }

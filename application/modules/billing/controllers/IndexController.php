@@ -22,7 +22,7 @@ class Billing_IndexController extends Zend_Controller_Action
     {
         if ($this->view->identity == FALSE) {
             $this->_helper->flashMessenger->addMessage(
-                array('error' => 'Вам необходимо авторизоваться')
+                array('danger' => 'Вам необходимо авторизоваться')
             );
 
             $this->redirect('/?return_uri=' . $this->view->url());
@@ -689,11 +689,11 @@ class Billing_IndexController extends Zend_Controller_Action
                         );
                     } elseif ($result == -1) {
                         $this->_helper->flashMessenger->addMessage(
-                            array('error' => 'Не верно заданы даты для установки добровольной блокировки')
+                            array('danger' => 'Не верно заданы даты для установки добровольной блокировки')
                         );
                     } else {
                         $this->_helper->flashMessenger->addMessage(
-                            array('error' => 'При установке добровольной блокировки произошла ошибка')
+                            array('danger' => 'При установке добровольной блокировки произошла ошибка')
                         );
                     }
                 } elseif ($act == 2) {
@@ -704,7 +704,7 @@ class Billing_IndexController extends Zend_Controller_Action
                         );
                     } else {
                         $this->_helper->flashMessenger->addMessage(
-                            array('error' => 'При снятии добровольной блокировки произошла ошибка')
+                            array('danger' => 'При снятии добровольной блокировки произошла ошибка')
                         );
                     }
                 }
@@ -746,13 +746,13 @@ class Billing_IndexController extends Zend_Controller_Action
                         $tlink_id = $tarrif[0]['id'];
                     } else {
                         $this->_helper->flashMessenger->addMessage(
-                            array('error' => 'Не верно заданы параметры тарифа')
+                            array('danger' => 'Не верно заданы параметры тарифа')
                         );
                         $this->redirect('/user/');
                     }
                 }
             } else {
-                $this->_helper->flashMessenger->addMessage(array('error' => 'Не верно заданы параметры тарифа'));
+                $this->_helper->flashMessenger->addMessage(array('danger' => 'Не верно заданы параметры тарифа'));
                 $this->redirect('/user/');
             }
 
@@ -779,7 +779,7 @@ class Billing_IndexController extends Zend_Controller_Action
                         $this->_helper->flashMessenger->addMessage(array('success' => 'Тариф успешно изменён'));
                     } else {
                         $this->_helper->flashMessenger->addMessage(
-                            array('error' => 'При изменении тарифа произошла ошибка')
+                            array('danger' => 'При изменении тарифа произошла ошибка')
                         );
                     }
 
@@ -969,7 +969,7 @@ class Billing_IndexController extends Zend_Controller_Action
                 );
                 if ($result['state'] == 0) {
                     $this->_helper->flashMessenger->addMessage(
-                        array('error' => 'При активации произошла ошибка. ' . $result['message'])
+                        array('danger' => 'При активации произошла ошибка. ' . $result['message'])
                     );
                 } else {
                     $this->_helper->flashMessenger->addMessage(
@@ -1120,7 +1120,7 @@ class Billing_IndexController extends Zend_Controller_Action
             $this->cache->remove($this->cache_basic_account . '_accounts');
         } else {
             $this->_helper->flashMessenger->addMessage(
-                array('error' => 'Не верно задан лицевой счёт')
+                array('danger' => 'Не верно задан лицевой счёт')
             );
         }
         $this->redirect('/user/');
@@ -1141,7 +1141,7 @@ class Billing_IndexController extends Zend_Controller_Action
             $slink_id = (int)$slink_id;
         } else {
             $this->_helper->flashMessenger->addMessage(
-                array('error' => 'Не верно указан ID услуги')
+                array('danger' => 'Не верно указан ID услуги')
             );
             $this->redirect('/user/');
         }
@@ -1159,7 +1159,7 @@ class Billing_IndexController extends Zend_Controller_Action
                     );
                 }else{
                     $this->_helper->flashMessenger->addMessage(
-                        array('error' => 'При установке турбо режима произошла ошибка')
+                        array('danger' => 'При установке турбо режима произошла ошибка')
                     );
                 }
                 $this->redirect('/user/');
