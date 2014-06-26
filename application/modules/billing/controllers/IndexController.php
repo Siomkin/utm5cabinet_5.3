@@ -17,6 +17,7 @@ class Billing_IndexController extends Zend_Controller_Action
     protected $end_day;
 
     protected $basic_account;
+    protected $cache_basic_account;
 
     public function init()
     {
