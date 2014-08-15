@@ -635,11 +635,11 @@ class Billing_IndexController extends Zend_Controller_Action
 
         $this->view->promiseCreditInfo = $urfa->getPromisePaymentInfo($aid);
 
-        $form = new Billing_Form_Credit($this->view->promiseCreditInfo['value']);
+        $form = new Billing_Form_Credit($this->view->promiseCreditInfo['value'], $this->view->promiseCreditInfo['flags']);
 
         if ($this->view->promiseCreditInfo['can_change'] && $this->getRequest()->isPost()) {
             if ($form->isValid($this->getRequest()->getPost())) {
-                $summa = $form->getValue('credit_sum');
+                $summa = $this->_getParam('amount');
                 $urfa->addPromisePayment($aid, $summa);
                 $this->cache->remove($this->cache_basic_account);
                 $urfa->changeStatus($aid, 1);
