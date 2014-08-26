@@ -7,7 +7,6 @@
  * @license   GNU General Public License, version 2:
  *            http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
-
 class Billing_IndexController extends Zend_Controller_Action
 {
     protected $cache;
@@ -21,12 +20,21 @@ class Billing_IndexController extends Zend_Controller_Action
 
     public function init()
     {
-        if ($this->view->identity == FALSE) {
+        if ($this->view->identity == false) {
             $this->_helper->flashMessenger->addMessage(
-                array('danger' => 'Вам необходимо авторизоваться')
+                array('error' => 'Вам необходимо авторизоваться')
             );
+            $uri = '';
+            $person_type = $this->_getParam('person_type');
+            $rs_uri = $this->_getParam('rs_uri');
 
-            $this->redirect('/?return_uri=' . $this->view->url());
+            if (!is_null($person_type)) {
+                $uri = '?person_type=' . urlencode($person_type);
+            }
+            if (!is_null($rs_uri)) {
+                $uri .= '&rs_uri=' . urlencode($rs_uri);
+            }
+            $this->redirect('/?return_uri=' . $this->view->url() . $uri);
         }
 
         $this->config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/billing.ini', 'app');
@@ -38,10 +46,12 @@ class Billing_IndexController extends Zend_Controller_Action
         //папка для хранения кэша
         $backendOptions = array('cache_dir' => APPLICATION_PATH . '/' . $this->config->cache->cache_dir);
         //время жизни (сек), сериализация и логирование
-        $frontendOptions = array('lifetime'                => $this->config->cache->lifetime,
-                                 'debug_header'            => TRUE,
-                                 'logger'                  => TRUE,
-                                 'automatic_serialization' => TRUE);
+        $frontendOptions = array(
+            'lifetime' => $this->config->cache->lifetime,
+            'debug_header' => true,
+            'logger' => true,
+            'automatic_serialization' => true
+        );
         //метод храниния кэша. Определяет вторая переменная
         //Из наиболее используемых File, APC, возможен memcached, но там нужны дополнительные параметры
         //читайте документацию по Zend_Cache
@@ -67,6 +77,7 @@ class Billing_IndexController extends Zend_Controller_Action
     {
         $urfa = new Urfa_Client();
         $urfa->restore_session($this->view->identity->utm5);
+
         return $urfa;
     }
 
@@ -82,16 +93,16 @@ class Billing_IndexController extends Zend_Controller_Action
     {
         $this->setTitle("Общая информация");
 
-        $services = $tarrifs = $userData = NULL;
+        $services = $tarrifs = $userData = null;
 
         //Проверяем наличие кэша
         //Если данные не присутствуют в кэше, то делаем запрос к urfe
-        if (($services = $this->cache->load($this->cache_basic_account . '_services')) === FALSE
-            || ($tarrifs = $this->cache->load($this->cache_basic_account . '_tarrifs')) === FALSE
-            || ($userData = $this->cache->load($this->cache_basic_account)) === FALSE
-            || ($accounts = $this->cache->load($this->cache_basic_account . '_accounts')) === FALSE
-            || ($additional = $this->cache->load($this->cache_basic_account . '_additional')) === FALSE
-            || ($turbo = $this->cache->load($this->cache_basic_account . '_turbo')) === FALSE
+        if (($services = $this->cache->load($this->cache_basic_account . '_services')) === false
+            || ($tarrifs = $this->cache->load($this->cache_basic_account . '_tarrifs')) === false
+            || ($userData = $this->cache->load($this->cache_basic_account)) === false
+            || ($accounts = $this->cache->load($this->cache_basic_account . '_accounts')) === false
+            || ($additional = $this->cache->load($this->cache_basic_account . '_additional')) === false
+            || ($turbo = $this->cache->load($this->cache_basic_account . '_turbo')) === false
         ) {
             $urfa = $this->reconnect();
 
@@ -131,9 +142,9 @@ class Billing_IndexController extends Zend_Controller_Action
 
         $this->view->cacheData = $this->cache->getMetadatas($this->cache_basic_account);
 
-       // $this->view->CONF_MIN_LOCKED_IN_FUNDS = $this->config->urfa->CONF_MIN_LOCKED_IN_FUNDS;
+        // $this->view->CONF_MIN_LOCKED_IN_FUNDS = $this->config->urfa->CONF_MIN_LOCKED_IN_FUNDS;
 
-       // $this->view->editform = new Billing_Form_UserEdit();
+        // $this->view->editform = new Billing_Form_UserEdit();
         //$this->view->editform->setAction('/user/edit');
 
     }
@@ -188,7 +199,7 @@ class Billing_IndexController extends Zend_Controller_Action
                 //Проверяем наличие кэша
                 //Если данные не присутствуют в кэше, то делаем запрос к urfe
                 $cacheId = $this->cache_basic_account . '_payment' . DRG_Util::getCacheByDate($start_date, $end_date);
-                if ((($payment = $this->cache->load($cacheId)) === FALSE)) {
+                if ((($payment = $this->cache->load($cacheId)) === false)) {
                     //Создаём подключение к urfe
                     $urfa = $this->reconnect();
 
@@ -207,7 +218,7 @@ class Billing_IndexController extends Zend_Controller_Action
                 }
 
                 $cacheId = $this->cache_basic_account . '_burntPayment';
-                if (($burntPayment = $this->cache->load($cacheId)) === FALSE) {
+                if (($burntPayment = $this->cache->load($cacheId)) === false) {
                     //Создаём подключение к urfe
                     $urfa = $this->reconnect();
                     //получаем информацию и сохраняем в кэш
@@ -234,8 +245,8 @@ class Billing_IndexController extends Zend_Controller_Action
     {
         $this->setTitle('Информация об услуге');
 
-        $service = NULL;
-        $slink = $this->_getParam('slink', NULL);
+        $service = null;
+        $slink = $this->_getParam('slink', null);
         if (!$slink) {
             throw new Urfa_Exception('Не верная ссылка на услугу', 500);
         }
@@ -244,7 +255,7 @@ class Billing_IndexController extends Zend_Controller_Action
         //Если данные не присутствуют в кэше, то делаем запрос к urfe
 
         $cacheId = $this->cache_basic_account . '_service_' . $slink;
-        if (($service = $this->cache->load($cacheId)) === FALSE) {
+        if (($service = $this->cache->load($cacheId)) === false) {
             //Создаём подключение к urfe
             $urfa = $this->reconnect();
             //получаем информацию о пользователе и сохраняем в кэш
@@ -267,7 +278,7 @@ class Billing_IndexController extends Zend_Controller_Action
     {
         $this->setTitle('Информация о трафике');
 
-        $traffic = NULL;
+        $traffic = null;
         $start_date = strtotime($this->_getParam('startDate', $this->start_day));
         $end_date = strtotime($this->_getParam('endDate', $this->end_day));
 
@@ -283,9 +294,10 @@ class Billing_IndexController extends Zend_Controller_Action
                 switch ($serviceType) {
                     case 1:
                         $cacheId = $this->cache_basic_account . '_traffic_report_' . DRG_Util::getCacheByDate(
-                            $start_date, $end_date
-                        );
-                        if (($traffic = $this->cache->load($cacheId)) === FALSE) {
+                                $start_date,
+                                $end_date
+                            );
+                        if (($traffic = $this->cache->load($cacheId)) === false) {
                             $urfa = $this->reconnect();
                             if ($traffic = $urfa->get_traffic_report($start_date, $end_date)) {
                                 $this->cache->save($traffic, $cacheId);
@@ -296,9 +308,10 @@ class Billing_IndexController extends Zend_Controller_Action
                         break;
                     case 2:
                         $cacheId = $this->cache_basic_account . '_traffic_report_by_date_' . DRG_Util::getCacheByDate(
-                            $start_date, $end_date
-                        );
-                        if (($traffic = $this->cache->load($cacheId)) === FALSE) {
+                                $start_date,
+                                $end_date
+                            );
+                        if (($traffic = $this->cache->load($cacheId)) === false) {
                             $urfa = $this->reconnect();
                             if ($traffic = $urfa->get_traffic_report_by_date($start_date, $end_date)) {
                                 $this->cache->save($traffic, $cacheId);
@@ -309,9 +322,10 @@ class Billing_IndexController extends Zend_Controller_Action
                         break;
                     case 3:
                         $cacheId = $this->cache_basic_account . '_traffic_report_by_ip_' . DRG_Util::getCacheByDate(
-                            $start_date, $end_date
-                        );
-                        if (($traffic = $this->cache->load($cacheId)) === FALSE) {
+                                $start_date,
+                                $end_date
+                            );
+                        if (($traffic = $this->cache->load($cacheId)) === false) {
                             $urfa = $this->reconnect();
                             if ($traffic = $urfa->get_traffic_report_by_ip($start_date, $end_date)) {
                                 $this->cache->save($traffic, $cacheId);
@@ -346,7 +360,7 @@ class Billing_IndexController extends Zend_Controller_Action
                 $cacheId
                     =
                     $this->cache_basic_account . '_service_report_' . DRG_Util::getCacheByDate($start_date, $end_date);
-                if (($service_report = $this->cache->load($cacheId)) === FALSE) {
+                if (($service_report = $this->cache->load($cacheId)) === false) {
                     //Создаём подключение к urfe
                     $urfa = $this->reconnect();
                     //получаем информацию о пользователе и сохраняем в кэш
@@ -371,7 +385,7 @@ class Billing_IndexController extends Zend_Controller_Action
         if ($this->getRequest()->isXmlHttpRequest()) {
             $this->_helper->layout()->disableLayout();
         }
-        $message = NULL;
+        $message = null;
         $this->view->form = new Billing_Form_UserEdit();
 
         if ($this->getRequest()->isPost()) {
@@ -408,7 +422,7 @@ class Billing_IndexController extends Zend_Controller_Action
             if ($this->view->form->isValid($this->getRequest()->getPost())) {
 
                 $cacheId = $this->cache_basic_account . '_messages_' . DRG_Util::getCacheByDate($start_date, $end_date);
-                if (($messages = $this->cache->load($cacheId)) === FALSE) {
+                if (($messages = $this->cache->load($cacheId)) === false) {
                     //Создаём подключение к urfe
                     $urfa = $this->reconnect();
                     //получаем информацию о пользователе и сохраняем в кэш
@@ -445,7 +459,7 @@ class Billing_IndexController extends Zend_Controller_Action
             }
 
             $cacheId = $this->cache_basic_account . '_message_' . $id;
-            if (($message = $this->cache->load($cacheId)) === FALSE) {
+            if (($message = $this->cache->load($cacheId)) === false) {
                 //Создаём подключение к urfe
                 $urfa = $this->reconnect();
                 //получаем информацию о пользователе и сохраняем в кэш
@@ -473,7 +487,7 @@ class Billing_IndexController extends Zend_Controller_Action
         $this->view->form = new Billing_Form_ByDate($start_date, $end_date);
 
         $cacheId = $this->cache_basic_account . '_new_messages_' . DRG_Util::getCacheByDate($start_date, $end_date);
-        if (($new_messages = $this->cache->load($cacheId)) === FALSE) {
+        if (($new_messages = $this->cache->load($cacheId)) === false) {
             //Создаём подключение к urfe
             $urfa = $this->reconnect();
             //получаем информацию о пользователе и сохраняем в кэш
@@ -530,7 +544,7 @@ class Billing_IndexController extends Zend_Controller_Action
         $this->view->form = new Billing_Form_ByDate($start_date, $end_date);
 
         $cacheId = $this->cache_basic_account . '_sent_messages_' . DRG_Util::getCacheByDate($start_date, $end_date);
-        if (($sent_messages = $this->cache->load($cacheId)) === FALSE) {
+        if (($sent_messages = $this->cache->load($cacheId)) === false) {
 
             $urfa = $this->reconnect();
 
@@ -563,7 +577,9 @@ class Billing_IndexController extends Zend_Controller_Action
                 $data = $form->getValues();
 
                 $result = $urfa->changePasswordForCabinet(
-                    $data['old_password'], $data['new_password'], $data['new_password_repeat']
+                    $data['old_password'],
+                    $data['new_password'],
+                    $data['new_password_repeat']
                 );
 
                 if ($result) {
@@ -604,7 +620,10 @@ class Billing_IndexController extends Zend_Controller_Action
                 $data = $form->getValues();
 
                 $result = $urfa->changePassword(
-                    $slink_id, $item_id, $data['old_password'], $data['new_password'],
+                    $slink_id,
+                    $item_id,
+                    $data['old_password'],
+                    $data['new_password'],
                     $data['new_password_repeat']
                 );
                 if ($result) {
@@ -730,7 +749,7 @@ class Billing_IndexController extends Zend_Controller_Action
 
         if (!isset($aid) || !isset($tlink_id)) {
 
-            if (($tarrifs = $this->cache->load($this->cache_basic_account . '_tarrifs')) === FALSE) {
+            if (($tarrifs = $this->cache->load($this->cache_basic_account . '_tarrifs')) === false) {
                 $urfa = $this->reconnect();
 
                 //получаем информацию о сервисах и сохраняем в кэш
@@ -802,7 +821,7 @@ class Billing_IndexController extends Zend_Controller_Action
         $this->setTitle('История смены тарифов');
 
         $cacheId = $this->cache_basic_account . '_tariff_history';
-        if (($tariffHistory = $this->cache->load($cacheId)) === FALSE) {
+        if (($tariffHistory = $this->cache->load($cacheId)) === false) {
 
             $urfa = $this->reconnect();
 
@@ -834,7 +853,7 @@ class Billing_IndexController extends Zend_Controller_Action
                 //Проверяем наличие кэша
                 //Если данные не присутствуют в кэше, то делаем запрос к urfe
                 $cacheId = $this->cache_basic_account . '_invoices' . DRG_Util::getCacheByDate($start_date, $end_date);
-                if ((($invoices = $this->cache->load($cacheId)) === FALSE)) {
+                if ((($invoices = $this->cache->load($cacheId)) === false)) {
                     //Создаём подключение к urfe
                     $urfa = $this->reconnect();
 
@@ -866,7 +885,7 @@ class Billing_IndexController extends Zend_Controller_Action
         //Проверяем наличие кэша
         //Если данные не присутствуют в кэше, то делаем запрос к urfe
         $cacheId = $this->cache_basic_account . '_invoiceDocument' . $id;
-        if ((($invoiceDocument = $this->cache->load($cacheId)) === FALSE)) {
+        if ((($invoiceDocument = $this->cache->load($cacheId)) === false)) {
             //Создаём подключение к urfe
             $urfa = $this->reconnect();
 
@@ -900,7 +919,7 @@ class Billing_IndexController extends Zend_Controller_Action
                 //Если данные не присутствуют в кэше, то делаем запрос к urfe
                 $cacheId
                     = $this->cache_basic_account . '_blockingReport' . DRG_Util::getCacheByDate($start_date, $end_date);
-                if ((($blockingReport = $this->cache->load($cacheId)) === FALSE)) {
+                if ((($blockingReport = $this->cache->load($cacheId)) === false)) {
                     //Создаём подключение к urfe
                     $urfa = $this->reconnect();
 
@@ -934,7 +953,7 @@ class Billing_IndexController extends Zend_Controller_Action
                 //Проверяем наличие кэша
                 //Если данные не присутствуют в кэше, то делаем запрос к urfe
                 $cacheId = $this->cache_basic_account . '_DhsReport' . DRG_Util::getCacheByDate($start_date, $end_date);
-                if ((($DHSReport = $this->cache->load($cacheId)) === FALSE)) {
+                if ((($DHSReport = $this->cache->load($cacheId)) === false)) {
                     //Создаём подключение к urfe
                     $urfa = $this->reconnect();
 
@@ -966,7 +985,9 @@ class Billing_IndexController extends Zend_Controller_Action
         if ($this->getRequest()->isPost()) {
             if ($form->isValid($this->getRequest()->getPost())) {
                 $result = $urfa->cardPayment(
-                    $form->getValue('account'), $form->getValue('card'), $form->getValue('pin')
+                    $form->getValue('account'),
+                    $form->getValue('card'),
+                    $form->getValue('pin')
                 );
                 if ($result['state'] == 0) {
                     $this->_helper->flashMessenger->addMessage(
@@ -1000,7 +1021,7 @@ class Billing_IndexController extends Zend_Controller_Action
                 $text = str_replace("@SUM@", $form->getValue('sum'), $text);
 
                 $this->_helper->layout()->disableLayout();
-                $this->_helper->viewRenderer->setNoRender(TRUE);
+                $this->_helper->viewRenderer->setNoRender(true);
                 echo $text;
             }
         }
@@ -1013,7 +1034,7 @@ class Billing_IndexController extends Zend_Controller_Action
 
         $this->setTitle('Услуги по подписке');
 
-        $this->_helper->viewRenderer->setNoRender(TRUE);
+        $this->_helper->viewRenderer->setNoRender(true);
 
         $urfa = $this->reconnect();
         $user = $urfa->getUserInfo();
@@ -1042,6 +1063,7 @@ class Billing_IndexController extends Zend_Controller_Action
             }
             if (!$api || !$port) {
                 echo "Не удается определить адрес API ядра UTM5. <ul><li>Пожалуйста, укажите его вручную в файле billing.ini, переменная rentsoft.api_addr, в формате: \"хост:порт\". Порт должен быть доступен из интернета и вести на машину с ядром UTM5.</li><li>Не забудьте также указать директивы nxt_v2_bind_host и nxt_v2_bind_port в /netup/utm5/utm5.cfg на машине с ядром биллинга.</li></ul>";
+
                 return;
             }
         }
@@ -1056,7 +1078,7 @@ class Billing_IndexController extends Zend_Controller_Action
                 $user['basic_account'],
                 $api,
                 $this->config->rentsoft->secret,
-                NULL,
+                null,
                 '880px'
             );
         }
@@ -1083,7 +1105,7 @@ class Billing_IndexController extends Zend_Controller_Action
                 $cacheId
                     =
                     $this->cache_basic_account . '_telephonyReport' . DRG_Util::getCacheByDate($start_date, $end_date);
-                if ((($telephony = $this->cache->load($cacheId)) === FALSE)) {
+                if ((($telephony = $this->cache->load($cacheId)) === false)) {
                     //Создаём подключение к urfe
                     $urfa = $this->reconnect();
 
@@ -1138,7 +1160,7 @@ class Billing_IndexController extends Zend_Controller_Action
 
         $slink_id = $this->_getParam('slink_id');
 
-        if(isset($slink_id)){
+        if (isset($slink_id)) {
             $slink_id = (int)$slink_id;
         } else {
             $this->_helper->flashMessenger->addMessage(
@@ -1148,17 +1170,17 @@ class Billing_IndexController extends Zend_Controller_Action
         }
 
         $urfa = $this->reconnect();
-        $this->view->turboModeInfo =  $urfa->getTurboModeInfo($slink_id);
+        $this->view->turboModeInfo = $urfa->getTurboModeInfo($slink_id);
 
         $this->view->form = new Billing_Form_TurboMode();
 
         if ($this->getRequest()->isPost()) {
             if ($this->view->form->isValid($this->getRequest()->getPost())) {
-                if($urfa->setTurboMode($slink_id)){
+                if ($urfa->setTurboMode($slink_id)) {
                     $this->_helper->flashMessenger->addMessage(
                         array('success' => 'Турбо режим установлен')
                     );
-                }else{
+                } else {
                     $this->_helper->flashMessenger->addMessage(
                         array('danger' => 'При установке турбо режима произошла ошибка')
                     );
@@ -1186,8 +1208,11 @@ class Billing_IndexController extends Zend_Controller_Action
             if ($this->view->form->isValid($this->getRequest()->getPost())) {
                 //Проверяем наличие кэша
                 //Если данные не присутствуют в кэше, то делаем запрос к urfe
-                $cacheId = $this->cache_basic_account . '_otherChargesReport' . DRG_Util::getCacheByDate($start_date, $end_date);
-                if ((($otherCharges = $this->cache->load($cacheId)) === FALSE)) {
+                $cacheId = $this->cache_basic_account . '_otherChargesReport' . DRG_Util::getCacheByDate(
+                        $start_date,
+                        $end_date
+                    );
+                if ((($otherCharges = $this->cache->load($cacheId)) === false)) {
                     //Создаём подключение к urfe
                     $urfa = $this->reconnect();
 

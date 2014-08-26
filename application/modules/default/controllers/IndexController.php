@@ -19,6 +19,14 @@ class Default_IndexController extends Zend_Controller_Action
         $this->view->title = "";
         $this->view->headTitle($this->view->title, 'PREPEND');
         $uri = $this->_getParam('return_uri','/user/');
+        $person_type = $this->_getParam('person_type');
+        $rs_uri = $this->_getParam('rs_uri');
+        if(!is_null($person_type)){
+            $uri .='?person_type='.urlencode($person_type);
+        }
+        if(!is_null($rs_uri)){
+            $uri .='&rs_uri='.urlencode($rs_uri);
+        }
 
 
         if ($this->view->identity != FALSE) {
