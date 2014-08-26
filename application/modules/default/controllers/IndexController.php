@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author    Siomkin Alexandr <mail@mg7.by>
  * @link      http://www.jext.biz/
@@ -6,7 +7,6 @@
  * @license   GNU General Public License, version 2:
  *            http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
-
 class Default_IndexController extends Zend_Controller_Action
 {
     public function init()
@@ -18,10 +18,18 @@ class Default_IndexController extends Zend_Controller_Action
     {
         $this->view->title = "";
         $this->view->headTitle($this->view->title, 'PREPEND');
-        $uri = $this->_getParam('return_uri','/user/');
+        $uri = $this->_getParam('return_uri', '/user/');
+        $person_type = $this->_getParam('person_type');
+        $rs_uri = $this->_getParam('rs_uri');
+        if (!is_null($person_type)) {
+            $uri .= '?person_type=' . urlencode($person_type);
+        }
+        if (!is_null($rs_uri)) {
+            $uri .= '&rs_uri=' . urlencode($rs_uri);
+        }
 
 
-        if ($this->view->identity != FALSE) {
+        if ($this->view->identity != false) {
             $this->redirect('/user/');
         }
 
@@ -47,8 +55,8 @@ class Default_IndexController extends Zend_Controller_Action
         }
         $this->view->form = $form;
 
-        if(!empty($this->config->notice)){
-            $this->view->notice =  $this->config->notice;
+        if (!empty($this->config->notice)) {
+            $this->view->notice = $this->config->notice;
         }
 
     }

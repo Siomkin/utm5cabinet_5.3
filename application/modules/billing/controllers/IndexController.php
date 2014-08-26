@@ -20,12 +20,21 @@ class Billing_IndexController extends Zend_Controller_Action
 
     public function init()
     {
-        if ($this->view->identity == FALSE) {
+        if ($this->view->identity == false) {
             $this->_helper->flashMessenger->addMessage(
                 array('error' => 'Вам необходимо авторизоваться')
             );
+            $uri = '';
+            $person_type = $this->_getParam('person_type');
+            $rs_uri = $this->_getParam('rs_uri');
 
-            $this->redirect('/?return_uri=' . $this->view->url());
+            if (!is_null($person_type)) {
+                $uri = '?person_type=' . urlencode($person_type);
+            }
+            if (!is_null($rs_uri)) {
+                $uri .= '&rs_uri=' . urlencode($rs_uri);
+            }
+            $this->redirect('/?return_uri=' . $this->view->url() . $uri);
         }
 
         $this->config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/billing.ini', 'app');
