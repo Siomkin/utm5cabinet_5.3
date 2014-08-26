@@ -283,7 +283,7 @@ class Urfa_Client
                 $tmp['payment_method'] = $this->urfa->get_string();
                 $tmp['comment'] = $this->urfa->get_string();
                 $account_report[$i] = $tmp;
-           }
+            }
             $report[$j] = $account_report;
         }
         $this->urfa->finish();
@@ -662,7 +662,7 @@ class Urfa_Client
 
         $service = array();
 
-       // $this->urfa->call(-16420);
+        // $this->urfa->call(-16420);
         $this->urfa->call(-0x404a);
 
         $this->urfa->put_int($slink_id);
@@ -713,7 +713,7 @@ class Urfa_Client
 
                 $tmp['id'] = $this->urfa->get_int();
                 //$tmp['ip'] = Urfa_Resolve::ip2string($this->urfa->get_int());
-               // $tmp['mask'] = Urfa_Resolve::ip2string($this->urfa->get_int());
+                // $tmp['mask'] = Urfa_Resolve::ip2string($this->urfa->get_int());
                 $tmp['ip'] = $this->urfa->get_ip_address()->toString();
                 $tmp['mask'] = $this->urfa->get_int();
                 $tmp['login'] = $this->urfa->get_string();
@@ -1229,7 +1229,7 @@ class Urfa_Client
             $tmp['slink_id'] = $this->urfa->get_int();
             $tmp['start_time'] = Urfa_Resolve::getDateFromTimestamp($this->urfa->get_int());
             $tmp['end_time'] = Urfa_Resolve::getDateFromTimestamp($this->urfa->get_int());
-           // $tmp['framed_ip'] = Urfa_Resolve::ip2string($this->urfa->get_int());
+            // $tmp['framed_ip'] = Urfa_Resolve::ip2string($this->urfa->get_int());
             $tmp['framed_ip'] = $this->urfa->get_ip_address()->toString();
             $tmp['framed_ip6'] = $this->urfa->get_ip_address()->toString();
 
@@ -1240,7 +1240,7 @@ class Urfa_Client
             $tmp['username'] = $this->urfa->get_string();
             $tmp['service_type'] = Urfa_Resolve::resolveServiceType($this->urfa->get_int());
             $tmp['framed_protocol'] = $this->urfa->get_int();
-           // $tmp['nas_ip'] = Urfa_Resolve::ip2string($this->urfa->get_int());
+            // $tmp['nas_ip'] = Urfa_Resolve::ip2string($this->urfa->get_int());
             $tmp['nas_ip'] = $this->urfa->get_ip_address()->toString();
             $tmp['nas_id'] = $this->urfa->get_string();
             $tmp['acct_status_type'] = $this->urfa->get_int();
@@ -1452,5 +1452,20 @@ class Urfa_Client
         return $report;
     }
 
-
+    public function getBurntPayment()
+    {
+        $bp = false;
+        $this->urfa->call(-16425);
+        $this->urfa->send();
+        $is_exist = $this->urfa->get_int();
+        if ($is_exist > 0) {
+            $bp['first_payment_date'] = Urfa_Resolve::getDateFromTimestamp($this->urfa->get_int());
+            $bp['last_payment_date'] = Urfa_Resolve::getDateFromTimestamp($this->urfa->get_int());
+            $bp['time_to_burn'] = Urfa_Resolve::getDateFromTimestamp($this->urfa->get_int());
+            $bp['amount'] = Urfa_Resolve::roundDouble($this->urfa->get_double());
+            $bp['discounted'] = $this->urfa->get_double();
+        }
+        $this->urfa->finish();
+        return $bp;
+    }
 }

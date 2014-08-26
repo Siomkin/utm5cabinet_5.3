@@ -40,6 +40,31 @@
     <?php else : ?>
         <?= $this->bootAlert(array('success' => 'Платежи отсутствуют')) ?>
     <?php endif; ?>
+
+    <?php if (is_array($this->burntPaymentData)): ?>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Дата первого платежа</th>
+                <th>Дата последнего платежа</th>
+                <th>Время сгорания</th>
+                <th>Сумма</th>
+                <th>Списано</th>
+            </tr>
+            </thead>
+            <tbody>
+                    <tr>
+                        <td><?= $this->burntPaymentData['first_payment_date']?></td>
+                        <td><?= $this->burntPaymentData['last_payment_date']?></td>
+                        <td><?= $this->burntPaymentData['time_to_burn']?></td>
+                        <td><?= $this->burntPaymentData['amount'];?></td>
+                        <td><?= $this->burntPaymentData['discounted']?></td>
+                    </tr>
+            </tbody>
+        </table>
+    <?php endif; ?>
+
+
 <?php else : ?>
     <?= $this->bootAlert(array('info' => 'Выберите период для построения отчёта')) ?>
 <?php endif; ?>
