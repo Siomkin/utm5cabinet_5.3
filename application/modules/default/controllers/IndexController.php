@@ -6,7 +6,6 @@
  * @license   GNU General Public License, version 2:
  *            http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
-
 class Default_IndexController extends Zend_Controller_Action
 {
     public function init()
@@ -55,8 +54,8 @@ class Default_IndexController extends Zend_Controller_Action
         }
         $this->view->form = $form;
 
-        if(!empty($this->config->notice)){
-            $this->view->notice =  $this->config->notice;
+        if (!empty($this->config->notice)) {
+            $this->view->notice = $this->config->notice;
         }
 
     }
