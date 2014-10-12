@@ -654,7 +654,8 @@ class Billing_IndexController extends Zend_Controller_Action
 
         $this->view->promiseCreditInfo = $urfa->getPromisePaymentInfo($aid);
 
-        $form = new Billing_Form_Credit($this->view->promiseCreditInfo['value'], $this->view->promiseCreditInfo['flags']);
+        $form
+            = new Billing_Form_Credit($this->view->promiseCreditInfo['value'], $this->view->promiseCreditInfo['flags']);
 
         if ($this->view->promiseCreditInfo['can_change'] && $this->getRequest()->isPost()) {
             if ($form->isValid($this->getRequest()->getPost())) {
@@ -693,23 +694,24 @@ class Billing_IndexController extends Zend_Controller_Action
                 if ($startDate < time() + 3600) {
                     $startDate = time() + 3600;
                 }
-
+               // $startDate = time();
                 $act = $this->_getParam('act');
 
                 if ($act == 1) {
 
                     if ($startDate > $endDate) {
-                        $result = -1;
+                        //
+                        $result = 'time_error';
                     } else {
                         $result = $urfa->setBlock($startDate, $endDate, $aid);
                     }
-                    if ($result == 1) {
-                        $this->_helper->flashMessenger->addMessage(
-                            array('success' => 'Добровольная блокировка успешно установлена')
-                        );
-                    } elseif ($result == -1) {
+                    if ($result == 'time_error') {
                         $this->_helper->flashMessenger->addMessage(
                             array('danger' => 'Не верно заданы даты для установки добровольной блокировки')
+                        );
+                    } elseif ($result > 0) {
+                        $this->_helper->flashMessenger->addMessage(
+                            array('success' => 'Добровольная блокировка успешно установлена')
                         );
                     } else {
                         $this->_helper->flashMessenger->addMessage(
@@ -1126,6 +1128,7 @@ class Billing_IndexController extends Zend_Controller_Action
 
     /**
      * Возврат заблокированных средств
+     *
      * @since 5.2.1-009
      */
     public function repayAction()
@@ -1152,6 +1155,7 @@ class Billing_IndexController extends Zend_Controller_Action
 
     /**
      * Турборежим
+     *
      * @since 5.2.1-009
      */
     public function turboModeAction()
@@ -1193,6 +1197,7 @@ class Billing_IndexController extends Zend_Controller_Action
 
     /**
      * Экшен, обеспечивающий вывод информации о прочих списаниях
+     *
      * @since 5.2.1-009
      */
     public function otherChargesReportAction()
@@ -1227,6 +1232,63 @@ class Billing_IndexController extends Zend_Controller_Action
             }
         }
 
+    }
+
+    public function testAction()
+    {
+        // Old Client
+        /*     $urfa_admin = new Urfaphp_URFAClientAdmin(
+                 $this->config->urfaphp->login ,
+                 $this->config->urfaphp->password,
+                 $this->config->urfaphp->host,
+                 $this->config->urfaphp->port, true, true);
+        // Zend_Debug::dump($urfa_admin);
+
+             $urfa_admin->rpcf_remove_user_from_group('1000006','250');
+
+             $urfa_admin = new Urfaphp_URFAClientAdmin(
+                 $this->config->urfaphp->login ,
+                 $this->config->urfaphp->password,
+                 $this->config->urfaphp->host,
+                 $this->config->urfaphp->port, true, true);
+
+             $urfa_admin->rpcf_add_group_to_user('1000006','300');*/
+
+        echo 'UserInfo: User Function';
+
+        $urfa = $this->reconnect();
+            $userInfo = $urfa->getUserInfo();
+
+        Zend_Debug::dump($userInfo);
+
+        ///-------------------------------------------------------
+    /*
+        $urfaAdmin = new Urfa_Admin();
+            $urfaAdmin->rpcf_remove_user_from_group('1000006','250');
+        $urfaAdmin->close_session();
+    */
+
+        ///--------------------------------------------------------
+    /*
+        $urfaAdmin = new Urfa_Admin();
+            $urfaAdmin->rpcf_add_group_to_user('1000006','250');
+        $urfaAdmin->close_session();
+
+        // Other sction
+        $urfaAdmin = new Urfa_Admin();
+            $urfaAdmin->rpcf_add_group_to_user('1000006','300');
+        $urfaAdmin->close_session();
+    */
+
+        ///--------------------------------------------------------
+        echo 'Groups: Admin Function';
+
+        $urfaAdmin = new Urfa_Admin();
+            $data = $urfaAdmin->rpcf_get_groups_for_user($userInfo['basic_account']);
+        $urfaAdmin->close_session();
+
+        Zend_Debug::dump($data);
+        ///--------------------------------------------------------
     }
 
 }

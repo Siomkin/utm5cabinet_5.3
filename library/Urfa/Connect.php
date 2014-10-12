@@ -27,6 +27,7 @@ define("RSR_SSL_NONE", 0);
 define("RSR_SSL_TLS1", 1);
 define("RSR_SSL_SSL3", 2);
 define("RSR_SSL_CERT", 3);
+define("RSR_SSL_SSL3_ADMIN", 4);
 
 define("URFA_STATE_NONE", 0);
 define("URFA_STATE_INPUT", 1);
@@ -43,15 +44,17 @@ class Urfa_Connect
     private $userType = RUT_SERVICE;
     private $sslType = RSR_SSL_NONE;
     private $state = URFA_STATE_NONE;
-    private $enableDebug = FALSE;
+    private $enableDebug = TRUE;
+    private $admin = false;
 
 
     /**
      * Создаём объект Urfa_Client
+     * @param bool $admin
      */
-    function __construct()
+    function __construct($admin = false)
     {
-
+        $this->admin = $admin;
     }
 
     function __destruct()
@@ -71,7 +74,7 @@ class Urfa_Connect
     {
         $packet = new Urfa_Packet();
         if ($packet->recvPacket($this->sock) == FALSE) {
-            $this->logger("auth: recvPacket failed");
+            $this->logger("auth: recvPacket failed 1");
             return FALSE;
         }
         if ($packet->getCode() != RC_SESSION_INIT) {
@@ -115,7 +118,7 @@ class Urfa_Connect
         }
         $packet->clear();
         if ($packet->recvPacket($this->sock) == FALSE) {
-            $this->logger("auth: recvPacket failed");
+            $this->logger("auth: recvPacket failed 2");
             return FALSE;
         }
         if ($packet->getCode() != RC_ACCESS_ACCEPT) {
@@ -124,7 +127,7 @@ class Urfa_Connect
         $attr = $packet->find(RA_SSL_REQUEST);
         if ($attr != FALSE) {
             $tmp = unpack('Nval', $attr['data']);
-            if ($tmp['val'] == RSR_SSL_SSL3) {
+            if ($tmp['val'] == RSR_SSL_SSL3 || $tmp['val'] == RSR_SSL_SSL3_ADMIN) {
                 $this->sock->enable_crypto();
             }
         }
@@ -136,7 +139,11 @@ class Urfa_Connect
 
     function enable_ssl3()
     {
-        $this->sslType = RSR_SSL_SSL3;
+        if ($this->admin) {
+            $this->sslType = RSR_SSL_SSL3_ADMIN;
+        } else {
+            $this->sslType = RSR_SSL_SSL3;
+        }
     }
 
     function get_key()
@@ -148,7 +155,8 @@ class Urfa_Connect
      * Создаём подключение
      * @param $host
      * @param $port
-     *
+     * @param bool $ssl
+     * @param bool $admin
      * @return bool
      */
     function connect($host, $port, $ssl = TRUE)
@@ -158,7 +166,7 @@ class Urfa_Connect
         }
         $this->host = $host;
         $this->port = $port;
-        $this->sock = new Urfa_Socket();
+        $this->sock = new Urfa_Socket($this->admin);
         if ($this->sock->open($host, $port) === FALSE) {
             return FALSE;
         }
@@ -181,8 +189,7 @@ class Urfa_Connect
         $this->session_id = FALSE;
         if ($service) {
             $this->userType = RUT_SERVICE;
-        }
-        else {
+        } else {
             $this->userType = RUT_USER;
         }
         return $this->authorize();
@@ -215,8 +222,7 @@ class Urfa_Connect
         $packet->setCode(RC_SESSION_END);
         if (!$drop) {
             $data = pack('N', 1);
-        }
-        else {
+        } else {
             $data = pack('N', 6);
         }
         $packet->putAttr(RA_END, $data);
@@ -258,7 +264,7 @@ class Urfa_Connect
         }
         $packet->clear();
         if ($packet->recvPacket($this->sock) == FALSE) {
-            $this->logger("call: recvPacket failed");
+            $this->logger("call: recvPacket failed 3");
             return FALSE;
         }
         if ($packet->getCode() != RC_SESSION_DATA) {
@@ -343,7 +349,7 @@ class Urfa_Connect
         if ($this->packet == FALSE) {
             $this->packet = new Urfa_Packet;
             if ($this->packet->recvPacket($this->sock) == FALSE) {
-                $this->logger("get: recvPacket failed");
+                $this->logger("get: recvPacket failed 4");
                 return FALSE;
             }
             if ($this->packet->getCode() != RC_SESSION_DATA) {
@@ -406,7 +412,8 @@ class Urfa_Connect
         return $this->put($s);
     }
 
-    function put_ip_address($addr){
+    function put_ip_address($addr)
+    {
         return $this->put($addr->toRaw());
 
     }
@@ -463,9 +470,10 @@ class Urfa_Connect
         return $attr['data'];
     }
 
-    function get_ip_address(){
+    function get_ip_address()
+    {
         $attr = $this->get();
-        if($attr == false)
+        if ($attr == false)
             return false;
         $data = unpack("C*", $attr["data"]);
         return new Urfa_Ipaddress($data[0], array_slice($data, 1));
