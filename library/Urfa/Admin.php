@@ -72,6 +72,8 @@ class Urfa_Admin
         $this->urfa->put_int($user_id);
         $this->urfa->put_int($group_id);
         $this->urfa->send();
+
+        $this->urfa->finish();
     }
 
     /**
@@ -91,8 +93,25 @@ class Urfa_Admin
         $this->urfa->put_int($user_id);
         $this->urfa->put_int($group_id);
         $this->urfa->send();
+
+        $this->urfa->finish();
     }
 
+
+    /*
+    <function name="rpcf_get_groups_for_user" id="0x2550">
+        <input>
+          <integer name="user_id" />
+        </input>
+        <output>
+          <integer name="groups_size" />
+          <for name="i" from="0" count="groups_size">
+            <integer name="group_id" array_index="i" />
+            <string name="group_name" array_index="i" />
+          </for>
+        </output>
+    </function>
+     */
     /**
      * Получение списка групп пользователя
      * @param $user_id
@@ -109,14 +128,148 @@ class Urfa_Admin
         $this->urfa->put_int($user_id);
         $this->urfa->send();
         $count = $this->urfa->get_int();
-        $ret['count'] = $count;
+        $ret['groups_size'] = $count;
         for ($i = 0; $i < $count; $i++) {
             $group['group_id'] = $this->urfa->get_int();
             $group['group_name'] = $this->urfa->get_string();
             $ret['group'][] = $group;
         }
+
+        $this->urfa->finish();
+
         return $ret;
     }
 
+    /*
+    <function name="rpcf_liburfa_list" id="0x0040">
+        <input/>
+        <output>
+          <integer name="size" />
+          <for name="i" from="0" count="size">
+            <string name="module" array_index="i" />
+            <string name="version" array_index="i" />
+            <string name="path" array_index="i" />
+          </for>
+        </output>
+      </function>
+    */
 
+    /**
+     * @return array|bool
+     */
+    function rpcf_liburfa_list()
+    { //0x0040
+        $ret = array();
+        if (!$this->urfa->call(0x0040)) {
+            print "Error calling function " . __FUNCTION__ . "\n";
+            return FALSE;
+        }
+        $this->urfa->send();
+        $size = $this->urfa->get_int();
+        $ret['size'] = $size;
+        for ($i = 0; $i < $size; $i++) {
+            $list['module'] = $this->urfa->get_string();
+            $list['version'] = $this->urfa->get_string();
+            $list['path'] = $this->urfa->get_string();
+            $ret['list'][] = $list;
+        }
+
+        $this->urfa->finish();
+
+        return $ret;
+    }
+
+    /*
+    <function name="rpcf_liburfa_symtab" id="0x0044">
+        <input/>
+        <output>
+            <integer name="size" />
+            <for name="i" from="0" count="size">
+                <integer name="id" array_index="i" />
+                <string name="name" array_index="i" />
+                <string name="module" array_index="i" />
+            </for>
+        </output>
+    </function>
+    */
+
+    /**
+     * @return array|bool
+     */
+    function rpcf_liburfa_symtab()
+    { //0x0044
+        $ret = array();
+        if (!$this->urfa->call(0x0044)) {
+            print "Error calling function " . __FUNCTION__ . "\n";
+            return FALSE;
+        }
+        $this->urfa->send();
+        $size = $this->urfa->get_int();
+        $ret['size'] = $size;
+        for ($i = 0; $i < $size; $i++) {
+            $list['id'] = $this->urfa->get_int();
+            $list['name'] = $this->urfa->get_string();
+            $list['module'] = $this->urfa->get_string();
+            $ret['symtab'][] = $list;
+        }
+
+        $this->urfa->finish();
+
+        return $ret;
+    }
+
+    /*
+    <function name="rpcf_core_version" id="0x0045">
+        <input/>
+        <output>
+            <string name="core_version"/>
+        </output>
+    </function>
+    */
+
+    /**
+     * Версия биллинга (Например: 5)
+     * @return string
+     */
+    function rpcf_core_version()
+    { //0x0045
+
+        if (!$this->urfa->call(0x0045)) {
+            print "Error calling function " . __FUNCTION__ . "\n";
+            return FALSE;
+        }
+        $this->urfa->send();
+        $ret = $this->urfa->get_string();
+
+        $this->urfa->finish();
+
+        return $ret;
+    }
+
+    /*
+    <function name="rpcf_core_build" id="0x0046">
+        <input/>
+        <output>
+            <string name="build" />
+        </output>
+    </function>
+     */
+
+    /**
+     * Версия билда (Например: 002)
+     * @return string
+     */
+    function rpcf_core_build()
+    { //0x0046
+        if (!$this->urfa->call(0x0046)) {
+            print "Error calling function " . __FUNCTION__ . "\n";
+            return FALSE;
+        }
+        $this->urfa->send();
+        $ret = $this->urfa->get_string();
+
+        $this->urfa->finish();
+
+        return $ret;
+    }
 }

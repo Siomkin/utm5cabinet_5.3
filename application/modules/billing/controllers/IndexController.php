@@ -1272,23 +1272,30 @@ class Billing_IndexController extends Zend_Controller_Action
     /*
         $urfaAdmin = new Urfa_Admin();
             $urfaAdmin->rpcf_add_group_to_user('1000006','250');
-        $urfaAdmin->close_session();
-
-        // Other sction
-        $urfaAdmin = new Urfa_Admin();
             $urfaAdmin->rpcf_add_group_to_user('1000006','300');
         $urfaAdmin->close_session();
     */
 
+        $urfaAdmin = new Urfa_Admin();
+
+        ///--------------------------------------------------------
+        echo 'Version: Admin Function<br/>';
+
+        $version = $urfaAdmin->rpcf_core_version();
+        $build = $urfaAdmin->rpcf_core_build();
+
+        echo 'Версия: '.$version.'-'.$build.'<br/><br/>';
+
         ///--------------------------------------------------------
         echo 'Groups: Admin Function';
 
-        $urfaAdmin = new Urfa_Admin();
-            $data = $urfaAdmin->rpcf_get_groups_for_user($userInfo['basic_account']);
-        $urfaAdmin->close_session();
+        $data = $urfaAdmin->rpcf_get_groups_for_user($userInfo['basic_account']);
 
         Zend_Debug::dump($data);
         ///--------------------------------------------------------
+
+
+
     }
 
 }
