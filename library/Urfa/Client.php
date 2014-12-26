@@ -1207,7 +1207,7 @@ class Urfa_Client
     {
         $report = array();
 
-        $this->urfa->call(-16407);
+        $this->urfa->call(-16464);
         $this->urfa->put_int((int)$startDay);
         $this->urfa->put_int((int)$endDay);
 
@@ -1242,6 +1242,10 @@ class Urfa_Client
             $tmp['output_pack'] = $this->urfa->get_long();
             $tmp['output_bytes'] = $this->urfa->get_long();
             $tmp['session_time'] = Urfa_Resolve::getTimeFromSec($this->urfa->get_long());
+
+            $tmp['calling_station_id'] = $this->urfa->get_string();
+            $tmp['called_station_id'] = $this->urfa->get_string();
+
 
             $cost = 0.0;
 
