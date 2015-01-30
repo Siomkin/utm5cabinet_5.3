@@ -58,7 +58,7 @@ abstract class DRG_Model
      */
     public function save()
     {
-        $this->_row->save();
+        return $this->_row->save();
     }
 
     /**
@@ -66,7 +66,7 @@ abstract class DRG_Model
      */
     public function delete()
     {
-        $this->_row->delete();
+        return $this->_row->delete();
     }
 
     /**
