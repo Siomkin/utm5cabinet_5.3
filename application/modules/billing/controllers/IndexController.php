@@ -123,7 +123,7 @@ class Billing_IndexController extends Zend_Controller_Action
                 $this->cache->save($accounts, $this->cache_basic_account . '_accounts');
             }
             if ($turbo = $urfa->getTurboMode()) {
-                $this->cache->save($accounts, $this->cache_basic_account . '_turbo');
+                $this->cache->save($turbo, $this->cache_basic_account . '_turbo');
             }
             unset($urfa);
         }
