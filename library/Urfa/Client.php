@@ -969,7 +969,10 @@ class Urfa_Client
      */
     public function changePassword($slink_id, $item_id, $old_password, $new_password, $new_password_repeat)
     {
-        $this->urfa->call(-16421);
+       // $this->urfa->call(-16421);
+
+        // c upd16
+        $this->urfa->call(-17154);
         $this->urfa->put_int((int)$slink_id);
         $this->urfa->put_int((int)$item_id);
         $this->urfa->put_string((string)$old_password);
