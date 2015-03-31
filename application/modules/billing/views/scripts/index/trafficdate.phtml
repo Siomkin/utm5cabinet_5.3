@@ -18,7 +18,7 @@
                 <tr>
                     <td><?=  $traffic['date']?></td>
                     <td><?=  $traffic['tclass_name']?></td>
-                    <td><?=  $traffic['mbytes']?></td>
+                    <td><?=  number_format($traffic['mbytes'],2)?></td>
                     <td><?= $traffic['base_cost'];?></td>
                     <td><?= $traffic['discount']?></td>
                     <?php $summa+=$traffic['discount'];?>
