@@ -604,8 +604,9 @@ class Billing_IndexController extends Zend_Controller_Action
 
         $slink_id = $this->_getParam('slink_id');
         $item_id = $this->_getParam('item_id');
+        $login = $this->_getParam('login');
 
-        if (!isset($slink_id) || !isset($item_id)) {
+        if (!isset($slink_id) || !isset($item_id) || !isset($login)) {
             throw new Urfa_Exception('Не верно указаны параметры тарифа для изменения пароля', 500);
         }
 
@@ -622,6 +623,7 @@ class Billing_IndexController extends Zend_Controller_Action
                 $result = $urfa->changePassword(
                     $slink_id,
                     $item_id,
+                    $login,
                     $data['old_password'],
                     $data['new_password'],
                     $data['new_password_repeat']

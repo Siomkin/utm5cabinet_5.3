@@ -709,7 +709,7 @@ class Urfa_Client
                 $tmp['mask'] = $this->urfa->get_int();
                 $tmp['login'] = $this->urfa->get_string();
                 //$tmp['link'] = getLinkToServicePass($this->slink_id, $tmp['id'], langGet("change_password"));
-                $tmp['link'] = Urfa_Resolve::getLinkToServicePass($slink_id, $tmp['id'], 'Изменить пароль');
+                $tmp['link'] = Urfa_Resolve::getLinkToServicePass($slink_id, $tmp['id'], 'Изменить пароль', $tmp['login']);
                 $ip_groups[$i] = $tmp;
             }
             $report['ip_groups'] = $ip_groups;
@@ -967,7 +967,7 @@ class Urfa_Client
      *
      * @return bool
      */
-    public function changePassword($slink_id, $item_id, $old_password, $new_password, $new_password_repeat)
+    public function changePassword($slink_id, $item_id,$login, $old_password, $new_password, $new_password_repeat)
     {
        // $this->urfa->call(-16421);
 
@@ -975,6 +975,7 @@ class Urfa_Client
         $this->urfa->call(-17154);
         $this->urfa->put_int((int)$slink_id);
         $this->urfa->put_int((int)$item_id);
+        $this->urfa->put_string((string)$login);
         $this->urfa->put_string((string)$old_password);
         $this->urfa->put_string((string)$new_password);
         $this->urfa->put_string((string)$new_password_repeat);
