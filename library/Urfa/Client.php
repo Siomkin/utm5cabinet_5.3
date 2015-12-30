@@ -6,10 +6,10 @@ class Urfa_Client
 
     protected $config;
 
-    function __construct($host = NULL, $port = NULL, $ssl = TRUE)
+    function __construct($host = null, $port = null, $ssl = true)
     {
         if (is_null($host) || is_null($port)) {
-            $this->config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/billing.ini', 'app');
+            $this->config = new Zend_Config_Ini(APPLICATION_PATH.'/configs/billing.ini', 'app');
             $host = $this->config->urfaphp->host;
             $port = $this->config->urfaphp->port;
         }
@@ -29,7 +29,7 @@ class Urfa_Client
      * @return array|bool
      * @throws Urfa_Exception
      */
-    public function login($login, $password, $service = TRUE, $server = NULL)
+    public function login($login, $password, $service = true, $server = null)
     {
         if (is_null($server)) {
             $server = $_SERVER['REMOTE_ADDR'];
@@ -37,7 +37,7 @@ class Urfa_Client
         if (!$server) {
             throw new Urfa_Exception('Не возможно получить ваш IP адрес', 500);
         }
-        if ($this->urfa->open_session($login, $password, $service, $server) != FALSE && $this->urfa->call(-0x4052)
+        if ($this->urfa->open_session($login, $password, $service, $server) != false && $this->urfa->call(-0x4052)
             && $this->urfa->send()
         ) {
 
@@ -48,7 +48,7 @@ class Urfa_Client
 
             return $data;
         } else {
-            return FALSE;
+            return false;
         }
     }
 
@@ -60,12 +60,13 @@ class Urfa_Client
      *
      * @return bool
      */
-    public function open_session($login, $password, $service = TRUE, $client_ip = FALSE)
+    public function open_session($login, $password, $service = true, $client_ip = false)
     {
         $open_session = $this->urfa->open_session($login, $password, $service, $client_ip);
         if (!$open_session) {
             throw new Urfa_Exception('Не возможно открыть сессию', 500);
         }
+
         return $open_session;
     }
 
@@ -76,13 +77,16 @@ class Urfa_Client
      *
      * @return bool
      */
-    public function restore_session($session_id, $client_ip = NULL)
+    public function restore_session($session_id, $client_ip = null)
     {
         if (is_null($client_ip)) {
             $client_ip = $_SERVER['REMOTE_ADDR'];
         }
         $restore_session = $this->urfa->restore_session(
-            $this->config->urfaphp->login, $this->config->urfaphp->password, $session_id, $client_ip
+            $this->config->urfaphp->login,
+            $this->config->urfaphp->password,
+            $session_id,
+            $client_ip
         );
         if (!$restore_session) {
             // $this->bootstrapView();
@@ -98,6 +102,7 @@ class Urfa_Client
             $response->setRedirect('/logout');
             $front->setResponse($response);
         }
+
         return $restore_session;
     }
 
@@ -137,6 +142,7 @@ class Urfa_Client
             $report[$i] = $tmp;
         }
         $this->urfa->finish();
+
         return $report;
     }
 
@@ -181,6 +187,7 @@ class Urfa_Client
             }
         }
         $this->urfa->finish();
+
         return $report;
     }
 
@@ -226,6 +233,7 @@ class Urfa_Client
             }
         }
         $this->urfa->finish();
+
         return $report;
     }
 
@@ -287,6 +295,7 @@ class Urfa_Client
             $report[$j] = $account_report;
         }
         $this->urfa->finish();
+
         return $report;
     }
 
@@ -325,6 +334,7 @@ class Urfa_Client
             }
         }
         $this->urfa->finish();
+
         return $report;
     }
 
@@ -334,8 +344,8 @@ class Urfa_Client
      */
     public function getTarrifs()
     {
-        $accounts = NULL;
-        $additional = NULL;
+        $accounts = null;
+        $additional = null;
         $this->urfa->call(-0x403b);
         $this->urfa->send();
         $this->additional = $this->urfa->get_int();
@@ -343,11 +353,12 @@ class Urfa_Client
 
         $accounts = $this->getAccounts();
 
-        $tariffs = NULL;
+        $tariffs = null;
 
         foreach ($accounts as $prop => $val) {
             $tariffs[$val] = $this->getTariffInfo($val);
         }
+
         return $tariffs;
     }
 
@@ -370,6 +381,7 @@ class Urfa_Client
             $accounts[$aid] = $aid;
         }
         $this->urfa->finish();
+
         return $accounts;
     }
 
@@ -381,7 +393,7 @@ class Urfa_Client
      *
      * @return array
      */
-    public function getTariffInfo($aid, $tlink_id = FALSE)
+    public function getTariffInfo($aid, $tlink_id = false)
     {
         $aid_tariffs = array();
 
@@ -413,6 +425,7 @@ class Urfa_Client
             }
         }
         $this->urfa->finish();
+
         return $aid_tariffs;
     }
 
@@ -451,6 +464,7 @@ class Urfa_Client
 
         $data['balance'] = $this->urfa->get_double();
         $this->urfa->finish();
+
         return $data;
     }
 
@@ -472,8 +486,9 @@ class Urfa_Client
         $result_tc = $this->urfa->get_int();
 
         $this->urfa->finish();
-        $this->urfa->close_session(FALSE);
+        $this->urfa->close_session(false);
         $this->urfa->disconnect();
+
         return $result_tc;
     }
 
@@ -516,6 +531,7 @@ class Urfa_Client
             $this->urfa->finish();
             $tariffs[$val] = $aid_tariffs;
         }
+
         return $tariffs;
     }
 
@@ -525,7 +541,7 @@ class Urfa_Client
      */
     public function getServices()
     {
-        $services = FALSE;
+        $services = false;
         $this->urfa->call(-0x402f);
         $this->urfa->send();
         $count = $this->urfa->get_int();
@@ -550,6 +566,7 @@ class Urfa_Client
             $services[$i] = $tmp;
         }
         $this->urfa->finish();
+
         return $services;
     }
 
@@ -592,6 +609,7 @@ class Urfa_Client
         $user['passport'] = $this->urfa->get_string();
 
         $this->urfa->finish();
+
         return $user;
     }
 
@@ -619,6 +637,7 @@ class Urfa_Client
             $accounts[$account_id] = $tmp;
         }
         $this->urfa->finish();
+
         return $accounts;
     }
 
@@ -630,7 +649,7 @@ class Urfa_Client
         $this->urfa->put_int($new_int_status_acc);
         $this->urfa->send();
         $this->urfa->finish();
-        $this->urfa->close_session(FALSE);
+        $this->urfa->close_session(false);
         $this->urfa->disconnect();
     }
 
@@ -649,7 +668,7 @@ class Urfa_Client
             define("SLINK_SHAPING_OUTGOING", 8);
         }
         $slink_id = intval($slink_id);
-        $report = NULL;
+        $report = null;
 
         $service = array();
 
@@ -769,8 +788,8 @@ class Urfa_Client
             $shaping['turbo_mode_start'] = $this->urfa->get_int();
             $shaping['turbo_mode_end'] = $this->urfa->get_int();
 
-            $shaping['show_shaping'] = (($flags & SLINK_SHAPING_AVAILABLE) != 0) ? TRUE : FALSE;
-            $shaping['turbo_mode_available'] = (($flags & SLINK_SHAPING_TURBO_MODE_AVAILABLE) != 0) ? TRUE : FALSE;
+            $shaping['show_shaping'] = (($flags & SLINK_SHAPING_AVAILABLE) != 0) ? true : false;
+            $shaping['turbo_mode_available'] = (($flags & SLINK_SHAPING_TURBO_MODE_AVAILABLE) != 0) ? true : false;
 
             $this->urfa->finish();
 
@@ -785,7 +804,7 @@ class Urfa_Client
 
             $report['shaping'] = $shaping;
 
-            if ($shaping['turbo_mode_available'] == TRUE && $shaping['turbo_mode_start'] == 0) {
+            if ($shaping['turbo_mode_available'] == true && $shaping['turbo_mode_start'] == 0) {
                 $this->urfa->call(-0x1200b);
                 $this->urfa->put_int($slink_id);
                 $this->urfa->send();
@@ -811,6 +830,7 @@ class Urfa_Client
         }
 
         $this->urfa->finish();
+
         return $report;
     }
 
@@ -835,6 +855,7 @@ class Urfa_Client
         $message['sender_id'] = $this->urfa->get_int();
         $message['sender'] = Urfa_Resolve::getSenderName($message['sender_id']);
         $this->urfa->finish();
+
         return $message;
     }
 
@@ -853,7 +874,7 @@ class Urfa_Client
             $tmp = array();
             $tmp['id'] = $this->urfa->get_int();
             $tmp['send_date'] = Urfa_Resolve::getDateFromTimestamp($this->urfa->get_int());
-            $tmp['send_date'] = "<b>" . $tmp['send_date'] . "</b>";
+            $tmp['send_date'] = "<b>".$tmp['send_date']."</b>";
             $tmp['sender_id'] = $this->urfa->get_int();
             $tmp['subject'] = $this->urfa->get_string();
             $tmp['mime'] = $this->urfa->get_string();
@@ -861,6 +882,7 @@ class Urfa_Client
             $report[$i] = $tmp;
         }
         $this->urfa->finish();
+
         return $report;
     }
 
@@ -891,12 +913,13 @@ class Urfa_Client
             $tmp['mime'] = $this->urfa->get_string();
             $tmp['is_new'] = $this->urfa->get_int();
             if ($tmp['is_new']) {
-                $tmp['send_date'] = "<b>" . $tmp['send_date'] . "</b>";
+                $tmp['send_date'] = "<b>".$tmp['send_date']."</b>";
             }
             //  $tmp['link'] = getMessageLink($tmp['id'], $tmp['subject'], $tmp['is_new']);
             $report[$i] = $tmp;
         }
         $this->urfa->finish();
+
         return $report;
     }
 
@@ -934,6 +957,7 @@ class Urfa_Client
             $report[$i] = $tmp;
         }
         $this->urfa->finish();
+
         return $report;
     }
 
@@ -954,6 +978,7 @@ class Urfa_Client
         $this->urfa->send();
         $result = $this->urfa->get_int();
         $this->urfa->finish();
+
         return $result;
     }
 
@@ -978,6 +1003,7 @@ class Urfa_Client
         $this->urfa->send();
         $result = $this->urfa->get_int();
         $this->urfa->finish();
+
         return $result;
     }
 
@@ -996,6 +1022,7 @@ class Urfa_Client
         $this->urfa->send();
         $result_pp = $this->urfa->get_int();
         $this->urfa->finish();
+
         return $result_pp;
     }
 
@@ -1028,6 +1055,7 @@ class Urfa_Client
             $pp['flags'] = $this->urfa->get_int();
         }
         $this->urfa->finish();
+
         return $pp;
     }
 
@@ -1041,6 +1069,7 @@ class Urfa_Client
         $this->urfa->send();
         $additional = $this->urfa->get_int();
         $this->urfa->finish();
+
         return $additional;
     }
 
@@ -1078,6 +1107,7 @@ class Urfa_Client
             $vs['balance'] = $this->urfa->get_double();
         }
         $this->urfa->finish();
+
         return $vs;
     }
 
@@ -1097,6 +1127,7 @@ class Urfa_Client
         $this->urfa->send();
         $result_vs = $this->urfa->get_int();
         $this->urfa->finish();
+
         return $result_vs;
     }
 
@@ -1113,6 +1144,7 @@ class Urfa_Client
         $this->urfa->send();
         $result_vs = $this->urfa->get_int();
         $this->urfa->finish();
+
         return $result_vs;
     }
 
@@ -1162,6 +1194,7 @@ class Urfa_Client
             }
         }
         $this->urfa->finish();
+
         return $data;
     }
 
@@ -1193,6 +1226,7 @@ class Urfa_Client
             $report[$i] = $tmp;
         }
         $this->urfa->finish();
+
         return $report;
     }
 
@@ -1259,12 +1293,13 @@ class Urfa_Client
             $report[$i] = $tmp;
         }
         $this->urfa->finish();
+
         return $report;
     }
 
     public function getInvoiceDocument($id = 0, $web = 25)
     {
-        $text = NULL;
+        $text = null;
         $this->urfa->call(-0x4053);
 
         $this->urfa->put_int($web); // 25 - Invoice for web, 27- Receipt for web
@@ -1278,6 +1313,7 @@ class Urfa_Client
         }
         $landscape = $this->urfa->get_int();
         $this->urfa->finish();
+
         return $text;
     }
 
@@ -1305,7 +1341,40 @@ class Urfa_Client
             $result['message'] = $this->urfa->get_string();
         }
         $this->urfa->finish();
+
         return $result;
+    }
+
+
+    public function userEdit($user, $data)
+    {
+        $this->urfa->call(-0x4040);
+
+
+        $this->urfa->put_string($user['full_name']);
+        $this->urfa->put_string($user['actual_address']);
+        $this->urfa->put_string($user['juridical_address']);
+        $this->urfa->put_string($user['work_telephone']);
+
+
+        $this->urfa->put_string($data['home_telephone']);
+        $this->urfa->put_string($data['mobile_telephone']);
+
+
+        $this->urfa->put_string($user['web_page']);
+        $this->urfa->put_string($user['icq']);
+        $this->urfa->put_string($user['passport']);
+        $this->urfa->put_int($user['bank']);
+        $this->urfa->put_string($user['bank_account']);
+
+       // var_dump($data['email']);
+        $this->urfa->put_string($data['email']);
+
+
+        $this->urfa->send();
+        $this->urfa->finish();
+
+        return true;
     }
 
     /**
@@ -1344,6 +1413,7 @@ class Urfa_Client
             }
         }
         $this->urfa->finish();
+
         return $report;
     }
 
@@ -1389,6 +1459,7 @@ class Urfa_Client
         $data['incoming_rate'] = Urfa_Resolve::resolveRate($data['incoming_rate']);
         $data['outgoing_rate'] = Urfa_Resolve::resolveRate($data['outgoing_rate']);
         $this->urfa->finish();
+
         return $data;
     }
 
@@ -1407,6 +1478,7 @@ class Urfa_Client
         $this->urfa->send();
         $data = $this->urfa->get_int();
         $this->urfa->finish();
+
         return $data;
     }
 
@@ -1442,6 +1514,7 @@ class Urfa_Client
             }
         }
         $this->urfa->finish();
+
         return $report;
     }
 
@@ -1459,10 +1532,12 @@ class Urfa_Client
             $bp['discounted'] = $this->urfa->get_double();
         }
         $this->urfa->finish();
+
         return $bp;
     }
 
-    public function getTurboMode(){
+    public function getTurboMode()
+    {
 
         define("SLINK_SHAPING_TURBO_MODE_AVAILABLE", 2);
 
@@ -1471,7 +1546,7 @@ class Urfa_Client
         $this->urfa->call(-0x402f);
         $this->urfa->send();
         $count = $this->urfa->get_int();
-        for($i = 0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; $i++) {
 
             $all_slinks[$i] = array();
 
@@ -1490,7 +1565,7 @@ class Urfa_Client
         $slinks = false;
         $slinks_cnt = 0;
 
-        for($i = 0, $size = count($all_slinks); $i < $size; $i++){
+        for ($i = 0, $size = count($all_slinks); $i < $size; $i++) {
             $slink_id = $all_slinks[$i]['id'];
 
             $this->urfa->call(-0x404a);
@@ -1499,7 +1574,7 @@ class Urfa_Client
             $service_type = $this->urfa->get_int();
             $this->urfa->finish();
 
-            if($service_type == 3){
+            if ($service_type == 3) {
                 $this->urfa->call(-0x12009);
                 $this->urfa->put_int($slink_id);
                 $this->urfa->send();
@@ -1510,13 +1585,14 @@ class Urfa_Client
                 $turbo_mode_start = $this->urfa->get_int();
 
                 $this->urfa->finish();
-                if(($flags & SLINK_SHAPING_TURBO_MODE_AVAILABLE) != 0){
+                if (($flags & SLINK_SHAPING_TURBO_MODE_AVAILABLE) != 0) {
                     $slinks[$slinks_cnt] = $all_slinks[$i];
                     $slinks[$slinks_cnt]['active'] = $turbo_mode_start > 0;
                     $slinks_cnt++;
                 }
             }
         }
+
         return $slinks;
     }
 }

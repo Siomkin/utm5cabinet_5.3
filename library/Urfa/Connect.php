@@ -24,9 +24,11 @@ define("RUT_SERVICE", 1);
 define("RUT_CARD", 2);
 
 define("RSR_SSL_NONE", 0);
-define("RSR_SSL_TLS1", 1);
+
 define("RSR_SSL_SSL3", 2);
 define("RSR_SSL_CERT", 3);
+define("RSR_SSL_TLS1",6);
+
 
 define("URFA_STATE_NONE", 0);
 define("URFA_STATE_INPUT", 1);
@@ -125,8 +127,13 @@ class Urfa_Connect
         if ($attr != FALSE) {
             $tmp = unpack('Nval', $attr['data']);
             if ($tmp['val'] == RSR_SSL_SSL3) {
-                $this->sock->enable_crypto();
+                $this->sock->enable_crypto(STREAM_CRYPTO_METHOD_SSLv3_CLIENT);
+            } else {
+                if ($tmp['val'] == RSR_SSL_TLS1) {
+                    $this->sock->enable_crypto(STREAM_CRYPTO_METHOD_TLS_CLIENT);
+                }
             }
+
         }
         if ($this->session_id == FALSE) {
             $this->session_id = $key;
@@ -134,9 +141,14 @@ class Urfa_Connect
         return TRUE;
     }
 
-    function enable_ssl3()
+    public function enable_ssl3()
     {
         $this->sslType = RSR_SSL_SSL3;
+    }
+
+    public function enable_tls1()
+    {
+        $this->sslType = RSR_SSL_TLS1;
     }
 
     function get_key()
@@ -181,8 +193,7 @@ class Urfa_Connect
         $this->session_id = FALSE;
         if ($service) {
             $this->userType = RUT_SERVICE;
-        }
-        else {
+        } else {
             $this->userType = RUT_USER;
         }
         return $this->authorize();
@@ -215,8 +226,7 @@ class Urfa_Connect
         $packet->setCode(RC_SESSION_END);
         if (!$drop) {
             $data = pack('N', 1);
-        }
-        else {
+        } else {
             $data = pack('N', 6);
         }
         $packet->putAttr(RA_END, $data);
@@ -406,7 +416,8 @@ class Urfa_Connect
         return $this->put($s);
     }
 
-    function put_ip_address($addr){
+    function put_ip_address($addr)
+    {
         return $this->put($addr->toRaw());
 
     }
@@ -463,10 +474,12 @@ class Urfa_Connect
         return $attr['data'];
     }
 
-    function get_ip_address(){
+    function get_ip_address()
+    {
         $attr = $this->get();
-        if($attr == false)
+        if ($attr == false) {
             return false;
+        }
         $data = unpack("C*", $attr["data"]);
         return new Urfa_Ipaddress($data[0], array_slice($data, 1));
     }
