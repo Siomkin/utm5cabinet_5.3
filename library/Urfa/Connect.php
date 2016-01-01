@@ -24,11 +24,9 @@ define("RUT_SERVICE", 1);
 define("RUT_CARD", 2);
 
 define("RSR_SSL_NONE", 0);
-
 define("RSR_SSL_SSL3", 2);
 define("RSR_SSL_CERT", 3);
-define("RSR_SSL_TLS1",6);
-
+define("RSR_SSL_TLS1", 6);
 
 define("URFA_STATE_NONE", 0);
 define("URFA_STATE_INPUT", 1);
@@ -40,23 +38,23 @@ class Urfa_Connect
     private $password = 'init';
     private $session_id = FALSE;
     private $client_ip = FALSE;
-    private $sock = FALSE;
+    private $sock = null;
     private $packet = FALSE;
     private $userType = RUT_SERVICE;
-    private $sslType = RSR_SSL_NONE;
+    private $sslType = RSR_SSL_TLS1;
     private $state = URFA_STATE_NONE;
-    private $enableDebug = FALSE;
+    private $enableDebug = true;
 
 
     /**
      * Создаём объект Urfa_Client
      */
-    function __construct()
+    public function __construct()
     {
 
     }
 
-    function __destruct()
+    public function __destruct()
     {
         $this->close_session(FALSE);
         $this->disconnect();
@@ -73,7 +71,7 @@ class Urfa_Connect
     {
         $packet = new Urfa_Packet();
         if ($packet->recvPacket($this->sock) == FALSE) {
-            $this->logger("auth: recvPacket failed");
+            $this->logger("auth: recvPacket failed 1");
             return FALSE;
         }
         if ($packet->getCode() != RC_SESSION_INIT) {
@@ -117,7 +115,7 @@ class Urfa_Connect
         }
         $packet->clear();
         if ($packet->recvPacket($this->sock) == FALSE) {
-            $this->logger("auth: recvPacket failed");
+            $this->logger("auth: recvPacket failed 2");
             return FALSE;
         }
         if ($packet->getCode() != RC_ACCESS_ACCEPT) {
@@ -151,7 +149,7 @@ class Urfa_Connect
         $this->sslType = RSR_SSL_TLS1;
     }
 
-    function get_key()
+    public function get_key()
     {
         return bin2hex($this->session_id);
     }
@@ -163,11 +161,8 @@ class Urfa_Connect
      *
      * @return bool
      */
-    function connect($host, $port, $ssl = TRUE)
+    public function connect($host, $port)
     {
-        if ($ssl) {
-            $this->enable_ssl3();
-        }
         $this->host = $host;
         $this->port = $port;
         $this->sock = new Urfa_Socket();
@@ -185,7 +180,7 @@ class Urfa_Connect
      *
      * @return bool
      */
-    function open_session($login, $password, $service = TRUE, $client_ip = FALSE)
+    public function open_session($login, $password, $service = TRUE, $client_ip = FALSE)
     {
         $this->login = $login;
         $this->password = $password;
@@ -208,7 +203,7 @@ class Urfa_Connect
      *
      * @return bool
      */
-    function restore_session($web_user, $web_pass, $session_id, $client_ip)
+    public function restore_session($web_user, $web_pass, $session_id, $client_ip)
     {
         $this->login = $web_user;
         $this->password = $web_pass;
@@ -217,7 +212,7 @@ class Urfa_Connect
         return $this->authorize();
     }
 
-    function close_session($drop = FALSE)
+    public function close_session($drop = FALSE)
     {
         if ($this->sock == FALSE) {
             return FALSE;
@@ -237,7 +232,7 @@ class Urfa_Connect
         return TRUE;
     }
 
-    function disconnect()
+    public function disconnect()
     {
         if ($this->sock == FALSE) {
             return FALSE;
@@ -248,7 +243,7 @@ class Urfa_Connect
         return TRUE;
     }
 
-    function call($fid)
+    public function call($fid)
     {
         if ($this->sock == FALSE) {
             $this->logger("call: socket closed");
@@ -268,7 +263,7 @@ class Urfa_Connect
         }
         $packet->clear();
         if ($packet->recvPacket($this->sock) == FALSE) {
-            $this->logger("call: recvPacket failed");
+            $this->logger("call: recvPacket failed 3");
             return FALSE;
         }
         if ($packet->getCode() != RC_SESSION_DATA) {
@@ -277,7 +272,7 @@ class Urfa_Connect
         }
         $attr = $packet->getAttr();
         if ($attr['code'] != RA_CALL) {
-            // function call not permitted
+            // public function call not permitted
             if ($attr['code'] == RA_END) {
                 return 0;
             }
@@ -290,7 +285,7 @@ class Urfa_Connect
         return $fid;
     }
 
-    function send()
+    public function send()
     {
         if ($this->state != URFA_STATE_INPUT) {
             $this->logger("send: state != URFA_STATE_INPUT");
@@ -309,7 +304,7 @@ class Urfa_Connect
         return TRUE;
     }
 
-    function finish()
+    public function finish()
     {
         if ($this->state != URFA_STATE_OUTPUT) {
             $this->logger("finish: state != URFA_STATE_OUTPUT");
@@ -353,7 +348,7 @@ class Urfa_Connect
         if ($this->packet == FALSE) {
             $this->packet = new Urfa_Packet;
             if ($this->packet->recvPacket($this->sock) == FALSE) {
-                $this->logger("get: recvPacket failed");
+                $this->logger("get: recvPacket failed 4");
                 return FALSE;
             }
             if ($this->packet->getCode() != RC_SESSION_DATA) {
@@ -373,13 +368,13 @@ class Urfa_Connect
         return $attr;
     }
 
-    function put_int($i)
+    public function put_int($i)
     {
         $data = pack('N', $i);
         return $this->put($data);
     }
 
-    function put_long($l)
+    public function put_long($l)
     {
         $this->logger("put_long: not implemeted");
         return FALSE;
@@ -387,21 +382,21 @@ class Urfa_Connect
 
 
     /* Convert float from HostOrder to Network Order */
-    function FToN($val)
+    public function FToN($val)
     {
         $a = unpack("I", pack("f", $val));
         return pack("N", $a[1]);
     }
 
     /* Convert float from Network Order to HostOrder */
-    function NToF($val)
+    public function NToF($val)
     {
         $a = unpack("N", $val);
         $b = unpack("f", pack("I", $a[1]));
         return $b[1];
     }
 
-    function put_double($d)
+    public function put_double($d)
     {
         $str = pack('d', $d);
         $str = strrev($str);
@@ -411,19 +406,19 @@ class Urfa_Connect
         return $this->put($str);
     }
 
-    function put_string($s)
+    public function put_string($s)
     {
         return $this->put($s);
     }
 
-    function put_ip_address($addr)
+    public function put_ip_address($addr)
     {
         return $this->put($addr->toRaw());
 
     }
 
 
-    function get_int()
+    public function get_int()
     {
         $attr = $this->get();
         if ($attr == FALSE) {
@@ -433,7 +428,7 @@ class Urfa_Connect
         return $tmp['val'];
     }
 
-    function get_long()
+    public function get_long()
     {
         $attr = $this->get();
         if ($attr == FALSE) {
@@ -448,7 +443,7 @@ class Urfa_Connect
         return $val;
     }
 
-    function get_double()
+    public function get_double()
     {
         $attr = $this->get();
         if ($attr == FALSE) {
@@ -465,7 +460,7 @@ class Urfa_Connect
         return $tmp['val'];
     }
 
-    function get_string()
+    public function get_string()
     {
         $attr = $this->get();
         if ($attr == FALSE) {
@@ -474,18 +469,18 @@ class Urfa_Connect
         return $attr['data'];
     }
 
-    function get_ip_address()
+    public function get_ip_address()
     {
         $attr = $this->get();
         if ($attr == false) {
             return false;
         }
-        $data = unpack("C*", $attr["data"]);
+        $data = array_merge(unpack("C*", $attr["data"]));
         return new Urfa_Ipaddress($data[0], array_slice($data, 1));
     }
 
 
-    function get_state()
+    public function get_state()
     {
         return $this->state;
     }

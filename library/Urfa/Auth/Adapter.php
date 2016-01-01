@@ -41,7 +41,7 @@ class Urfa_Auth_Adapter implements Zend_Auth_Adapter_Interface
         // Try to fetch the user from the database using the model
         $users = new Urfa_Client();
 
-        $user = $users->login($this->username, $this->password, FALSE);
+        $user = $users->login($this->username, $this->password, false);
 
        // Zend_Debug::dump($user);
 

@@ -11,20 +11,17 @@ class Urfa_Socket
         $this->host = $host;
         $this->port = $port;
         $context = stream_context_create();
-        stream_context_set_option($context, 'ssl', 'ciphers', 'ADH-RC4-MD5');
-        stream_context_set_option($context, 'ssl', 'verify_peer_name', false);
-        stream_context_set_option($context, 'ssl', 'verify_peer', false);
-
-        $this->sock = @stream_socket_client("tcp://[" . $host . "]:" . $port, $errno, $errstr, 5, STREAM_CLIENT_CONNECT, $context);
-        if (!$this->sock) {
-            $this->sock = @stream_socket_client("tcp://" . $host . ":" . $port, $errno, $errstr, 5, STREAM_CLIENT_CONNECT, $context);
-            if ($this->sock) {
+        stream_context_set_option($context,'ssl','ciphers','ADH-RC4-MD5');
+        stream_context_set_option($context,'ssl','verify_peer_name',false);
+        stream_context_set_option($context,'ssl','verify_peer',false);
+        $this->sock = @stream_socket_client("tcp://[".$host."]:".$port, $errno,$errstr,5,STREAM_CLIENT_CONNECT,$context);
+        if(!$this->sock) {
+            $this->sock = @stream_socket_client("tcp://".$host.":".$port,$errno,$errstr,5,STREAM_CLIENT_CONNECT,$context);
+            if($this->sock)
                 return true;
-            }
-
-            return FALSE;
+            return false;
         }
-        return TRUE;
+        return true;
     }
 
     public function close()

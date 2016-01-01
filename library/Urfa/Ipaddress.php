@@ -16,8 +16,8 @@ class Urfa_Ipaddress
 
     public static function fromString($AddressString)
     {
-        $data=null;
-        $type=null;
+        $data = null;
+        $type = null;
         switch (strlen($data = inet_pton($AddressString))) {
             case 4:
                 $type = Urfa_Ipaddress::IPv4;
@@ -26,7 +26,7 @@ class Urfa_Ipaddress
                 $type = Urfa_Ipaddress::IPv6;
                 break;
             default:
-               // throw new IPaddressError("Invalid ip address type");
+                // throw new IPaddressError("Invalid ip address type");
                 throw new Urfa_Exception('Invalid ip address type.');
         }
 
@@ -35,9 +35,10 @@ class Urfa_Ipaddress
 
     public function toString()
     {
-        $rawStr = "";
-        for ($i = 0; $i < count($this->data); $i++)
+        $rawStr = '';
+        for ($i = 0; $i < count($this->data); $i++) {
             $rawStr .= chr($this->data[$i]);
+        }
         return inet_ntop($rawStr);
     }
 

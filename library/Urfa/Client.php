@@ -6,10 +6,10 @@ class Urfa_Client
 
     protected $config;
 
-    function __construct($host = null, $port = null, $ssl = true)
+    public function __construct($host = null, $port = null, $ssl = false)
     {
         if (is_null($host) || is_null($port)) {
-            $this->config = new Zend_Config_Ini(APPLICATION_PATH.'/configs/billing.ini', 'app');
+            $this->config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/billing.ini', 'app');
             $host = $this->config->urfaphp->host;
             $port = $this->config->urfaphp->port;
         }
@@ -106,7 +106,7 @@ class Urfa_Client
         return $restore_session;
     }
 
-    function __destruct()
+    public function __destruct()
     {
         unset($this->urfa);
     }
@@ -874,7 +874,7 @@ class Urfa_Client
             $tmp = array();
             $tmp['id'] = $this->urfa->get_int();
             $tmp['send_date'] = Urfa_Resolve::getDateFromTimestamp($this->urfa->get_int());
-            $tmp['send_date'] = "<b>".$tmp['send_date']."</b>";
+            $tmp['send_date'] = "<b>" . $tmp['send_date'] . "</b>";
             $tmp['sender_id'] = $this->urfa->get_int();
             $tmp['subject'] = $this->urfa->get_string();
             $tmp['mime'] = $this->urfa->get_string();
@@ -913,7 +913,7 @@ class Urfa_Client
             $tmp['mime'] = $this->urfa->get_string();
             $tmp['is_new'] = $this->urfa->get_int();
             if ($tmp['is_new']) {
-                $tmp['send_date'] = "<b>".$tmp['send_date']."</b>";
+                $tmp['send_date'] = "<b>" . $tmp['send_date'] . "</b>";
             }
             //  $tmp['link'] = getMessageLink($tmp['id'], $tmp['subject'], $tmp['is_new']);
             $report[$i] = $tmp;
@@ -1367,7 +1367,7 @@ class Urfa_Client
         $this->urfa->put_int($user['bank']);
         $this->urfa->put_string($user['bank_account']);
 
-       // var_dump($data['email']);
+        // var_dump($data['email']);
         $this->urfa->put_string($data['email']);
 
 

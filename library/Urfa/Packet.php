@@ -1,32 +1,33 @@
 <?php
+
 class Urfa_Packet
 {
     private $data = array();
     private $pos;
     private $code;
 
-    function setCode($code)
+    public function setCode($code)
     {
         $this->code = $code;
         return TRUE;
     }
 
-    function getCode()
+    public function getCode()
     {
         return $this->code;
     }
 
-    function size()
+    public function size()
     {
         return count($this->data);
     }
 
-    function getPos()
+    public function getPos()
     {
         return $this->pos;
     }
 
-    function clear()
+    public function clear()
     {
         $this->data = array();
         $this->code = 0;
@@ -34,7 +35,7 @@ class Urfa_Packet
         return TRUE;
     }
 
-    function recvPacket($sock)
+    public function recvPacket($sock)
     {
         $this->data = array();
         $header = $sock->read(4);
@@ -64,7 +65,7 @@ class Urfa_Packet
         return TRUE;
     }
 
-    function sendPacket($sock)
+    public function sendPacket($sock)
     {
         if ($this->code == 0) {
             return FALSE;
@@ -84,7 +85,7 @@ class Urfa_Packet
         return TRUE;
     }
 
-    function getAttr()
+    public function getAttr()
     {
         if ($this->pos >= count($this->data)) {
             return FALSE;
@@ -94,7 +95,7 @@ class Urfa_Packet
         return $attr;
     }
 
-    function putAttr($code, $data)
+    public function putAttr($code, $data)
     {
         $attr = array();
         $attr['code'] = $code;
@@ -106,7 +107,7 @@ class Urfa_Packet
         return TRUE;
     }
 
-    function find($code)
+    public function find($code)
     {
         foreach ($this->data as $attr) {
             if ($attr['code'] == $code) {

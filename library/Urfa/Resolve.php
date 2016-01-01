@@ -1,7 +1,8 @@
 <?php
+
 class Urfa_Resolve
 {
-    static function getSenderName($id)
+    static public function getSenderName($id)
     {
         if ($id == 0) {
             return 'Системное сообщение';
@@ -10,13 +11,15 @@ class Urfa_Resolve
         }
     }
 
-    static function getTimeFromSec($secs)
+    static public function getTimeFromSec($secs)
     {
-        $vals = array('н' => (int)($secs / 86400 / 7),
-                      'д' => $secs / 86400 % 7,
-                      'ч' => $secs / 3600 % 24,
-                      'м' => $secs / 60 % 60,
-                      'с' => $secs % 60);
+        $vals = array(
+            'н' => (int)($secs / 86400 / 7),
+            'д' => $secs / 86400 % 7,
+            'ч' => $secs / 3600 % 24,
+            'м' => $secs / 60 % 60,
+            'с' => $secs % 60
+        );
 
         $ret = array();
 
@@ -45,17 +48,17 @@ class Urfa_Resolve
      *
      * @return string
      */
-    static function getDateFromTimestamp($timestamp, $format = 'd.m.Y H:i')
+    static public function getDateFromTimestamp($timestamp, $format = 'd.m.Y H:i')
     {
         return date($format, $timestamp);
     }
 
-    static function roundDouble($double)
+    static public function roundDouble($double)
     {
         return round($double, 2);
     }
 
-    static function ip2string($ip)
+    static public function ip2string($ip)
     {
         $a = $ip & 0xff;
         $b = ($ip >> 8) & 0xff;
@@ -64,14 +67,14 @@ class Urfa_Resolve
         return "" . $d . "." . $c . "." . $b . "." . $a;
     }
 
-    static function parceIpNetworkFormat($ip)
+    static public function parceIpNetworkFormat($ip)
     {
         $ip2 = ip2long($ip);
         $arr = unpack("V", pack("N", $ip2));
         return $arr[1];
     }
 
-    static function resolveBlockState($state)
+    static public function resolveBlockState($state)
     {
         if ($state == 0) {
             return 'Пользовательская блокировка';
@@ -88,7 +91,7 @@ class Urfa_Resolve
         }
     }
 
-    static function resolveBlockItem($item)
+    static public function resolveBlockItem($item)
     {
         if ($item == 2) {
             return 'Лицевой счет';
@@ -96,12 +99,12 @@ class Urfa_Resolve
         return $item;
     }
 
-    static function resolveUserName($id)
+    static public function resolveUserName($id)
     {
         return $id;
     }
 
-    static function resolveIntStatus($state)
+    static public function resolveIntStatus($state)
     {
         if ($state == -1) {
             return 'Включен не для всех счетов';
@@ -114,7 +117,7 @@ class Urfa_Resolve
         }
     }
 
-    static function resolveIntStatusForAccount($state)
+    static public function resolveIntStatusForAccount($state)
     {
         if ($state == 0) {
             return 'Включить';
@@ -124,7 +127,7 @@ class Urfa_Resolve
         }
     }
 
-    static function resolveServiceType($state)
+    static public function resolveServiceType($state)
     {
         switch ($state) {
             case 1:
@@ -160,33 +163,33 @@ class Urfa_Resolve
         }
     }
 
-    static function getLinkToServicePass($slink_id, $item_id, $service_name)
+    static public function getLinkToServicePass($slink_id, $item_id, $service_name)
     {
         return '<a HREF="/user/change-service-password/slink_id/' . $slink_id . '/item_id/' . $item_id . '">'
-            . htmlspecialchars($service_name) . '</a>';
+        . htmlspecialchars($service_name) . '</a>';
     }
 
-    static function getLinkToTariff($aid, $tlink_id)
+    static public function getLinkToTariff($aid, $tlink_id)
     {
         return '/user/change-tariff/aid/' . $aid . '/tlink_id/' . $tlink_id;
     }
 
-    static function getLinkToService($slink_id, $service_name)
+    static public function getLinkToService($slink_id, $service_name)
     {
         return '<a HREF="/user/service/' . $slink_id . '">' . htmlspecialchars($service_name) . '</a>';
     }
 
-    static function getLinkToChangeTariff($aid, $tlink_id, $tp_next)
+    static public function getLinkToChangeTariff($aid, $tlink_id, $tp_next)
     {
         return '/user/change-tariff/aid/' . $aid . '/tlink_id/' . $tlink_id . '/tp_next/' . $tp_next;
     }
 
-    static function getLinkToTurboMode($slink_id)
+    static public function getLinkToTurboMode($slink_id)
     {
         return '<a href="/user/turbo-mode/slink_id/' . $slink_id . '">Включить</a>';
     }
 
-    static function getTimeFromSeconds($uptime)
+    static public function getTimeFromSeconds($uptime)
     {
         $days = ($uptime - $uptime % 3600) / 3600 / 24;
         $hour = ($uptime - $uptime % 3600) / 3600 % 24;
@@ -195,14 +198,14 @@ class Urfa_Resolve
         return $hour . ":" . $min . ":" . $sec;
     }
 
-    static function getDayFromSeconds($uptime)
+    static public function getDayFromSeconds($uptime)
     {
         $days = ($uptime - $uptime % 3600) / 3600 / 24;
 
         return $days;
     }
 
-    static function resolveRate($rate)
+    static public function resolveRate($rate)
     {
         if ($rate > 0) {
             return $rate;
