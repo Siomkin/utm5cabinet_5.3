@@ -1,0 +1,282 @@
+<HTML>
+ <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+     <STYLE type="text/css">
+     body
+     {
+         background:#FFFFFF;
+         margin-left:30pt;
+         margin-right:30pt;
+         margin-top:0pt;
+         margin-bottom:0pt;
+     }
+     P {
+         font-size:9pt;
+         font-family:Verdana,"MS Sans Serif",Geneva,Helvetica,sans-serif;
+     }
+     big {
+         font-size:10pt;
+         font-weight:bold;
+     }
+     strong {
+         font-size:12pt;
+         font-weight:bold;
+     }
+     small	{
+         font-size:7pt;
+     }
+     TD {
+         font-size:9pt;
+         font-family:Verdana,"MS Sans Serif",Geneva,Helvetica,sans-serif;
+     }
+     </STYLE>
+ </head>
+<BODY LANG="ru-RU" TEXT="#000000" LINK="#000080" VLINK="#800000" DIR="LTR">
+<TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=0 CELLSPACING=0>
+	<COL WIDTH=220>
+	<COL WIDTH=48>
+	<COL WIDTH=225>
+	<COL WIDTH=187>
+	<TR VALIGN=TOP>
+		<TD ROWSPAN=11 WIDTH=220>
+
+			<P ALIGN=CENTER><BR><STRONG>@SUP_NAME@</STRONG>
+			<BR><BR><BR><STRONG>Извещение</STRONG></P>
+		</TD>
+		<TD COLSPAN=2 WIDTH=280>
+			<P>Р/с
+			&nbsp;&nbsp; @SUP_BANK_ACCOUNT@, БИК &nbsp;&nbsp; @SUP_BANK_BIC@</P>
+
+		</TD>
+		<TD WIDTH=187>
+			<P>ИНН/КПП &nbsp; @SUP_INN@/@SUP_KPP@</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=3 WIDTH=473 VALIGN=TOP>
+
+			<P>@SUP_BANK_NAME@, @SUP_BANK_CITY@, к/с &nbsp;&nbsp; @SUP_BANK_PAYM_ACC@</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=48 VALIGN=TOP>
+			<P>
+				Основной лицевой счет
+			</P>
+		</TD>
+		<TD COLSPAN=2 WIDTH=419 VALIGN=TOP>
+			<P>
+				@USR_BASIC_ACOUNT@
+			</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=48 VALIGN=TOP>
+			<P>ФИО:</P>
+		</TD>
+		<TD COLSPAN=2 WIDTH=419 VALIGN=TOP>
+			<P>
+			@USR_FULL_NAME@
+			</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=48 VALIGN=TOP>
+			<P>Адрес:</P>
+		</TD>
+
+		<TD COLSPAN=2 WIDTH=419 VALIGN=TOP>
+			<P>
+			@USR_ACT_ADDRESS@
+			</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=3 WIDTH=473 VALIGN=TOP>
+			<P>
+			Дата выставления счета: @INVC_DATE@
+			</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2 WIDTH=280 VALIGN=TOP>
+			<P>ОСТАТОК
+			АВАНСА (+) / Долг (-) на @INVC_DATE@</P>
+		</TD>
+		<TD WIDTH=187 VALIGN=TOP>
+
+			<P>
+			@INVC_BALANCE_ON_SET@
+			</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=3 WIDTH=467 VALIGN=TOP>
+		<table width=100%>
+		@INDIVIDUAL_INVOICE_ROWS@
+		</table>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2 WIDTH=280 VALIGN=TOP>
+			<P>Сумма
+			платежа</P>
+
+		</TD>
+		<TD WIDTH=187 VALIGN=TOP>
+			<P>
+			@INVC_TOTAL@ &nbsp;
+			</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2 WIDTH=280 VALIGN=TOP>
+			<P>ИТОГО
+			к оплате по всем услугам с учетом
+			аванса/долга</P>
+
+		</TD>
+		<TD WIDTH=187 VALIGN=TOP>
+			<P>
+			@INVC_SUBTOTAL_WITHOUT_BALANCE@
+			</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=48>
+			<P>Кассир</P>
+
+		</TD>
+		<TD COLSPAN=2 WIDTH=419>
+			<P>Дата
+			__________
+			Плательщик __________</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD ROWSPAN=11 WIDTH=220>
+			<P><BR><BR>
+
+			</P>
+			<P><BR>
+			</P>
+			<P><BR>
+			</P>
+			<P><BR>
+			</P>
+			<P CLASS="western" ALIGN=CENTER><STRONG>Квитанция</STRONG></P>
+
+		</TD>
+		<TD COLSPAN=2 WIDTH=280>
+			<P>Р/с
+			&nbsp;&nbsp; @SUP_BANK_ACCOUNT@, БИК &nbsp;&nbsp; @SUP_BANK_BIC@</P>
+
+		</TD>
+		<TD WIDTH=187>
+			<P>ИНН/КПП &nbsp; @SUP_INN@/@SUP_KPP@</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=3 WIDTH=473 VALIGN=TOP>
+
+			<P>@SUP_BANK_NAME@, @SUP_BANK_CITY@, к/с &nbsp;&nbsp; @SUP_BANK_PAYM_ACC@</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=48 VALIGN=TOP>
+			<P>
+				Основной лицевой счет
+			</P>
+		</TD>
+		<TD COLSPAN=2 WIDTH=419 VALIGN=TOP>
+			<P>
+				@USR_BASIC_ACOUNT@
+			</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=48 VALIGN=TOP>
+			<P>ФИО:</P>
+		</TD>
+		<TD COLSPAN=2 WIDTH=419 VALIGN=TOP>
+			<P>
+			@USR_FULL_NAME@
+			</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=48 VALIGN=TOP>
+			<P>Адрес:</P>
+		</TD>
+
+		<TD COLSPAN=2 WIDTH=419 VALIGN=TOP>
+			<P>
+			@USR_ACT_ADDRESS@
+			</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=3 WIDTH=473 VALIGN=TOP>
+			<P>
+			Дата выставления счета: @INVC_DATE@
+			</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2 WIDTH=280 VALIGN=TOP>
+			<P>ОСТАТОК
+			АВАНСА (+) / Долг (-) на @INVC_DATE@</P>
+		</TD>
+		<TD WIDTH=187 VALIGN=TOP>
+
+			<P>
+			@INVC_BALANCE_ON_SET@
+			</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=3 WIDTH=467 VALIGN=TOP>
+		<table width=100%>
+		@INDIVIDUAL_INVOICE_ROWS@
+		</table>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2 WIDTH=280 VALIGN=TOP>
+			<P>Сумма
+			платежа</P>
+
+		</TD>
+		<TD WIDTH=187 VALIGN=TOP>
+			<P>
+			@INVC_TOTAL@ &nbsp;
+			</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2 WIDTH=280 VALIGN=TOP>
+			<P>ИТОГО
+			к оплате по всем услугам с учетом
+			аванса/долга</P>
+
+		</TD>
+		<TD WIDTH=187 VALIGN=TOP>
+			<P>
+			@INVC_SUBTOTAL_WITHOUT_BALANCE@
+			</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=48>
+			<P>Кассир</P>
+
+		</TD>
+		<TD COLSPAN=2 WIDTH=419>
+			<P>Дата
+			__________
+			Плательщик __________</P>
+		</TD>
+	</TR>
+</TABLE>
+</BODY>
+</HTML>

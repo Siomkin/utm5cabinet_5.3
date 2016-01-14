@@ -40,7 +40,7 @@ class Billing_IndexController extends Zend_Controller_Action
             'lifetime' => $this->config->cache->lifetime,
             'debug_header' => true,
             'logger' => true,
-            'automatic_serialization' => true
+            'automatic_serialization' => true,
         );
         //метод храниния кэша. Определяет вторая переменная
         //Из наиболее используемых File, APC, возможен memcached, но там нужны дополнительные параметры
@@ -121,7 +121,7 @@ class Billing_IndexController extends Zend_Controller_Action
         $this->view->services = $services;
         // Zend_Debug::dump($services);
         $this->view->tarrifs = $tarrifs;
-         //Zend_Debug::dump($accounts);
+        //Zend_Debug::dump($accounts);
         $this->view->userData = $userData;
 
         $this->view->additional = $additional;
@@ -880,14 +880,22 @@ class Billing_IndexController extends Zend_Controller_Action
             $urfa = $this->reconnect();
 
             //получаем информацию о выставленных счетах и сохраняем в кэш
-            if ($invoiceDocument = $urfa->getInvoiceDocument($id)) {
+            if ($invoiceDocument = $urfa->getInvoiceDoc($id)) {
+
                 $this->cache->save($invoiceDocument, $cacheId);
             }
 
             unset($urfa);
         }
+
+        list($subst, $jur) = $invoiceDocument;
+        $text = file_get_contents(dirname(__FILE__)."/../views/scripts/index/invoice_document_".($jur ? "jur" : "ind").".html");
+        foreach ($subst as $key => $value) {
+            $value = ($key != "@INVC_PRODUCT_TABLE@" && $key != "@INDIVIDUAL_INVOICE_ROWS@" ? htmlspecialchars($value) : $value);
+            $text = str_replace($key, $value, $text);
+        }
         //Присваиваем данные переменным вида
-        $this->view->invoiceDocument = $invoiceDocument;
+        $this->view->invoiceDocument = $text;
 
     }
 
@@ -999,7 +1007,7 @@ class Billing_IndexController extends Zend_Controller_Action
     {
         $this->setTitle('Изменение данных пользователя');
 
-       // $this->_helper->viewRenderer('edit');
+        // $this->_helper->viewRenderer('edit');
 
         $urfa = $this->reconnect();
         $accounts = $urfa->getAccounts();
@@ -1014,7 +1022,7 @@ class Billing_IndexController extends Zend_Controller_Action
                     array(
                         'home_telephone' => $form->getValue('home_telephone'),
                         'mobile_telephone' => $form->getValue('mobile_telephone'),
-                        'email' => $form->getValue('email')
+                        'email' => $form->getValue('email'),
                     )
                 );
 
@@ -1025,7 +1033,7 @@ class Billing_IndexController extends Zend_Controller_Action
 
                 //$this->redirect('/user/');
             }
-        }else{
+        } else {
             $this->view->form->setDefaults($user);
         }
 
@@ -1041,10 +1049,13 @@ class Billing_IndexController extends Zend_Controller_Action
         $this->view->form = $form = new Billing_Form_Payment();
         if ($this->getRequest()->isPost()) {
             if ($form->isValid($this->getRequest()->getPost())) {
+                $text = file_get_contents(dirname(__FILE__)."/../views/scripts/index/payment_document.html");
 
                 $urfa = $this->reconnect();
-                $text = $urfa->getInvoiceDocument(0, 27);
-                $text = str_replace("@SUM@", $form->getValue('sum'), $text);
+                $subst = $urfa->getInvoiceDocument($form->getValue('sum'));
+                foreach ($subst as $key => $value) {
+                    $text = str_replace($key, htmlspecialchars($value), $text);
+                }
 
                 $this->_helper->layout()->disableLayout();
                 $this->_helper->viewRenderer->setNoRender(true);

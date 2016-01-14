@@ -1,0 +1,167 @@
+<HTML>
+ <head>
+ </head>
+ <BODY>
+   <b> ПОСТАВЩИК: @SUP_NAME@ </b><br>
+   <b> Адрес: @SUP_JUR_ADDR@ </b>
+   <br>
+   <br>
+  
+   <table border=0 width=95% cols=0 cellpadding=0 cellspacing=0>
+     <tr align="center">
+       <td><b> Образец заполнения платежного поручения </b></td>
+     </tr>
+   </table>
+   <table border=1 width=95% cols=3 cellpadding=0 cellspacing=0>
+      <tr>
+       <td width=60%>
+          Получатель: @SUP_NAME_SHORT@<br>
+          ИНН/КПП: @SUP_INN@/@SUP_KPP@
+       </td>
+       <td width=10%>
+        <br>
+        Сч.№
+       </td>
+       <td width=30%>
+          <br>
+          @SUP_BANK_ACCOUNT@
+       </td>
+      </tr>
+      <tr>
+        <td ROWSPAN=2>
+          Банк получателя <br>
+          @SUP_BANK_NAME@ @SUP_BANK_CITY@
+        </td>
+        <td> БИК </td>
+        <td ROWSPAN=2>
+          @SUP_BANK_BIC@ <br>
+          @SUP_BANK_PAYM_ACC@
+        </td>
+      </tr>
+      <tr>
+        <td> Сч.№ </td>
+      </tr>
+   </table>
+   <br>
+   <table border=0 width=100% cols=0 cellpadding=0 cellspacing=0>
+      <tr align="center">
+       <td>
+         <b>
+           Счет № @INVC_NUM@
+           <br>От  @INVC_DATE@
+         </b>
+       </td>
+      </tr>
+    </table>
+       <p align=left>
+        <b> ПЛАТЕЛЬЩИК: @USR_FULL_NAME@, ИНН/КПП @USR_TAX@/@USR_KPP@ </b> <br>
+        <b> Адрес: @USR_JUR_ADDRESS@<b><br>
+       </p>
+	   <br clear="all">
+        <table border=0 width=60% cellpadding=0 cellspacing=0 align=right>
+	     <tr>
+	       <td align=right>
+               Период:&nbsp;
+	       </td>
+	       <td align=left>
+	       с @INVC_PERIOD_START@ по @INVC_PERIOD_END@
+	       </td>
+	     </tr>
+	     <tr>
+	       <td align=right>
+               Номер лицевого счета:&nbsp;
+	       </td>
+	       <td align=left>
+	       @INVC_ACCOUNT_ID@
+	       </td>
+	     </tr>
+	     <tr>
+	       <td align=right>
+               Остаток средств:&nbsp;
+	       </td>
+	       <td align=left>
+	       @INVC_BALANCE_ON_SET@ руб.
+	       </td>
+	     </tr>
+	    </table>
+		<br clear="all">
+
+   <table border=1 width=95% cols=3 cellpadding=0 cellspacing=0>
+    <tr>
+        <td width="5%" align="center"><b>№</b></td>
+        <td width="50%" align="center"><b>Товар</b></td>
+        <td width="10%" align="center"><b>Цена</b></td>
+        <td width="10%" align="center"><b>Кол-во</b></td>
+        <td width="10%" align="center"><b>Ед</b></td>
+        <td width="10%" align="center"><b>Сумма</b></td>
+    </tr>
+    @INVC_PRODUCT_TABLE@
+    </table>
+
+    <table border="0" width="95%" cols="3" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="55%"></td>
+        <td width="15%"></td>
+        <td width="15%"></td>
+        <td width="15%"></td>
+      </tr>
+      <tr>
+         <td COLSPAN=4><hr color="black"></td>
+         <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td align="right"> Сумма:  </td>
+        <td></td>
+        <td align="right"> @INVC_SUBTOTAL@ руб.</td>
+      </tr>
+      <tr>
+         <td COLSPAN=4></td>
+      </tr>
+      <tr>
+         <td></td>
+         <td align="right">НДС:</td>
+         <td></td>
+         <td align="right"> @INVC_TAX@  руб.</td>
+      </tr>
+      <tr>
+         <td></td>
+         <td align="right"> Итого:  </td>
+         <td></td>
+         <td align="right">
+            <b>
+              @INVC_TOTAL@ руб.
+            </b>
+         </td>
+      </tr>
+      <tr>
+         <td COLSPAN=4>
+            <hr color="black">
+         </td>
+         <td></td>
+      </tr>
+    </table>
+
+    <u>Всего наименований @INVC_ROW_COUNT@ на сумму @INVC_TOTAL@ руб</u><br>
+    <b>Сумма: @INVC_TOTAL_STR@</b><br>
+
+    <table border=0 width=100% cols=1 align=center cellpadding=0 cellspacing=0>
+      <tr>
+        <td>
+          <br>
+          <b>  Руководитель  </b>
+           _______________
+          / @SUP_HEADMAN_SHORT@ /
+        </td>
+      </tr>
+      <tr>
+         <td>
+            <br>
+            <b>  Бухгалтер  </b>
+             _______________ 
+            / @SUP_BOOKEEPER_SHORT@ /
+         </td>
+      </tr>
+    </table>
+  </BODY>
+</HTML>

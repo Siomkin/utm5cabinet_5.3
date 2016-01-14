@@ -9,7 +9,7 @@ class Urfa_Client
     public function __construct($host = null, $port = null, $ssl = false)
     {
         if (is_null($host) || is_null($port)) {
-            $this->config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/billing.ini', 'app');
+            $this->config = new Zend_Config_Ini(APPLICATION_PATH.'/configs/billing.ini', 'app');
             $host = $this->config->urfaphp->host;
             $port = $this->config->urfaphp->port;
         }
@@ -786,8 +786,9 @@ class Urfa_Client
             $this->urfa->send();
 
             $retCode = $this->urfa->get_int();
-            if($retCode != 0)
+            if ($retCode != 0) {
                 return;
+            }
 
             $flags = $this->urfa->get_int();
             $shaping['turbomode_settings_id'] = $this->urfa->get_int();
@@ -814,7 +815,7 @@ class Urfa_Client
             $report['shaping'] = $shaping;
 
             if ($shaping['turbo_mode_available'] == true) {
-               // $this->urfa->call(-0x1200b);
+                // $this->urfa->call(-0x1200b);
                 $this->urfa->call(-0x1200c);
                 $this->urfa->put_int($slink_id);
                 $this->urfa->send();
@@ -823,23 +824,25 @@ class Urfa_Client
 
                 $modes = array();
 
-                for($m = 0; $m < $modesCnt; $m++){
+                for ($m = 0; $m < $modesCnt; $m++) {
                     $modes[$m] = array();
                     $modes[$m]['id'] = $this->urfa->get_int();
                     $modes[$m]['name'] = $this->urfa->get_string();
                     $modes[$m]['incoming_rate'] = $this->urfa->get_int();
                     $modes[$m]['outgoing_rate'] = $this->urfa->get_int();
 
-                    if($modes[$m]['incoming_rate'] == 0)
+                    if ($modes[$m]['incoming_rate'] == 0) {
                         $modes[$m]['incoming_rate'] = $modes[$m]['outgoing_rate'];
+                    }
 
-                    if($modes[$m]['outgoing_rate'] == 0)
+                    if ($modes[$m]['outgoing_rate'] == 0) {
                         $modes[$m]['outgoing_rate'] = $modes[$m]['incoming_rate'];
+                    }
 
                     $isDuration = $this->urfa->get_int();
-                    if($isDuration)
+                    if ($isDuration) {
                         $modes[$m]['duration'] = $this->urfa->get_int();
-                    else {
+                    } else {
                         $modes[$m]['incoming_limit'] = $this->urfa->get_long();
                         $modes[$m]['outgoing_limit'] = $this->urfa->get_long();
                     }
@@ -850,64 +853,70 @@ class Urfa_Client
                 $this->urfa->finish();
 
                 $turbo = array();
-                for($m = 0; $m < $modesCnt; $m++){
-                    if($modes[$m]['id'] == $shaping['turbomode_settings_id'])
+                for ($m = 0; $m < $modesCnt; $m++) {
+                    if ($modes[$m]['id'] == $shaping['turbomode_settings_id']) {
                         continue;
+                    }
 
-                    if($this->checkRate($modes[$m],$shaping))
+                    if ($this->checkRate($modes[$m], $shaping)) {
                         continue;
+                    }
 
                     $turbo[$m] = $modes[$m];
                 }
 
 
+                /* $turbo = array();
+                 $turbo['incoming_rate'] = $this->urfa->get_int();
+                 $turbo['outgoing_rate'] = $this->urfa->get_int();
+                 $turbo['duration'] = Urfa_Resolve::getTimeFromSec($this->urfa->get_int());
+                 $turbo['cost'] = $this->urfa->get_double();
+                 $this->urfa->finish();
+                 if ($turbo['incoming_rate'] == 0) {
+                     $turbo['incoming_rate'] = $turbo['outgoing_rate'];
+                 }
+                 if ($turbo['outgoing_rate'] == 0) {
+                     $turbo['outgoing_rate'] = $turbo['incoming_rate'];
+                 }
 
-
-
-               /* $turbo = array();
-                $turbo['incoming_rate'] = $this->urfa->get_int();
-                $turbo['outgoing_rate'] = $this->urfa->get_int();
-                $turbo['duration'] = Urfa_Resolve::getTimeFromSec($this->urfa->get_int());
-                $turbo['cost'] = $this->urfa->get_double();
-                $this->urfa->finish();
-                if ($turbo['incoming_rate'] == 0) {
-                    $turbo['incoming_rate'] = $turbo['outgoing_rate'];
-                }
-                if ($turbo['outgoing_rate'] == 0) {
-                    $turbo['outgoing_rate'] = $turbo['incoming_rate'];
-                }
-
-                $turbo['incoming_rate'] = Urfa_Resolve::resolveRate($turbo['incoming_rate']);
-                $turbo['outgoing_rate'] = Urfa_Resolve::resolveRate($turbo['outgoing_rate']);
-                $turbo['link'] = Urfa_Resolve::getLinkToTurboMode($slink_id);*/
+                 $turbo['incoming_rate'] = Urfa_Resolve::resolveRate($turbo['incoming_rate']);
+                 $turbo['outgoing_rate'] = Urfa_Resolve::resolveRate($turbo['outgoing_rate']);
+                 $turbo['link'] = Urfa_Resolve::getLinkToTurboMode($slink_id);*/
 
                 $report['turbo'] = $turbo;
             }
         }
 
-       // $this->urfa->finish();
+        // $this->urfa->finish();
 
         return $report;
     }
 
 
-    private function checkRate($Rate,$shaping){
+    private function checkRate($Rate, $shaping)
+    {
 
         $incState = false;
-        if($shaping['incoming_rate'] == -1)
+        if ($shaping['incoming_rate'] == -1) {
             $incState = true;
-        else if($Rate['incoming_rate'] == -1)
-            $incState = false;
-        else
-            $incState = $shaping['incoming_rate'] > $Rate['incoming_rate'];
+        } else {
+            if ($Rate['incoming_rate'] == -1) {
+                $incState = false;
+            } else {
+                $incState = $shaping['incoming_rate'] > $Rate['incoming_rate'];
+            }
+        }
 
         $outgState = false;
-        if($shaping['outgoing_rate'] == -1)
+        if ($shaping['outgoing_rate'] == -1) {
             $outgState = true;
-        else if($Rate['outgoing_rate'] == -1)
-            $outgState = false;
-        else
-            $outgState = $shaping['outgoing_rate'] > $Rate['outgoing_rate'];
+        } else {
+            if ($Rate['outgoing_rate'] == -1) {
+                $outgState = false;
+            } else {
+                $outgState = $shaping['outgoing_rate'] > $Rate['outgoing_rate'];
+            }
+        }
 
         return $incState && $outgState;
     }
@@ -952,7 +961,7 @@ class Urfa_Client
             $tmp = array();
             $tmp['id'] = $this->urfa->get_int();
             $tmp['send_date'] = Urfa_Resolve::getDateFromTimestamp($this->urfa->get_int());
-            $tmp['send_date'] = "<b>" . $tmp['send_date'] . "</b>";
+            $tmp['send_date'] = "<b>".$tmp['send_date']."</b>";
             $tmp['sender_id'] = $this->urfa->get_int();
             $tmp['subject'] = $this->urfa->get_string();
             $tmp['mime'] = $this->urfa->get_string();
@@ -991,7 +1000,7 @@ class Urfa_Client
             $tmp['mime'] = $this->urfa->get_string();
             $tmp['is_new'] = $this->urfa->get_int();
             if ($tmp['is_new']) {
-                $tmp['send_date'] = "<b>" . $tmp['send_date'] . "</b>";
+                $tmp['send_date'] = "<b>".$tmp['send_date']."</b>";
             }
             //  $tmp['link'] = getMessageLink($tmp['id'], $tmp['subject'], $tmp['is_new']);
             $report[$i] = $tmp;
@@ -1379,24 +1388,192 @@ class Urfa_Client
         return $report;
     }
 
-    public function getInvoiceDocument($id = 0, $web = 25)
+    public function getInvoiceDocument($sum)
     {
-        $text = null;
-        $this->urfa->call(-0x4053);
+        $subst = array();
 
-        $this->urfa->put_int($web); // 25 - Invoice for web, 27- Receipt for web
-        $this->urfa->put_int($id);
-
+        $this->urfa->call(-0x4052);
         $this->urfa->send();
-
-        $count = $this->urfa->get_int();
-        for ($i = 0; $i < $count; $i++) {
-            $text .= $this->urfa->get_string();
-        }
-        $landscape = $this->urfa->get_int();
+        $subst['@USR_ID@'] = $this->urfa->get_int();
+        $subst['@USR_LOGIN@'] = $this->urfa->get_string();
+        $subst['@USR_BASIC_ACOUNT@'] = $this->urfa->get_int();
+        $this->urfa->get_double();
+        $this->urfa->get_double();
+        $this->urfa->get_int();
+        $this->urfa->get_int();
+        $this->urfa->get_int();
+        $this->urfa->get_int();
+        $this->urfa->get_int();
+        $this->urfa->get_int();
+        $subst['@USR_FULL_NAME@'] = $this->urfa->get_string();
+        $subst['@USR_JUR_ADDRESS@'] = $this->urfa->get_string();
+        $subst['@USR_ACT_ADDRESS@'] = $this->urfa->get_string();
+        $subst['@USR_WORK_TEL@'] = $this->urfa->get_string();
+        $subst['@USR_HOME_TEL@'] = $this->urfa->get_string();
+        $subst['@USR_MOB_TEL@'] = $this->urfa->get_string();
+        $subst['@USR_WEB_PAGE@'] = $this->urfa->get_string();
+        $subst['@USR_ICQ@'] = $this->urfa->get_string();
+        $subst['@USR_TAX@'] = $this->urfa->get_string();
+        $subst['@USR_KPP@'] = $this->urfa->get_string();
+        $this->urfa->get_int();
+        $subst['@USR_BANK_ACCOUNT@'] = $this->urfa->get_string();
+        $this->urfa->get_int();
+        $this->urfa->get_double();
+        $subst['@USR_PASSPORT@'] = $this->urfa->get_string();
+        $this->urfa->get_double();
+        $subst['@USR_EMAIL@'] = $this->urfa->get_string();
         $this->urfa->finish();
 
-        return $text;
+        $this->urfa->call(-0x15032);
+        $this->urfa->put_int(0);
+        $this->urfa->send();
+        $subst["@SUP_NAME@"] = $this->urfa->get_string();
+        $subst["@SUP_NAME_SHORT@"] = $this->urfa->get_string();
+        $subst["@SUP_FACT_ADDR@"] = $this->urfa->get_string();
+        $subst["@SUP_JUR_ADDR@"] = $this->urfa->get_string();
+        $subst["@SUP_INN@"] = $this->urfa->get_string();
+        $subst["@SUP_KPP@"] = $this->urfa->get_string();
+        $subst["@SUP_BANK_NAME@"] = $this->urfa->get_string();
+        $subst["@SUP_BANK_CITY@"] = $this->urfa->get_string();
+        $subst["@SUP_BANK_BIC@"] = $this->urfa->get_string();
+        $subst["@SUP_BANK_PAYM_ACC@"] = $this->urfa->get_string();
+        $subst["@SUP_BANK_ACCOUNT@"] = $this->urfa->get_string();
+        $subst["@SUP_HEADMAN@"] = $this->urfa->get_string();
+        $subst["@SUP_BOOKEEPER@"] = $this->urfa->get_string();
+        $subst["@SUP_HEADMAN_SHORT@"] = $this->urfa->get_string();
+        $subst["@SUP_BOOKEEPER_SHORT@"] = $this->urfa->get_string();
+        $subst["@SUM@"] = $sum;
+        $this->urfa->finish();
+
+        return $subst;
+    }
+
+    public function getInvoiceDoc($id, $sum=false)
+    {
+        $subst = array();
+        $this->urfa->call(-0x4052);
+        $this->urfa->send();
+        $subst['@USR_ID@'] = $this->urfa->get_int();
+        $subst['@USR_LOGIN@'] = $this->urfa->get_string();
+        $subst['@USR_BASIC_ACOUNT@'] = $this->urfa->get_int();
+        $this->urfa->get_double();
+        $this->urfa->get_double();
+        $this->urfa->get_int();
+        $this->urfa->get_int();
+        $this->urfa->get_int();
+        $this->urfa->get_int();
+        $this->urfa->get_int();
+        $jur = ($this->urfa->get_int() != 0);
+        $subst['@USR_FULL_NAME@'] = $this->urfa->get_string();
+        $subst['@USR_JUR_ADDRESS@'] = $this->urfa->get_string();
+        $subst['@USR_ACT_ADDRESS@'] = $this->urfa->get_string();
+        $subst['@USR_WORK_TEL@'] = $this->urfa->get_string();
+        $subst['@USR_HOME_TEL@'] = $this->urfa->get_string();
+        $subst['@USR_MOB_TEL@'] = $this->urfa->get_string();
+        $subst['@USR_WEB_PAGE@'] = $this->urfa->get_string();
+        $subst['@USR_ICQ@'] = $this->urfa->get_string();
+        $subst['@USR_TAX@'] = $this->urfa->get_string();
+        $subst['@USR_KPP@'] = $this->urfa->get_string();
+        $this->urfa->get_int();
+        $subst['@USR_BANK_ACCOUNT@'] = $this->urfa->get_string();
+        $this->urfa->get_int();
+        $this->urfa->get_double();
+        $subst['@USR_PASSPORT@'] = $this->urfa->get_string();
+        $this->urfa->get_double();
+        $subst['@USR_EMAIL@'] = $this->urfa->get_string();
+        $this->urfa->finish();
+
+        $this->urfa->call(-0x15032);
+        $this->urfa->put_int(0);
+        $this->urfa->send();
+        $subst["@SUP_NAME@"] = $this->urfa->get_string();
+        $subst["@SUP_NAME_SHORT@"] = $this->urfa->get_string();
+        $subst["@SUP_FACT_ADDR@"] = $this->urfa->get_string();
+        $subst["@SUP_JUR_ADDR@"] = $this->urfa->get_string();
+        $subst["@SUP_INN@"] = $this->urfa->get_string();
+        $subst["@SUP_KPP@"] = $this->urfa->get_string();
+        $subst["@SUP_BANK_NAME@"] = $this->urfa->get_string();
+        $subst["@SUP_BANK_CITY@"] = $this->urfa->get_string();
+        $subst["@SUP_BANK_BIC@"] = $this->urfa->get_string();
+        $subst["@SUP_BANK_PAYM_ACC@"] = $this->urfa->get_string();
+        $subst["@SUP_BANK_ACCOUNT@"] = $this->urfa->get_string();
+        $subst["@SUP_HEADMAN@"] = $this->urfa->get_string();
+        $subst["@SUP_BOOKEEPER@"] = $this->urfa->get_string();
+        $subst["@SUP_HEADMAN_SHORT@"] = $this->urfa->get_string();
+        $subst["@SUP_BOOKEEPER_SHORT@"] = $this->urfa->get_string();
+        $subst["@SUM@"] = $sum;
+        $this->urfa->finish();
+
+        $this->urfa->call(-0x15033);
+        $this->urfa->put_int($id);
+        $this->urfa->send();
+        $total = 0.0;
+        $balance = 0.0;
+        if ($this->urfa->get_int() != 0) {
+            $subtotal = 0.0;
+            $tax = 0.0;
+            $subst["@INVC_NUM@"] = $id;
+            $subst["@INVC_ACCOUNT_ID@"] = $this->urfa->get_int();
+            $subst["@INVC_DATE@"] = date('d/m/Y', $this->urfa->get_int());
+            $period_start = $this->urfa->get_int();
+            $period_end = $this->urfa->get_int();
+            if ($period_start != 0 && $period_end != 0) {
+                $subst["@INVC_PERIOD_START@"] = date('d/m/Y', $period_start);
+                $subst["@INVC_PERIOD_END@"] = date('d/m/Y', $period_end);
+            } else {
+                $subst["@INVC_PERIOD_START@"] = "-";
+                $subst["@INVC_PERIOD_END@"] = "-";
+            }
+            $balance = $this->urfa->get_double();
+            $subst["@INVC_BALANCE_ON_SET@"] = $balance;
+            $rows = $this->urfa->get_int();
+            $table_jur = "";
+            $table_ind = "";
+            for ($i = 0; $i < $rows; $i++) {
+                $name = $this->urfa->get_string();
+                $this->urfa->get_double();
+                $this->urfa->get_double();
+                $sum_cost = $this->urfa->get_double();
+                $tax_amount = $this->urfa->get_double();
+                $table_jur .= "<tr>\n".
+                    "<td align=\"center\">".($i + 1)."</td>\n".
+                    "<td align=\"left\">".htmlspecialchars($name)."</td>\n".
+                    "<td align=\"center\">".Urfa_Resolve::roundDouble($sum_cost)."</td>\n".
+                    "<td align=\"center\">1</td>\n".
+                    "<td align=\"center\">шт</td>\n".
+                    "<td align=\"center\">".Urfa_Resolve::roundDouble($sum_cost)."</td>\n".
+                    "</tr>\n";
+                $table_ind .= "<tr>\n".
+                    "<td align=\"left\">".htmlspecialchars($name)."</td>\n".
+                    "<td align=\"right\">".Urfa_Resolve::roundDouble($sum_cost)."</td>\n".
+                    "</tr>";
+                $subtotal += $sum_cost;
+                $tax += $tax_amount;
+            }
+            $total = $subtotal + $tax;
+            $subst["@INVC_PRODUCT_TABLE@"] = $table_jur;
+            $subst["@INDIVIDUAL_INVOICE_ROWS@"] = $table_ind;
+            $subst["@INVC_ROW_COUNT@"] = $rows;
+            $subst["@INVC_SUBTOTAL@"] = Urfa_Resolve::roundDouble($subtotal);
+            $subst["@INVC_TAX@"] = Urfa_Resolve::roundDouble($tax);
+            $subst["@INVC_TOTAL@"] = Urfa_Resolve::roundDouble($total);
+        }
+        $this->urfa->finish();
+
+        $this->urfa->call(-0x15034);
+        $this->urfa->put_double($total);
+        $this->urfa->send();
+        $subst["@INVC_TOTAL_STR@"] = $this->urfa->get_string();
+        $this->urfa->finish();
+
+        $sum_to_pay = $total - $balance;
+        if ($sum_to_pay < 0.0) {
+            $sum_to_pay = 0.0;
+        }
+        $subst["@INVC_SUBTOTAL_WITHOUT_BALANCE@"] = Urfa_Resolve::roundDouble($sum_to_pay);
+
+
+        return array($subst, $jur);
     }
 
 
@@ -1656,15 +1833,17 @@ class Urfa_Client
             $service_type = $this->urfa->get_int();
             $this->urfa->finish();
 
-            if($service_type != 3) // not iptraffic service
+            if ($service_type != 3) // not iptraffic service
+            {
                 continue;
+            }
 
             $this->urfa->call(-0x12010);
             $this->urfa->put_int($slink_id);
             $this->urfa->send();
 
             $res = $this->urfa->get_int();
-            if($res != 0){
+            if ($res != 0) {
                 $this->urfa->finish();
                 continue;
             }
@@ -1676,28 +1855,28 @@ class Urfa_Client
 
             $this->urfa->finish();
 
-            if(($flags & SLINK_SHAPING_TURBO_MODE_AVAILABLE) != 0){
+            if (($flags & SLINK_SHAPING_TURBO_MODE_AVAILABLE) != 0) {
                 $slinks[$slinks_cnt] = $all_slinks[$i];
                 $slinks[$slinks_cnt]["active"] = $turbo_mode_start > 0;
                 $slinks_cnt++;
             }
-           /* if ($service_type == 3) {
-                $this->urfa->call(-0x12009);
-                $this->urfa->put_int($slink_id);
-                $this->urfa->send();
+            /* if ($service_type == 3) {
+                 $this->urfa->call(-0x12009);
+                 $this->urfa->put_int($slink_id);
+                 $this->urfa->send();
 
-                $flags = $this->urfa->get_int();
-                $this->urfa->get_int();//incoming_rate
-                $this->urfa->get_int();//outgoing_rate
-                $turbo_mode_start = $this->urfa->get_int();
+                 $flags = $this->urfa->get_int();
+                 $this->urfa->get_int();//incoming_rate
+                 $this->urfa->get_int();//outgoing_rate
+                 $turbo_mode_start = $this->urfa->get_int();
 
-                $this->urfa->finish();
-                if (($flags & SLINK_SHAPING_TURBO_MODE_AVAILABLE) != 0) {
-                    $slinks[$slinks_cnt] = $all_slinks[$i];
-                    $slinks[$slinks_cnt]['active'] = $turbo_mode_start > 0;
-                    $slinks_cnt++;
-                }
-            }*/
+                 $this->urfa->finish();
+                 if (($flags & SLINK_SHAPING_TURBO_MODE_AVAILABLE) != 0) {
+                     $slinks[$slinks_cnt] = $all_slinks[$i];
+                     $slinks[$slinks_cnt]['active'] = $turbo_mode_start > 0;
+                     $slinks_cnt++;
+                 }
+             }*/
         }
 
         return $slinks;
