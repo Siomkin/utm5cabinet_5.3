@@ -163,9 +163,9 @@ class Urfa_Resolve
         }
     }
 
-    static public function getLinkToServicePass($slink_id, $item_id, $service_name)
+    static public function getLinkToServicePass($slink_id, $item_id, $service_name, $login = '')
     {
-        return '<a HREF="/user/change-service-password/slink_id/' . $slink_id . '/item_id/' . $item_id . '">'
+        return '<a HREF="/user/change-service-password/slink_id/' . $slink_id . '/item_id/' . $item_id . '/login/'.$login.'">'
         . htmlspecialchars($service_name) . '</a>';
     }
 

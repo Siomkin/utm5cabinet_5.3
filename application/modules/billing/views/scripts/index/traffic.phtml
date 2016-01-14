@@ -9,6 +9,7 @@
             <th>Мб</th>
             <th>Стоимость</th>
             <th>Списано</th>
+            <th>Списано c НДС</th>
         </tr>
         </thead>
         <tbody>
@@ -18,7 +19,10 @@
             <td><?= $traffic['mbytes']?></td>
             <td><?= $traffic['base_cost'];?></td>
             <td><?= $traffic['discount']?></td>
+            <td><?= $traffic['discount']?></td>
+            <td><?= $traffic['discount_with_tax']?></td>
             <?php $summa += $traffic['discount'];?>
+            <?php $summaNDS += $traffic['discount_with_tax'];?>
         </tr>
             <?php endforeach;?>
         </tbody>
@@ -28,6 +32,12 @@
                 <b>Итого:</b>
             </td>
             <td><b><?=$summa?></b></td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <b>Итого c НДС:</b>
+            </td>
+            <td><b><?=$summaNDS?></b></td>
         </tr>
         </tfoot>
     </table>

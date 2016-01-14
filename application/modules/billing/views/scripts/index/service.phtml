@@ -44,7 +44,7 @@
                 </table>
             <?php endif; ?>
         <?php elseif ($this->services['service']['type'] == 3): ?>
-            <?php if (isset($this->services['downloaded'])): ?>
+            <?php if (isset($this->services['downloaded']) && count($this->services['downloaded'])): ?>
                 <div class="bs-callout bs-callout-info"><h4>Скачано в текущем учетном периоде</h4></div>
                 <table class="table table-striped">
                     <thead>
@@ -75,7 +75,7 @@
                 </table>
             <?php endif; ?>
 
-            <?php if (isset($this->services['prepaid'])): ?>
+            <?php if (isset($this->services['prepaid']) && count($this->services['prepaid'])): ?>
                 <div class="bs-callout bs-callout-info"><h4>Предоплачено</h4></div>
                 <table class="table table-striped">
                     <thead>
@@ -107,7 +107,7 @@
                 </table>
             <?php endif; ?>
 
-            <?php if (isset($this->services['transfered'])): ?>
+            <?php if (isset($this->services['transfered']) && count($this->services['transfered'])): ?>
                 <div class="bs-callout bs-callout-info"><h4>Перенесено предоплаченного с прошлого учетного периода</h4>
                 </div>
                 <table class="table table-striped">
@@ -139,7 +139,7 @@
                 </table>
             <?php endif; ?>
 
-            <?php if (isset($this->services['borders'])): ?>
+            <?php if (isset($this->services['borders']) && count($this->services['borders'])): ?>
                 <div class="bs-callout bs-callout-info"><h4>Границы тарификации</h4></div>
                 <table class="table table-striped">
                     <thead>
@@ -197,10 +197,11 @@
                         <th>Входящий канал</th>
                         <th>Исходящий канал</th>
 
-                        <?php if ($this->services['shaping']['turbo_mode_available'] != FALSE): ?>
+                        <?php if ($this->services['shaping']['turbo_mode_available'] == true): ?>
                             <?php if ($this->services['shaping']['turbo_mode_start'] != 0): ?>
 
                                 <th>Турбо-режим</th>
+                                <th>Скорость</th>
                                 <th>Начало</th>
                                 <th>Конец</th>
 

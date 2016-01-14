@@ -634,6 +634,7 @@ class Urfa_Client
             $tmp['vat_rate'] = $this->urfa->get_double();
             //$tmp['locked_in_funds'] = -1.0 * Urfa_Resolve::roundDouble($this->urfa->get_double());
             //$tmp['link'] = resolveIntStatusForAccount($tmp['int_status'], $account_id);
+            $this->urfa->get_double();//unused
             $accounts[$account_id] = $tmp;
         }
         $this->urfa->finish();
@@ -728,7 +729,7 @@ class Urfa_Client
                 $tmp['mask'] = $this->urfa->get_int();
                 $tmp['login'] = $this->urfa->get_string();
                 //$tmp['link'] = getLinkToServicePass($this->slink_id, $tmp['id'], langGet("change_password"));
-                $tmp['link'] = Urfa_Resolve::getLinkToServicePass($slink_id, $tmp['id'], 'Изменить пароль');
+                $tmp['link'] = Urfa_Resolve::getLinkToServicePass($slink_id, $tmp['id'], 'Изменить пароль', $tmp['login']);
                 $ip_groups[$i] = $tmp;
             }
             $report['ip_groups'] = $ip_groups;
@@ -779,19 +780,27 @@ class Urfa_Client
         $this->urfa->finish();
 
         if ($service['type'] == 3) {
-            $this->urfa->call(-0x12009);
+            //$this->urfa->call(-0x12009);
+            $this->urfa->call(-0x12010);
             $this->urfa->put_int($slink_id);
             $this->urfa->send();
+
+            $retCode = $this->urfa->get_int();
+            if($retCode != 0)
+                return;
+
             $flags = $this->urfa->get_int();
+            $shaping['turbomode_settings_id'] = $this->urfa->get_int();
             $shaping['incoming_rate'] = $this->urfa->get_int();
             $shaping['outgoing_rate'] = $this->urfa->get_int();
             $shaping['turbo_mode_start'] = $this->urfa->get_int();
             $shaping['turbo_mode_end'] = $this->urfa->get_int();
+            $shaping['incoming_consumption_left'] = $this->urfa->get_long();
+            $shaping['outgoing_consumption_left'] = $this->urfa->get_long();
+            $this->urfa->finish();
 
             $shaping['show_shaping'] = (($flags & SLINK_SHAPING_AVAILABLE) != 0) ? true : false;
             $shaping['turbo_mode_available'] = (($flags & SLINK_SHAPING_TURBO_MODE_AVAILABLE) != 0) ? true : false;
-
-            $this->urfa->finish();
 
             if ($shaping['incoming_rate'] == 0) {
                 $shaping['incoming_rate'] = $shaping['outgoing_rate'];
@@ -804,11 +813,58 @@ class Urfa_Client
 
             $report['shaping'] = $shaping;
 
-            if ($shaping['turbo_mode_available'] == true && $shaping['turbo_mode_start'] == 0) {
-                $this->urfa->call(-0x1200b);
+            if ($shaping['turbo_mode_available'] == true) {
+               // $this->urfa->call(-0x1200b);
+                $this->urfa->call(-0x1200c);
                 $this->urfa->put_int($slink_id);
                 $this->urfa->send();
+
+                $modesCnt = $this->urfa->get_int();
+
+                $modes = array();
+
+                for($m = 0; $m < $modesCnt; $m++){
+                    $modes[$m] = array();
+                    $modes[$m]['id'] = $this->urfa->get_int();
+                    $modes[$m]['name'] = $this->urfa->get_string();
+                    $modes[$m]['incoming_rate'] = $this->urfa->get_int();
+                    $modes[$m]['outgoing_rate'] = $this->urfa->get_int();
+
+                    if($modes[$m]['incoming_rate'] == 0)
+                        $modes[$m]['incoming_rate'] = $modes[$m]['outgoing_rate'];
+
+                    if($modes[$m]['outgoing_rate'] == 0)
+                        $modes[$m]['outgoing_rate'] = $modes[$m]['incoming_rate'];
+
+                    $isDuration = $this->urfa->get_int();
+                    if($isDuration)
+                        $modes[$m]['duration'] = $this->urfa->get_int();
+                    else {
+                        $modes[$m]['incoming_limit'] = $this->urfa->get_long();
+                        $modes[$m]['outgoing_limit'] = $this->urfa->get_long();
+                    }
+
+                    $modes[$m]['cost'] = $this->urfa->get_double();
+                }
+
+                $this->urfa->finish();
+
                 $turbo = array();
+                for($m = 0; $m < $modesCnt; $m++){
+                    if($modes[$m]['id'] == $shaping['turbomode_settings_id'])
+                        continue;
+
+                    if($this->checkRate($modes[$m],$shaping))
+                        continue;
+
+                    $turbo[$m] = $modes[$m];
+                }
+
+
+
+
+
+               /* $turbo = array();
                 $turbo['incoming_rate'] = $this->urfa->get_int();
                 $turbo['outgoing_rate'] = $this->urfa->get_int();
                 $turbo['duration'] = Urfa_Resolve::getTimeFromSec($this->urfa->get_int());
@@ -823,15 +879,37 @@ class Urfa_Client
 
                 $turbo['incoming_rate'] = Urfa_Resolve::resolveRate($turbo['incoming_rate']);
                 $turbo['outgoing_rate'] = Urfa_Resolve::resolveRate($turbo['outgoing_rate']);
-                $turbo['link'] = Urfa_Resolve::getLinkToTurboMode($slink_id);
+                $turbo['link'] = Urfa_Resolve::getLinkToTurboMode($slink_id);*/
 
                 $report['turbo'] = $turbo;
             }
         }
 
-        $this->urfa->finish();
+       // $this->urfa->finish();
 
         return $report;
+    }
+
+
+    private function checkRate($Rate,$shaping){
+
+        $incState = false;
+        if($shaping['incoming_rate'] == -1)
+            $incState = true;
+        else if($Rate['incoming_rate'] == -1)
+            $incState = false;
+        else
+            $incState = $shaping['incoming_rate'] > $Rate['incoming_rate'];
+
+        $outgState = false;
+        if($shaping['outgoing_rate'] == -1)
+            $outgState = true;
+        else if($Rate['outgoing_rate'] == -1)
+            $outgState = false;
+        else
+            $outgState = $shaping['outgoing_rate'] > $Rate['outgoing_rate'];
+
+        return $incState && $outgState;
     }
 
     /**

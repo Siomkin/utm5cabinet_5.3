@@ -13,37 +13,52 @@ class Billing_Form_UserEdit extends Zend_Form
     public function __construct()
     {
         $this->setName('form_useredit');
-        $this->setAttrib('class', 'wellform');
-        $this->removeDecorator('HtmlTag');
+       // $this->setAttrib('class', 'wellform');
+        //$this->removeDecorator('HtmlTag');
         parent::__construct();
 
-        $serviceType = new Zend_Form_Element_Text('fullname');
+/*        $serviceType = new Zend_Form_Element_Text('fullname');
         $serviceType->setLabel('Имя пользователя')
             ->removeDecorator('HtmlTag')
             ->addFilter('StringTrim')
             ->addFilter('StripTags');
-        $this->addElement($serviceType);
+        $this->addElement($serviceType);*/
 
-        $serviceType = new Zend_Form_Element_Text('home_telephone');
-        $serviceType->setLabel('Домашний телефон')
-            ->removeDecorator('HtmlTag')
-            ->addFilter('StringTrim')
-            ->addFilter('StripTags');
-        $this->addElement($serviceType);
+        $this->addElement(
+            'text', 'home_telephone', array(
+                'label' => 'Домашний телефон',
+                'class' => 'form-control',
+                //'required' => TRUE,
+                'filters' => array('StringTrim', 'StripTags'),
+                'validators' => array(
+                   // 'NotEmpty'
+                )
+            )
+        );
+        $this->addElement(
+            'text', 'mobile_telephone', array(
+                'label' => 'Мобильный телефон',
+                'class' => 'form-control',
+                //'required' => TRUE,
+                'filters' => array('StringTrim', 'StripTags'),
+                'validators' => array(
+                   // 'NotEmpty'
+                )
+            )
+        );
+        $this->addElement(
+            'text', 'email', array(
+                'label' => 'Email',
+                'class' => 'form-control',
+               // 'required' => TRUE,
+                'filters' => array('StringTrim', 'StripTags'),
+                'validators' => array(
+                   // 'NotEmpty',
+                    'EmailAddress'
+                )
+            )
+        );
 
-        $serviceType = new Zend_Form_Element_Text('mobile_telephone');
-        $serviceType->setLabel('Мобильный телефон')
-            ->removeDecorator('HtmlTag')
-            ->addFilter('StringTrim')
-            ->addFilter('StripTags');
-        $this->addElement($serviceType);
-
-        $serviceType = new Zend_Form_Element_Text('email');
-        $serviceType->setLabel('Email')
-            ->removeDecorator('HtmlTag')
-            ->addFilter('StringTrim')
-            ->addFilter('StripTags');
-        $this->addElement($serviceType);
 
         $accepted = new Zend_Form_Element_Checkbox('accepted');
         $accepted->setLabel('Подтверждаю редактирование')
@@ -52,12 +67,22 @@ class Billing_Form_UserEdit extends Zend_Form
             ->removeDecorator('DtDdWrapper');
         $this->addElement($accepted);
 
+        $this->addElement(
+            'button', 'send', array(
+                'label' => 'Отправить',
+                'class' => 'btn btn-primary',
+                'type' => 'submit',
+                'buttonType' => 'success',
+                'icon' => 'ok',
+                'escape' => FALSE
+            )
+        );
 
-        $submit = new Zend_Form_Element_Submit('submit', array('class' => 'btn btn-primary'));
-        $submit->setLabel('Отправить')
-            ->removeDecorator('DtDdWrapper');
-        $this->addElement($submit);
+    }
 
+    public function init()
+    {
+        $this->addAttribs(array('class' => 'well col-md-6'));
     }
 
 }

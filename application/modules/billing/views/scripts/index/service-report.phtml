@@ -1,40 +1,45 @@
 <div id="dateForm"><?= $this->form; ?></div>
 <?php if (is_array($this->service_report)): ?>
     <?php if (count($this->service_report) > 0): ?>
-    <?php $summa = 0 ?>
-    <table class="table table-striped">
-        <thead>
+        <?php $summa = $summaNDS = 0 ?>
+        <table class="table table-striped">
+            <thead>
             <tr>
                 <th>Дата</th>
                 <th>Название услуги</th>
                 <th>Сумма</th>
+                <th>Сумма с налогами</th>
                 <!--<th>комментарий</th>-->
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             <?php foreach ($this->service_report as $service): ?>
                 <tr>
-                    <td><?= $service['charged_on']?></td>
-                    <td><?= $service['service_name']?></td>
-                    <td><?= $service['amount']; $summa += $service['amount']?> <?= $this->currencyName?></td>
+                    <td><?= $service['charged_on'] ?></td>
+                    <td><?= $service['service_name'] ?></td>
+                    <td><?= $service['amount'];
+                        $summa += $service['amount'] ?> <?= $this->currencyName ?></td>
+                    <td><?= $service['amount_with_tax'];
+                        $summaNDS += $service['amount_with_tax'] ?> <?= $this->currencyName ?></td>
                     <!--<td><?php //echo $service['comment']?></td>-->
                 </tr>
-            <?php endforeach;?>
-        </tbody>
-        <tfoot>
+            <?php endforeach; ?>
+            </tbody>
+            <tfoot>
             <tr>
                 <td colspan="2">
                     <b>Итого:</b>
                 </td>
-                <td><b><?=$summa?></b> <?= $this->currencyName?></td>
+                <td><b><?= $summa ?></b> <?= $this->currencyName ?></td>
+                <td><b><?= $summaNDS ?></b> <?= $this->currencyName ?></td>
             </tr>
-        </tfoot>
-    </table>
+            </tfoot>
+        </table>
     <?php else : ?>
-        <?= $this->bootAlert(array('success'=>'Списания по услугам отсутствуют'))?>
+        <?= $this->bootAlert(array('success' => 'Списания по услугам отсутствуют')) ?>
     <?php endif; ?>
 <?php else : ?>
-    <?= $this->bootAlert(array('info'=>'Выберите период для построения отчёта'))?>
+    <?= $this->bootAlert(array('info' => 'Выберите период для построения отчёта')) ?>
 <?php endif; ?>
 
 <?= $this->cacheInfo($this->cacheData) ?>

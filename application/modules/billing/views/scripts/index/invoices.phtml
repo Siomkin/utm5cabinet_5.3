@@ -24,7 +24,7 @@
             <td><?= $rep['is_payed']?></td>
             <td><?= $rep['ext_num']?></td>
             <td><?= $rep['amount']; $summa += $rep['amount']?> <?= $this->currencyName?></td>
-            <td><?= $rep['total_sum_plus_total_tax']; $sum_with_tax+=$rep['total_sum_plus_total_tax'];?></td>
+            <td><?= $rep['total_sum_plus_total_tax']; $sum_with_tax+=$rep['total_sum_plus_total_tax'];?><?= $this->currencyName?></td>
             <td><a href="/user/invoice-document/id/<?= $rep['id']?>" target="_blank">Показать документ</a></td>
         </tr>
             <?php endforeach;?>
