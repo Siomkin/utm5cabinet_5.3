@@ -1574,7 +1574,32 @@ class Urfa_Client
             $service_type = $this->urfa->get_int();
             $this->urfa->finish();
 
-            if ($service_type == 3) {
+            if($service_type != 3) // not iptraffic service
+                continue;
+
+            $this->urfa->call(-0x12010);
+            $this->urfa->put_int($slink_id);
+            $this->urfa->send();
+
+            $res = $this->urfa->get_int();
+            if($res != 0){
+                $this->urfa->finish();
+                continue;
+            }
+
+            $flags = $this->urfa->get_int();
+            $this->urfa->get_int();//incoming_rate
+            $this->urfa->get_int();//outgoing_rate
+            $turbo_mode_start = $this->urfa->get_int();
+
+            $this->urfa->finish();
+
+            if(($flags & SLINK_SHAPING_TURBO_MODE_AVAILABLE) != 0){
+                $slinks[$slinks_cnt] = $all_slinks[$i];
+                $slinks[$slinks_cnt]["active"] = $turbo_mode_start > 0;
+                $slinks_cnt++;
+            }
+           /* if ($service_type == 3) {
                 $this->urfa->call(-0x12009);
                 $this->urfa->put_int($slink_id);
                 $this->urfa->send();
@@ -1590,7 +1615,7 @@ class Urfa_Client
                     $slinks[$slinks_cnt]['active'] = $turbo_mode_start > 0;
                     $slinks_cnt++;
                 }
-            }
+            }*/
         }
 
         return $slinks;
