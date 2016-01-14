@@ -38,7 +38,7 @@ class Default_IndexController extends Zend_Controller_Action
                     $this->redirect($uri);
                 } else {
                     $this->_helper->flashMessenger->addMessage(
-                        array('error' => 'Ошибка авторизации. Не верная пара логин-пароль')
+                        array('danger' => 'Ошибка авторизации. Не верная пара логин-пароль')
                     );
                     $this->redirect('/');
                 }
