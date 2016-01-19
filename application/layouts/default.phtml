@@ -8,15 +8,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?php echo $this->headStyle() ?>
 
-    <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="/assets/css/sticky-footer-navbar.css" rel="stylesheet"/>
-
-    <?php echo $this->headLink()->appendStylesheet('/assets/css/style.css') ?>
+    <?php echo $this->headLink()
+        ->appendStylesheet('/assets/bootstrap/css/bootstrap.min.css')
+        ->appendStylesheet('/assets/css/sticky-footer-navbar.css')
+        ->appendStylesheet('/assets/css/style.css')
+        ->appendStylesheet('/assets/js/jquery/css/redmond/jquery-ui.custom.min.css') ?>
 
     <!-- Bootstrap core JavaScript
 ================================================== -->
-    <?php echo $this->JQuery()->setLocalPath('/assets/js/jquery/jquery.min.js')->enable();?>
-    <?php echo $this->headScript()->appendFile('/assets/js/jquery/jquery.timeago.js')
+    <?php echo $this->headScript()
+        ->appendFile('/assets/js/jquery/jquery.min.js')
+        ->appendFile('/assets/js/jquery/jquery.timeago.js')
         ->appendFile('/assets/js/jquery/jquery.timeago.ru.js')
     ?>
 
@@ -71,9 +73,10 @@
 
 <!-- Bootstrap core JavaScript
 ================================================== -->
-<?php echo $this->JQuery()->setUiLocalPath('/assets/js/jquery/jquery-ui.custom.min.js')->enable()
-    ->addStylesheet('/assets/js/jquery/css/redmond/jquery-ui.custom.min.css'); ?>
-<?php echo $this->headScript()->appendFile('/assets/bootstrap/js/bootstrap.min.js')
+<?php echo $this->headScript()
+    ->appendFile('/assets/js/jquery/jquery.min.js')
+    ->appendFile('/assets/js/jquery/jquery-ui.custom.min.js')
+    ->appendFile('/assets/bootstrap/js/bootstrap.min.js')
     ->appendFile('/assets/js/jquery/jquery.ui.datepicker-ru.js'); ?>
 </body>
 </html>
