@@ -47,10 +47,10 @@
             <input type="radio"
                    name="next_tp"
                    id="next_tp<?=$i++?>"
-                   value="<?=$changeTariffInfo['can_change'] == 1 ? $changeTariffInfo['id'] : ''?>"
-                <?=$changeTariffInfo['can_change'] == 1 ? '' : 'disabled'?>
+                   value="<?=$changeTariffInfo['can_change'] == 1 || $changeTariffInfo['can_change'] == 2 ? $changeTariffInfo['id'] : ''?>"
+                <?=$changeTariffInfo['can_change'] == 1 || $changeTariffInfo['can_change'] == 2 ? '' : 'disabled'?>
                 <?=$changeTariffInfo['id'] == $this->next_tp ? 'checked' : ''?>>
-            <?=$changeTariffInfo['can_change'] == 1 ? $this->badge($changeTariffInfo['name'], 'success') : $this->badge($changeTariffInfo['name'], 'error') ?> <?= $changeTariffInfo['comments']?>
+            <?=$changeTariffInfo['can_change'] == 1 || $changeTariffInfo['can_change'] == 2 ? $this->badge($changeTariffInfo['name'], 'success') : $this->badge($changeTariffInfo['name'], 'error') ?> <?= $changeTariffInfo['comments']?>
         </label>
         <?php if ($changeTariffInfo['cost']!=0 || $changeTariffInfo['use_min_balance'] || $changeTariffInfo['use_free_balance']): ?>
         <table class="table table-striped table-bordered table-condensed">
