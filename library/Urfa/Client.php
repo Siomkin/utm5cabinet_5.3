@@ -1821,7 +1821,7 @@ class Urfa_Client
         }
         $this->urfa->finish();
 
-        $slinks = false;
+        $slinks = array();
         $slinks_cnt = 0;
 
         for ($i = 0, $size = count($all_slinks); $i < $size; $i++) {
@@ -1852,7 +1852,6 @@ class Urfa_Client
             $this->urfa->get_int();//incoming_rate
             $this->urfa->get_int();//outgoing_rate
             $turbo_mode_start = $this->urfa->get_int();
-
             $this->urfa->finish();
 
             if (($flags & SLINK_SHAPING_TURBO_MODE_AVAILABLE) != 0) {

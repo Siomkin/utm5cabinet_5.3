@@ -26,6 +26,7 @@ define("RUT_CARD", 2);
 define("RSR_SSL_NONE", 0);
 define("RSR_SSL_SSL3", 2);
 define("RSR_SSL_CERT", 3);
+define("RSR_SSL_SSL3_ADMIN", 4);
 define("RSR_SSL_TLS1", 6);
 
 define("URFA_STATE_NONE", 0);
@@ -41,17 +42,18 @@ class Urfa_Connect
     private $sock = null;
     private $packet = FALSE;
     private $userType = RUT_SERVICE;
-    private $sslType = RSR_SSL_TLS1;
+    private $sslType = RSR_SSL_SSL3;
     private $state = URFA_STATE_NONE;
     private $enableDebug = true;
+    private $admin = false;
 
 
     /**
      * Создаём объект Urfa_Client
      */
-    public function __construct()
+    public function __construct($admin = false)
     {
-
+        $this->admin = $admin;
     }
 
     public function __destruct()
@@ -124,7 +126,7 @@ class Urfa_Connect
         $attr = $packet->find(RA_SSL_REQUEST);
         if ($attr != FALSE) {
             $tmp = unpack('Nval', $attr['data']);
-            if ($tmp['val'] == RSR_SSL_SSL3) {
+            if ($tmp['val'] == RSR_SSL_SSL3 || $tmp['val'] == RSR_SSL_SSL3_ADMIN) {
                 $this->sock->enable_crypto(STREAM_CRYPTO_METHOD_SSLv3_CLIENT);
             } else {
                 if ($tmp['val'] == RSR_SSL_TLS1) {
@@ -141,7 +143,11 @@ class Urfa_Connect
 
     public function enable_ssl3()
     {
-        $this->sslType = RSR_SSL_SSL3;
+        if ($this->admin) {
+            $this->sslType = RSR_SSL_SSL3_ADMIN;
+        } else {
+            $this->sslType = RSR_SSL_SSL3;
+        }
     }
 
     public function enable_tls1()
@@ -163,9 +169,12 @@ class Urfa_Connect
      */
     public function connect($host, $port)
     {
+        if ($this->admin) {
+            $this->enable_ssl3();
+        }
         $this->host = $host;
         $this->port = $port;
-        $this->sock = new Urfa_Socket();
+        $this->sock = new Urfa_Socket($this->admin);
         if ($this->sock->open($host, $port) === FALSE) {
             return FALSE;
         }
@@ -346,7 +355,7 @@ class Urfa_Connect
             $this->packet = FALSE;
         }
         if ($this->packet == FALSE) {
-            $this->packet = new Urfa_Packet;
+            $this->packet = new Urfa_Packet();
             if ($this->packet->recvPacket($this->sock) == FALSE) {
                 $this->logger("get: recvPacket failed 4");
                 return FALSE;
@@ -361,6 +370,7 @@ class Urfa_Connect
             $this->logger("get: getAttr failed");
             return FALSE;
         }
+
         if ($attr['code'] != RA_DATA) {
             $this->logger("get: attr code != RA_DATA");
             return FALSE;

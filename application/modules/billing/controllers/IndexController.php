@@ -117,6 +117,7 @@ class Billing_IndexController extends Zend_Controller_Action
             }
             unset($urfa);
         }
+        //Zend_Debug::dump($turbo);
         //Присваиваем данные переменным вида
         $this->view->services = $services;
         // Zend_Debug::dump($services);
@@ -1260,6 +1261,70 @@ class Billing_IndexController extends Zend_Controller_Action
                 $this->view->cacheData = $this->cache->getMetadatas($cacheId);
             }
         }
+
+    }
+
+    public function testAction()
+    {
+        // Old Client
+        /*     $urfa_admin = new Urfaphp_URFAClientAdmin(
+                 $this->config->urfaphp->login ,
+                 $this->config->urfaphp->password,
+                 $this->config->urfaphp->host,
+                 $this->config->urfaphp->port, true, true);
+        // Zend_Debug::dump($urfa_admin);
+
+             $urfa_admin->rpcf_remove_user_from_group('1000006','250');
+
+             $urfa_admin = new Urfaphp_URFAClientAdmin(
+                 $this->config->urfaphp->login ,
+                 $this->config->urfaphp->password,
+                 $this->config->urfaphp->host,
+                 $this->config->urfaphp->port, true, true);
+
+             $urfa_admin->rpcf_add_group_to_user('1000006','300');*/
+
+        echo 'UserInfo: User Function';
+
+        $urfa = $this->reconnect();
+            $userInfo = $urfa->getUserInfo();
+
+        Zend_Debug::dump($userInfo);
+
+        ///-------------------------------------------------------
+    /*
+        $urfaAdmin = new Urfa_Admin();
+            $urfaAdmin->rpcf_remove_user_from_group('1000006','250');
+        $urfaAdmin->close_session();
+    */
+
+        ///--------------------------------------------------------
+    /*
+        $urfaAdmin = new Urfa_Admin();
+            $urfaAdmin->rpcf_add_group_to_user('1000006','250');
+            $urfaAdmin->rpcf_add_group_to_user('1000006','300');
+        $urfaAdmin->close_session();
+    */
+
+        $urfaAdmin = new Urfa_Admin();
+
+        ///--------------------------------------------------------
+        echo 'Version: Admin Function<br/>';
+
+        $version = $urfaAdmin->rpcf_core_version();
+        $build = $urfaAdmin->rpcf_core_build();
+
+        echo 'Версия: '.$version.'-'.$build.'<br/><br/>';
+
+        ///--------------------------------------------------------
+        echo 'Groups: Admin Function';
+
+        $data = $urfaAdmin->rpcf_get_groups_for_user($userInfo['basic_account']);
+
+        Zend_Debug::dump($data);
+        ///--------------------------------------------------------
+
+
 
     }
 
