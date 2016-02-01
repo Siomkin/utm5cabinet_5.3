@@ -18,16 +18,16 @@ class Urfa_Resolve
             'д' => $secs / 86400 % 7,
             'ч' => $secs / 3600 % 24,
             'м' => $secs / 60 % 60,
-            'с' => $secs % 60
+            'с' => $secs % 60,
         );
 
         $ret = array();
 
-        $added = FALSE;
+        $added = false;
         foreach ($vals as $k => $v) {
             if ($v > 0 || $added) {
-                $added = TRUE;
-                $ret[] = $v . $k;
+                $added = true;
+                $ret[] = $v.$k;
             }
         }
 
@@ -64,13 +64,15 @@ class Urfa_Resolve
         $b = ($ip >> 8) & 0xff;
         $c = ($ip >> 16) & 0xff;
         $d = ($ip >> 24) & 0xff;
-        return "" . $d . "." . $c . "." . $b . "." . $a;
+
+        return "".$d.".".$c.".".$b.".".$a;
     }
 
     static public function parceIpNetworkFormat($ip)
     {
         $ip2 = ip2long($ip);
         $arr = unpack("V", pack("N", $ip2));
+
         return $arr[1];
     }
 
@@ -96,6 +98,7 @@ class Urfa_Resolve
         if ($item == 2) {
             return 'Лицевой счет';
         }
+
         return $item;
     }
 
@@ -165,28 +168,28 @@ class Urfa_Resolve
 
     static public function getLinkToServicePass($slink_id, $item_id, $service_name, $login = '')
     {
-        return '<a HREF="/user/change-service-password/slink_id/' . $slink_id . '/item_id/' . $item_id . '/login/'.$login.'">'
-        . htmlspecialchars($service_name) . '</a>';
+        return '<a HREF="/user/change-service-password/slink_id/'.$slink_id.'/item_id/'.$item_id.'/login/'.$login.'">'
+        .htmlspecialchars($service_name).'</a>';
     }
 
     static public function getLinkToTariff($aid, $tlink_id)
     {
-        return '/user/change-tariff/aid/' . $aid . '/tlink_id/' . $tlink_id;
+        return '/user/change-tariff/aid/'.$aid.'/tlink_id/'.$tlink_id;
     }
 
     static public function getLinkToService($slink_id, $service_name)
     {
-        return '<a HREF="/user/service/' . $slink_id . '">' . htmlspecialchars($service_name) . '</a>';
+        return '<a HREF="/user/service/'.$slink_id.'">'.htmlspecialchars($service_name).'</a>';
     }
 
     static public function getLinkToChangeTariff($aid, $tlink_id, $tp_next)
     {
-        return '/user/change-tariff/aid/' . $aid . '/tlink_id/' . $tlink_id . '/tp_next/' . $tp_next;
+        return '/user/change-tariff/aid/'.$aid.'/tlink_id/'.$tlink_id.'/tp_next/'.$tp_next;
     }
 
     static public function getLinkToTurboMode($slink_id)
     {
-        return '<a href="/user/turbo-mode/slink_id/' . $slink_id . '">Включить</a>';
+        return '<a href="/user/turbo-mode/slink_id/'.$slink_id.'">Включить</a>';
     }
 
     static public function getTimeFromSeconds($uptime)
@@ -195,7 +198,8 @@ class Urfa_Resolve
         $hour = ($uptime - $uptime % 3600) / 3600 % 24;
         $sec = ($uptime % 3600) % 60;
         $min = ($uptime - $hour * 3600 - $days * 3600 * 24 - $sec) / 60;
-        return $hour . ":" . $min . ":" . $sec;
+
+        return $hour.":".$min.":".$sec;
     }
 
     static public function getDayFromSeconds($uptime)
@@ -216,5 +220,55 @@ class Urfa_Resolve
                 return 'нет информации';
             }
         }
+    }
+
+    static public function resolveLimit($rate, $bytesInKb)
+    {
+
+        if ($rate == -1) {
+            return 'без ограничений';
+        }
+
+        if ($rate == 0) {
+            return 'нет информации';
+        }
+
+        $negative = $rate < 0;
+
+        if ($negative) {
+            $rate = bcmul($rate, "-1");
+        }
+
+        $str = '';
+
+        $bInGb = bcpow($bytesInKb, 3);
+        $bInMb = bcpow($bytesInKb, 2);
+
+        $gb = bcdiv($rate, $bInGb);
+        $mb = bcdiv(bcmod($rate, $bInGb), $bInMb);
+        $kb = bcdiv(bcmod($rate, $bInMb), $bytesInKb);
+        $b = bcmod($rate, $bytesInKb);
+
+        if ($negative) {
+            $str .= "-";
+        }
+
+        if (bccomp($gb, 0)) {
+            $str .= $gb."G ";
+        }
+
+        if (bccomp($mb, 0)) {
+            $str .= $mb."M ";
+        }
+
+        if (bccomp($kb, 0)) {
+            $str .= $kb."K ";
+        }
+
+        if (bccomp($b, 0)) {
+            $str .= $b."B";
+        }
+
+        return trim($str);
     }
 }

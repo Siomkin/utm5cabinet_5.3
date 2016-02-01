@@ -1695,17 +1695,20 @@ class Urfa_Client
     /**
      * Получение информации о турбо режиме
      * @param $slink_id
+     * @param $settings_id
      *
      * @return array
      * @since 5.2.1-009
      */
-    public function getTurboModeInfo($slink_id)
+    public function getTurboModeInfo($slink_id,$settings_id)
     {
         $data = array();
-        $this->urfa->call(-0x1200b);
+        $this->urfa->call(-0x1200c);
         $this->urfa->put_int($slink_id);
         $this->urfa->send();
-        $data['incoming_rate'] = $this->urfa->get_int();
+        $modesCnt = $this->urfa->get_int();
+
+/*        $data['incoming_rate'] = $this->urfa->get_int();
         $data['outgoing_rate'] = $this->urfa->get_int();
         $data['duration'] = Urfa_Resolve::getTimeFromSec($this->urfa->get_int());
         $data['cost'] = $this->urfa->get_double();
@@ -1717,9 +1720,38 @@ class Urfa_Client
         }
         $data['incoming_rate'] = Urfa_Resolve::resolveRate($data['incoming_rate']);
         $data['outgoing_rate'] = Urfa_Resolve::resolveRate($data['outgoing_rate']);
-        $this->urfa->finish();
+        $this->urfa->finish();*/
 
-        return $data;
+
+        for($m = 0; $m < $modesCnt; $m++){
+
+            $data = array();
+            $data['id'] = $this->urfa->get_int();
+            $data['name'] = $this->urfa->get_string();
+            $data['incoming_rate'] = $this->urfa->get_int();
+            $data['outgoing_rate'] = $this->urfa->get_int();
+
+            if($data['incoming_rate'] == 0)
+                $data['incoming_rate'] = Urfa_Resolve::resolveRate($data['outgoing_rate']);
+
+            if($data['outgoing_rate'] == 0)
+                $data['outgoing_rate'] = Urfa_Resolve::resolveRate($data['incoming_rate']);
+
+            $isDuration = $this->urfa->get_int();
+            if($isDuration)
+                $data['duration'] = $this->urfa->get_int();
+            else{
+                $data['incoming_limit'] = Urfa_Resolve::resolveRate($this->urfa->get_long());
+                $data['outgoing_limit'] = Urfa_Resolve::resolveRate($this->urfa->get_long());
+            }
+
+            $data['cost'] = $this->urfa->get_double();
+
+            if($data['id'] == $settings_id)
+                $settings = $data;
+        }
+
+        return $settings;
     }
 
     /**
@@ -1730,14 +1762,14 @@ class Urfa_Client
      *
      * @since 5.2.1-009
      */
-    public function setTurboMode($slink_id)
+    public function setTurboMode($slink_id,$settings_id)
     {
-        $this->urfa->call(-0x1200a);
+        $this->urfa->call(-0x1200d);
         $this->urfa->put_int($slink_id);
+        $this->urfa->put_int($settings_id);
         $this->urfa->send();
         $data = $this->urfa->get_int();
         $this->urfa->finish();
-
         return $data;
     }
 

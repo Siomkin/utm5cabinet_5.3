@@ -190,7 +190,7 @@
                 <?php if ($slinks['active']): ?>
                     <td><a href="/user/service/slink/<?= $slinks['id'] ?>">Включен</a></td>
                 <?php else: ?>
-                    <td><a href="/user/turbo-mode/slink_id/<?= $slinks['id'] ?>">Включить</a></td>
+                    <td><a href="/user/service/slink/<?= $slinks['id'] ?>">Включить</a></td>
                 <?php endif; ?>
             </tr>
         <?php endforeach; ?>
@@ -198,5 +198,4 @@
         </table>
     <?php endif; ?>
 <?php endif; ?>
-
 <?= $this->cacheInfo($this->cacheData) ?>

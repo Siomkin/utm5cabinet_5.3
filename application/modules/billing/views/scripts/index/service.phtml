@@ -54,10 +54,10 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <?php $flag = FALSE; ?>
+                    <?php $flag = false; ?>
                     <?php foreach ($this->services['downloaded'] as $service): ?>
                         <?php if ($service['mbytes'] > 0): ?>
-                            <?php $flag = TRUE; ?>
+                            <?php $flag = true; ?>
                             <tr>
                                 <td><?= $service['tclass'] ?></td>
                                 <td><?= $service['mbytes'] ?></td>
@@ -85,11 +85,11 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <?php $flag = FALSE; ?>
+                    <?php $flag = false; ?>
                     <?php foreach ($this->services['prepaid'] as $service): ?>
 
                         <?php if ($service['mbytes'] > 0): ?>
-                            <?php $flag = TRUE; ?>
+                            <?php $flag = true; ?>
                             <tr>
                                 <td><?= $service['tclass'] ?></td>
                                 <td><?= $service['mbytes'] ?></td>
@@ -118,10 +118,10 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <?php $flag = FALSE; ?>
+                    <?php $flag = false; ?>
                     <?php foreach ($this->services['transfered'] as $service): ?>
                         <?php if ($service['mbytes'] > 0): ?>
-                            <?php $flag = TRUE; ?>
+                            <?php $flag = true; ?>
                             <tr>
                                 <td><?= $service['tclass'] ?></td>
                                 <td><?= $service['mbytes'] ?></td>
@@ -180,7 +180,7 @@
                             <td><?= $service['login'] ?></td>
                             <td><?php if (!empty($service['login'])) {
                                     echo $service['link'];
-                                }?></td>
+                                } ?></td>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>
@@ -188,67 +188,112 @@
             <?php endif; ?>
 
 
-
-            <?php if (isset($this->services['shaping']) && $this->services['shaping']['show_shaping'] == TRUE): ?>
+            <?php if (isset($this->services['shaping']) && $this->services['shaping']['show_shaping'] == true): ?>
                 <div class="bs-callout bs-callout-info"><h4>Скорость</h4></div>
                 <table class="table table-striped">
                     <thead>
                     <tr>
                         <th>Входящий канал</th>
                         <th>Исходящий канал</th>
-
-                        <?php if ($this->services['shaping']['turbo_mode_available'] == true): ?>
-                            <?php if ($this->services['shaping']['turbo_mode_start'] != 0): ?>
-
-                                <th>Турбо-режим</th>
-                                <th>Скорость</th>
-                                <th>Начало</th>
-                                <th>Конец</th>
-
-                            <?php endif; ?>
-                        <?php endif; ?>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
                         <td><?= $this->services['shaping']['incoming_rate'] ?></td>
                         <td><?= $this->services['shaping']['outgoing_rate'] ?></td>
-
-                        <?php if ($this->services['shaping']['turbo_mode_available'] != FALSE): ?>
-                            <?php if ($this->services['shaping']['turbo_mode_start'] != 0): ?>
-
-                                <td>Включен</td>
-                                <td><?= Urfa_Resolve::getDateFromTimestamp($this->services['shaping']['turbo_mode_start']) ?></td>
-                                <td><?= Urfa_Resolve::getDateFromTimestamp($this->services['shaping']['turbo_mode_end']) ?></td>
-
-                            <?php endif; ?>
-                        <?php endif; ?>
                     </tr>
                     </tbody>
                 </table>
 
+
+                <?php if ($this->services['shaping']['turbo_mode_available'] == true): ?>
+                    <?php if ($this->services['shaping']['turbo_mode_start'] != 0): ?>
+                        <div class="bs-callout bs-callout-info"><h4>Турбо-режим</h4></div>
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Имя</th>
+                                <th>Скорость</th>
+                                <th>Цена</th>
+                                <th>Действует</th>
+                            </tr>
+                            </thead>
+                            <?php
+                            $name = '';
+                            if (count($this->services['turbo'])) {
+                                for ($i = 0; $i < count($this->services['turbo']); $i++) {
+                                    if ($this->services['turbo'][$i]['id'] == $this->services['shaping']['turbomode_settings_id']) {
+                                        $name = $this->services['turbo'][$i]['name'];
+                                        break;
+                                    }
+                                }
+                            }
+
+                            $endAt = '';
+                            if ($this->shaping['incoming_consumption_left'] == 0 &&
+                                $this->shaping['outgoing_consumption_left'] == 0
+                            ) {
+                                $endAt = 'до '.Urfa_Resolve::getDateFromTimestamp($this->services['shaping']['turbo_mode_end']);
+                            } else {
+                                $endAt = Urfa_Resolve::resolveLimit($this->services['shaping']['incoming_consumption_left'], 1024).' / '.
+                                    Urfa_Resolve::resolveLimit($this->services['shaping']['outgoing_consumption_left'], 1024);
+                            }
+                            ?>
+
+                            <tbody>
+                            <tr>
+                                <td><?php echo $name ?></td>
+                                <td><?php echo Urfa_Resolve::resolveRate($this->services['shaping']['incoming_rate']).' / '.
+                                        Urfa_Resolve::resolveRate($this->services['shaping']['outgoing_rate']) ?>
+                                </td>
+                                <td><?= Urfa_Resolve::getDateFromTimestamp($this->services['shaping']['turbo_mode_start']) ?></td>
+                                <td><?php echo $endAt ?></td>
+
+                            </tr>
+                            </tbody>
+                        </table>
+                    <?php endif; ?>
+                <?php endif; ?>
+
                 <?php if (isset($this->services['turbo'])): ?>
-                    <div class="alert alert-info"><h3>Турбо-режим</h3></div>
+                    <div class="bs-callout bs-callout-info"><h4>Доступные турбо-режимы</h4></div>
                     <table class="table table-striped">
                         <thead>
                         <tr>
-                            <th>Входящий канал</th>
-                            <th>Исходящий канал</th>
+                            <th>Имя</th>
+                            <th>Скорость</th>
                             <th>Цена</th>
-                            <th>Длительность</th>
-                            <th>Действие</th>
+                            <th>Действует</th>
+                            <?php if ($this->services['shaping']['turbo_mode_start'] == 0) : ?>
+                                <th>Действие</th>
+                            <?php endif; ?>
                         </tr>
                         </thead>
                         <tbody>
+                        <?php foreach ($this->services['turbo'] as $turbo) : ?>
 
-                        <tr>
-                            <td><?= $this->services['turbo']['incoming_rate'] ?></td>
-                            <td><?= $this->services['turbo']['outgoing_rate'] ?></td>
-                            <td><?= $this->services['turbo']['cost'] ?></td>
-                            <td><?= $this->services['turbo']['duration'] ?></td>
-                            <td><?= $this->services['turbo']['link'] ?></td>
-                        </tr>
+                            <?php
+                            $endAt = '';
+                            if (isset($turbo['duration'])) {
+                                $endAt = Urfa_Resolve::getTimeFromSec($turbo['duration']);
+                            } else {
+                                $endAt = 'при достижении лимитов '.
+                                    Urfa_Resolve::resolveLimit($turbo['incoming_limit'], 1024).' / '.
+                                    Urfa_Resolve::resolveLimit($turbo['outgoing_limit'], 1024);
+                            }
+                            ?>
 
+                            <tr>
+                                <td><?= $turbo['name'] ?></td>
+                                <td><?= Urfa_Resolve::resolveRate($turbo['incoming_rate']) ?>/<?= Urfa_Resolve::resolveRate($turbo['outgoing_rate']) ?></td>
+
+                                <td><?= $turbo['cost'] ?></td>
+                                <td><?= $endAt ?></td>
+                                <?php if ($this->services['shaping']['turbo_mode_start'] == 0) : ?>
+                                    <td><a href="/user/turbo-mode/slink_id/<?= $this->slink ?>/settings_id/<?= $turbo['id'] ?>">Включить</a></td>
+                                <?php endif; ?>
+                            </tr>
+                        <?php endforeach; ?>
                         </tbody>
                     </table>
                 <?php endif; ?>

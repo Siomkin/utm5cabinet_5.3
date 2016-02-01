@@ -1,21 +1,38 @@
-<table class="table table-striped">
-    <tr>
-        <td>Входящий канал:</td>
-        <td><?= $this->turboModeInfo['incoming_rate']?> </td>
-    </tr>
-    <tr>
-        <td>Исходящий канал:</td>
-        <td><?= $this->turboModeInfo['outgoing_rate']?></td>
-    </tr>
-    <tr>
-        <td>Цена:</td>
-        <td><?= $this->turboModeInfo['cost']?></td>
-    </tr>
-    <tr>
-        <td>Длительность:</td>
-        <td><?= $this->turboModeInfo['duration']?></td>
-    </tr>
-</table>
+<?php
+$endAt = '';
+if (isset($this->turboModeInfo['duration'])) {
+    $endAt = 'через '.Urfa_Resolve::getTimeFromSec($this->turboModeInfo['duration']);
+} else {
+    $endAt = 'при достижении лимитов '.
+        $this->turboModeInfo['incoming_limit'].'/'.
+        $this->turboModeInfo['outgoing_limit'];
+}
+?>
+
+
+    <table class="table table-striped">
+        <tr>
+            <td>Имя:</td>
+            <td><?= $this->turboModeInfo['name'] ?></td>
+        </tr>
+        <tr>
+            <td>Входящий канал:</td>
+            <td><?= $this->turboModeInfo['incoming_rate'] ?> </td>
+        </tr>
+        <tr>
+            <td>Исходящий канал:</td>
+            <td><?= $this->turboModeInfo['outgoing_rate'] ?></td>
+        </tr>
+        <tr>
+            <td>Цена:</td>
+            <td><?= $this->turboModeInfo['cost'] ?></td>
+        </tr>
+
+        <tr>
+            <td>Действует:</td>
+            <td><?php echo $endAt ?></td>
+        </tr>
+    </table>
 
 <?= $this->bootAlert(array('info' => 'Включение турбо-режима приведет к списанию средств.')) ?>
 <?= $this->form ?>

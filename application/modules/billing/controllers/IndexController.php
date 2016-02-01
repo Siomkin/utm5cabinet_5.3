@@ -21,7 +21,7 @@ class Billing_IndexController extends Zend_Controller_Action
     {
         if ($this->view->identity == false) {
             $this->_helper->flashMessenger->addMessage(
-                array('error' => 'Вам необходимо авторизоваться')
+                array('danger' => 'Вам необходимо авторизоваться')
             );
 
             $this->redirect('/?return_uri='.$this->view->url());
@@ -113,7 +113,7 @@ class Billing_IndexController extends Zend_Controller_Action
                 $this->cache->save($accounts, $this->cache_basic_account.'_accounts');
             }
             if ($turbo = $urfa->getTurboMode()) {
-                $this->cache->save($accounts, $this->cache_basic_account.'_turbo');
+                $this->cache->save($turbo, $this->cache_basic_account.'_turbo');
             }
             unset($urfa);
         }
@@ -258,6 +258,7 @@ class Billing_IndexController extends Zend_Controller_Action
         }
         //Присваиваем данные переменным вида
         $this->view->services = $service;
+        $this->view->slink = $slink;
         //Zend_Debug::dump($service);
 
         $this->view->cacheData = $this->cache->getMetadatas($cacheId);
@@ -700,11 +701,11 @@ class Billing_IndexController extends Zend_Controller_Action
                         );
                     } elseif ($result == -1) {
                         $this->_helper->flashMessenger->addMessage(
-                            array('error' => 'Не верно заданы даты для установки добровольной блокировки')
+                            array('danger' => 'Не верно заданы даты для установки добровольной блокировки')
                         );
                     } else {
                         $this->_helper->flashMessenger->addMessage(
-                            array('error' => 'При установке добровольной блокировки произошла ошибка')
+                            array('danger' => 'При установке добровольной блокировки произошла ошибка')
                         );
                     }
                 } elseif ($act == 2) {
@@ -715,7 +716,7 @@ class Billing_IndexController extends Zend_Controller_Action
                         );
                     } else {
                         $this->_helper->flashMessenger->addMessage(
-                            array('error' => 'При снятии добровольной блокировки произошла ошибка')
+                            array('danger' => 'При снятии добровольной блокировки произошла ошибка')
                         );
                     }
                 }
@@ -757,13 +758,13 @@ class Billing_IndexController extends Zend_Controller_Action
                         $tlink_id = $tarrif[0]['id'];
                     } else {
                         $this->_helper->flashMessenger->addMessage(
-                            array('error' => 'Не верно заданы параметры тарифа')
+                            array('danger' => 'Не верно заданы параметры тарифа')
                         );
                         $this->redirect('/user/');
                     }
                 }
             } else {
-                $this->_helper->flashMessenger->addMessage(array('error' => 'Не верно заданы параметры тарифа'));
+                $this->_helper->flashMessenger->addMessage(array('danger' => 'Не верно заданы параметры тарифа'));
                 $this->redirect('/user/');
             }
 
@@ -790,7 +791,7 @@ class Billing_IndexController extends Zend_Controller_Action
                         $this->_helper->flashMessenger->addMessage(array('success' => 'Тариф успешно изменён'));
                     } else {
                         $this->_helper->flashMessenger->addMessage(
-                            array('error' => 'При изменении тарифа произошла ошибка')
+                            array('danger' => 'При изменении тарифа произошла ошибка')
                         );
                     }
 
@@ -990,7 +991,7 @@ class Billing_IndexController extends Zend_Controller_Action
                 );
                 if ($result['state'] == 0) {
                     $this->_helper->flashMessenger->addMessage(
-                        array('error' => 'При активации произошла ошибка. '.$result['message'])
+                        array('danger' => 'При активации произошла ошибка. '.$result['message'])
                     );
                 } else {
                     $this->_helper->flashMessenger->addMessage(
@@ -1181,7 +1182,7 @@ class Billing_IndexController extends Zend_Controller_Action
             $this->cache->remove($this->cache_basic_account.'_accounts');
         } else {
             $this->_helper->flashMessenger->addMessage(
-                array('error' => 'Не верно задан лицевой счёт')
+                array('danger' => 'Не верно задан лицевой счёт')
             );
         }
         $this->redirect('/user/');
@@ -1197,36 +1198,74 @@ class Billing_IndexController extends Zend_Controller_Action
         $this->setTitle('Турбо режим');
 
         $slink_id = $this->_getParam('slink_id');
+        $settings_id = $this->_getParam('settings_id');
 
         if (isset($slink_id)) {
             $slink_id = (int)$slink_id;
+            $settings_id = (int)$settings_id;
         } else {
             $this->_helper->flashMessenger->addMessage(
-                array('error' => 'Не верно указан ID услуги')
+                array('danger' => 'Не верно указан ID услуги')
             );
             $this->redirect('/user/');
         }
 
         $urfa = $this->reconnect();
-        $this->view->turboModeInfo = $urfa->getTurboModeInfo($slink_id);
+        $this->view->turboModeInfo = $turbo = $urfa->getTurboModeInfo($slink_id, $settings_id);
 
-        $this->view->form = new Billing_Form_TurboMode();
+        $this->view->form = $form = new Billing_Form_TurboMode();
 
-        if ($this->getRequest()->isPost()) {
-            if ($this->view->form->isValid($this->getRequest()->getPost())) {
-                if ($urfa->setTurboMode($slink_id)) {
-                    $this->_helper->flashMessenger->addMessage(
-                        array('success' => 'Турбо режим установлен')
-                    );
-                } else {
-                    $this->_helper->flashMessenger->addMessage(
-                        array('error' => 'При установке турбо режима произошла ошибка')
-                    );
+        if (!$this->isSettingsCorrect($this->view->turboModeInfo)) {
+            $this->_helper->flashMessenger->addMessage(
+                array('danger' => 'Не корректные данные для установки Турбо режима')
+            );
+            $this->redirect('/user/');
+        } else {
+            if ($this->getRequest()->isPost()) {
+                if ($this->view->form->isValid($this->getRequest()->getPost())) {
+                    if ($urfa->setTurboMode($slink_id, $settings_id)) {
+                        $this->_helper->flashMessenger->addMessage(
+                            array('success' => 'Турбо режим установлен')
+                        );
+                    } else {
+                        $this->_helper->flashMessenger->addMessage(
+                            array('danger' => 'При установке турбо режима произошла ошибка')
+                        );
+                    }
+                    $this->redirect('/user/');
                 }
-                $this->redirect('/user/');
             }
         }
 
+    }
+
+    private function isSettingsCorrect($settings)
+    {
+        $stngs = $settings;
+
+        if (isset($stngs['duration'])) {
+            if ($stngs['duration'] <= 0) {
+                return false;
+            }
+        } else {
+            if (!isset($stngs['incoming_limit']) || $stngs['incoming_limit'] <= 0) {
+                return false;
+            }
+
+            if (!isset($stngs['outgoing_limit']) || $stngs['outgoing_limit'] <= 0) {
+                return false;
+            }
+        }
+
+        if (!isset($stngs['incoming_rate'])) {
+            return false;
+        }
+
+        if (!isset($stngs['outgoing_rate'])) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -1287,24 +1326,24 @@ class Billing_IndexController extends Zend_Controller_Action
         echo 'UserInfo: User Function';
 
         $urfa = $this->reconnect();
-            $userInfo = $urfa->getUserInfo();
+        $userInfo = $urfa->getUserInfo();
 
         Zend_Debug::dump($userInfo);
 
         ///-------------------------------------------------------
-    /*
-        $urfaAdmin = new Urfa_Admin();
-            $urfaAdmin->rpcf_remove_user_from_group('1000006','250');
-        $urfaAdmin->close_session();
-    */
+        /*
+            $urfaAdmin = new Urfa_Admin();
+                $urfaAdmin->rpcf_remove_user_from_group('1000006','250');
+            $urfaAdmin->close_session();
+        */
 
         ///--------------------------------------------------------
-    /*
-        $urfaAdmin = new Urfa_Admin();
-            $urfaAdmin->rpcf_add_group_to_user('1000006','250');
-            $urfaAdmin->rpcf_add_group_to_user('1000006','300');
-        $urfaAdmin->close_session();
-    */
+        /*
+            $urfaAdmin = new Urfa_Admin();
+                $urfaAdmin->rpcf_add_group_to_user('1000006','250');
+                $urfaAdmin->rpcf_add_group_to_user('1000006','300');
+            $urfaAdmin->close_session();
+        */
 
         $urfaAdmin = new Urfa_Admin();
 
@@ -1323,7 +1362,6 @@ class Billing_IndexController extends Zend_Controller_Action
 
         Zend_Debug::dump($data);
         ///--------------------------------------------------------
-
 
 
     }
