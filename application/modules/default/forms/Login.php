@@ -26,7 +26,7 @@ class Default_Form_Login extends Zend_Form
                                          //'alnum',
                                          array('regex', false,
                                          array(
-                                             'pattern'   => '/^[a-z0-9\/\\\\~.!@$%^&*]+$/i',
+                                             'pattern'   => '/^[a-z0-9\/\\\\~.!-@$%^&*]+$/i',
                                              'messages'  =>  'Не верный формат имени')
                                          )
                                      ),
