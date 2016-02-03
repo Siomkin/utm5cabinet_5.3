@@ -260,6 +260,7 @@ class Urfa_Connect
         }
         if ($this->state != URFA_STATE_NONE) {
             $this->logger("call: state != URFA_STATE_NONE");
+            $this->logger("call: state " . $this->state);
             return FALSE;
         }
         $packet = new Urfa_Packet();

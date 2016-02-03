@@ -1750,8 +1750,9 @@ class Urfa_Client
             if($data['id'] == $settings_id)
                 $settings = $data;
         }
-
+        $this->urfa->finish();
         return $settings;
+
     }
 
     /**
@@ -1765,8 +1766,8 @@ class Urfa_Client
     public function setTurboMode($slink_id,$settings_id)
     {
         $this->urfa->call(-0x1200d);
-        $this->urfa->put_int($slink_id);
-        $this->urfa->put_int($settings_id);
+        $this->urfa->put_int((int)$slink_id);
+        $this->urfa->put_int((int)$settings_id);
         $this->urfa->send();
         $data = $this->urfa->get_int();
         $this->urfa->finish();
