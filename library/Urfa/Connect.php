@@ -42,7 +42,7 @@ class Urfa_Connect
     private $sock = null;
     private $packet = FALSE;
     private $userType = RUT_SERVICE;
-    private $sslType = RSR_SSL_SSL3;
+    private $sslType = RSR_SSL_TLS1;
     private $state = URFA_STATE_NONE;
     private $enableDebug = true;
     private $admin = false;
