@@ -16,7 +16,7 @@ class DRG_View_Helper_Balance extends Zend_View_Helper_Abstract
         } elseif ($balance + $credit > 0) {
             $style = 'label-warning';
         } elseif ($balance == 0) {
-            $style = '';
+            $style = 'label-info';
         }
         else {
             $style = 'label-danger';
