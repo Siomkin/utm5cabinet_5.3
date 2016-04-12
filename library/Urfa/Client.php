@@ -9,7 +9,7 @@ class Urfa_Client
     public function __construct($host = null, $port = null, $ssl = false)
     {
         if (is_null($host) || is_null($port)) {
-            $this->config = new Zend_Config_Ini(APPLICATION_PATH.'/configs/billing.ini', 'app');
+            $this->config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/billing.ini', 'app');
             $host = $this->config->urfaphp->host;
             $port = $this->config->urfaphp->port;
         }
@@ -961,7 +961,7 @@ class Urfa_Client
             $tmp = array();
             $tmp['id'] = $this->urfa->get_int();
             $tmp['send_date'] = Urfa_Resolve::getDateFromTimestamp($this->urfa->get_int());
-            $tmp['send_date'] = "<b>".$tmp['send_date']."</b>";
+            $tmp['send_date'] = "<b>" . $tmp['send_date'] . "</b>";
             $tmp['sender_id'] = $this->urfa->get_int();
             $tmp['subject'] = $this->urfa->get_string();
             $tmp['mime'] = $this->urfa->get_string();
@@ -1000,7 +1000,7 @@ class Urfa_Client
             $tmp['mime'] = $this->urfa->get_string();
             $tmp['is_new'] = $this->urfa->get_int();
             if ($tmp['is_new']) {
-                $tmp['send_date'] = "<b>".$tmp['send_date']."</b>";
+                $tmp['send_date'] = "<b>" . $tmp['send_date'] . "</b>";
             }
             //  $tmp['link'] = getMessageLink($tmp['id'], $tmp['subject'], $tmp['is_new']);
             $report[$i] = $tmp;
@@ -1366,7 +1366,7 @@ class Urfa_Client
             $tmp['calling_station_id'] = $this->urfa->get_string();
             $tmp['called_station_id'] = $this->urfa->get_string();
 
-            $tmp['session_time'] = Urfa_Resolve::getTimeFromSec($this->urfa->get_long());
+            $tmp['session_time'] = Urfa_Resolve::getTimeFromSec($tmp['time']);
 
             $cost = 0.0;
 
@@ -1448,7 +1448,7 @@ class Urfa_Client
         return $subst;
     }
 
-    public function getInvoiceDoc($id, $sum=false)
+    public function getInvoiceDoc($id, $sum = false)
     {
         $subst = array();
         $this->urfa->call(-0x4052);
@@ -1535,17 +1535,17 @@ class Urfa_Client
                 $this->urfa->get_double();
                 $sum_cost = $this->urfa->get_double();
                 $tax_amount = $this->urfa->get_double();
-                $table_jur .= "<tr>\n".
-                    "<td align=\"center\">".($i + 1)."</td>\n".
-                    "<td align=\"left\">".htmlspecialchars($name)."</td>\n".
-                    "<td align=\"center\">".Urfa_Resolve::roundDouble($sum_cost)."</td>\n".
-                    "<td align=\"center\">1</td>\n".
-                    "<td align=\"center\">шт</td>\n".
-                    "<td align=\"center\">".Urfa_Resolve::roundDouble($sum_cost)."</td>\n".
+                $table_jur .= "<tr>\n" .
+                    "<td align=\"center\">" . ($i + 1) . "</td>\n" .
+                    "<td align=\"left\">" . htmlspecialchars($name) . "</td>\n" .
+                    "<td align=\"center\">" . Urfa_Resolve::roundDouble($sum_cost) . "</td>\n" .
+                    "<td align=\"center\">1</td>\n" .
+                    "<td align=\"center\">шт</td>\n" .
+                    "<td align=\"center\">" . Urfa_Resolve::roundDouble($sum_cost) . "</td>\n" .
                     "</tr>\n";
-                $table_ind .= "<tr>\n".
-                    "<td align=\"left\">".htmlspecialchars($name)."</td>\n".
-                    "<td align=\"right\">".Urfa_Resolve::roundDouble($sum_cost)."</td>\n".
+                $table_ind .= "<tr>\n" .
+                    "<td align=\"left\">" . htmlspecialchars($name) . "</td>\n" .
+                    "<td align=\"right\">" . Urfa_Resolve::roundDouble($sum_cost) . "</td>\n" .
                     "</tr>";
                 $subtotal += $sum_cost;
                 $tax += $tax_amount;
@@ -1700,7 +1700,7 @@ class Urfa_Client
      * @return array
      * @since 5.2.1-009
      */
-    public function getTurboModeInfo($slink_id,$settings_id)
+    public function getTurboModeInfo($slink_id, $settings_id)
     {
         $data = array();
         $this->urfa->call(-0x1200c);
@@ -1708,22 +1708,22 @@ class Urfa_Client
         $this->urfa->send();
         $modesCnt = $this->urfa->get_int();
 
-/*        $data['incoming_rate'] = $this->urfa->get_int();
-        $data['outgoing_rate'] = $this->urfa->get_int();
-        $data['duration'] = Urfa_Resolve::getTimeFromSec($this->urfa->get_int());
-        $data['cost'] = $this->urfa->get_double();
-        if ($data['incoming_rate'] == 0) {
-            $data['incoming_rate'] = $data['outgoing_rate'];
-        }
-        if ($data['outgoing_rate'] == 0) {
-            $data['outgoing_rate'] = $data['incoming_rate'];
-        }
-        $data['incoming_rate'] = Urfa_Resolve::resolveRate($data['incoming_rate']);
-        $data['outgoing_rate'] = Urfa_Resolve::resolveRate($data['outgoing_rate']);
-        $this->urfa->finish();*/
+        /*        $data['incoming_rate'] = $this->urfa->get_int();
+                $data['outgoing_rate'] = $this->urfa->get_int();
+                $data['duration'] = Urfa_Resolve::getTimeFromSec($this->urfa->get_int());
+                $data['cost'] = $this->urfa->get_double();
+                if ($data['incoming_rate'] == 0) {
+                    $data['incoming_rate'] = $data['outgoing_rate'];
+                }
+                if ($data['outgoing_rate'] == 0) {
+                    $data['outgoing_rate'] = $data['incoming_rate'];
+                }
+                $data['incoming_rate'] = Urfa_Resolve::resolveRate($data['incoming_rate']);
+                $data['outgoing_rate'] = Urfa_Resolve::resolveRate($data['outgoing_rate']);
+                $this->urfa->finish();*/
 
 
-        for($m = 0; $m < $modesCnt; $m++){
+        for ($m = 0; $m < $modesCnt; $m++) {
 
             $data = array();
             $data['id'] = $this->urfa->get_int();
@@ -1731,24 +1731,27 @@ class Urfa_Client
             $data['incoming_rate'] = $this->urfa->get_int();
             $data['outgoing_rate'] = $this->urfa->get_int();
 
-            if($data['incoming_rate'] == 0)
-                $data['incoming_rate'] = Urfa_Resolve::resolveRate($data['outgoing_rate']);
+            if ($data['incoming_rate'] == 0) {
+                $data['incoming_rate'] = Urfa_Resolve::resolveLimit($data['outgoing_rate'], 1024);
+            }
 
-            if($data['outgoing_rate'] == 0)
-                $data['outgoing_rate'] = Urfa_Resolve::resolveRate($data['incoming_rate']);
+            if ($data['outgoing_rate'] == 0) {
+                $data['outgoing_rate'] = Urfa_Resolve::resolveLimit($data['incoming_rate'], 1024);
+            }
 
             $isDuration = $this->urfa->get_int();
-            if($isDuration)
+            if ($isDuration) {
                 $data['duration'] = $this->urfa->get_int();
-            else{
-                $data['incoming_limit'] = Urfa_Resolve::resolveRate($this->urfa->get_long());
-                $data['outgoing_limit'] = Urfa_Resolve::resolveRate($this->urfa->get_long());
+            } else {
+                $data['incoming_limit'] = Urfa_Resolve::resolveLimit($this->urfa->get_long(), 1024);
+                $data['outgoing_limit'] = Urfa_Resolve::resolveLimit($this->urfa->get_long(), 1024);
             }
 
             $data['cost'] = $this->urfa->get_double();
 
-            if($data['id'] == $settings_id)
+            if ($data['id'] == $settings_id) {
                 $settings = $data;
+            }
         }
         $this->urfa->finish();
         return $settings;
@@ -1763,7 +1766,7 @@ class Urfa_Client
      *
      * @since 5.2.1-009
      */
-    public function setTurboMode($slink_id,$settings_id)
+    public function setTurboMode($slink_id, $settings_id)
     {
         $this->urfa->call(-0x1200d);
         $this->urfa->put_int((int)$slink_id);

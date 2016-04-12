@@ -230,13 +230,18 @@
                             }
 
                             $endAt = '';
-                            if ($this->shaping['incoming_consumption_left'] == 0 &&
-                                $this->shaping['outgoing_consumption_left'] == 0
-                            ) {
+                            if($this->shaping['turbo_mode_end'] != -1) {
                                 $endAt = 'до '.Urfa_Resolve::getDateFromTimestamp($this->services['shaping']['turbo_mode_end']);
                             } else {
-                                $endAt = Urfa_Resolve::resolveLimit($this->services['shaping']['incoming_consumption_left'], 1024).' / '.
-                                    Urfa_Resolve::resolveLimit($this->services['shaping']['outgoing_consumption_left'], 1024);
+                                $inc_left = $this->shaping['incoming_consumption_left'];
+                                $outg_left = $this->shaping['outgoing_consumption_left'];
+
+                                if($inc_left <= 0 && $outg_left <= 0)
+                                    {$endAt = 'Выключен';}
+                                else{
+
+                                    $endAt = Urfa_Resolve::resolveLimit($this->services['shaping']['incoming_consumption_left'], 1024).' / '.
+                                    Urfa_Resolve::resolveLimit($this->services['shaping']['outgoing_consumption_left'], 1024);}
                             }
                             ?>
 
@@ -255,7 +260,7 @@
                     <?php endif; ?>
                 <?php endif; ?>
 
-                <?php if (count($this->services['turbo'])): ?>
+                <?php if (isset($this->services['turbo']) && count($this->services['turbo'])): ?>
                     <div class="bs-callout bs-callout-info"><h4>Доступные турбо-режимы</h4></div>
                     <table class="table table-striped">
                         <thead>
