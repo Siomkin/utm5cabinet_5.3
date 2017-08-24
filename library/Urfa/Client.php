@@ -1623,8 +1623,8 @@ class Urfa_Client
         $this->urfa->put_string($user['web_page']);
         $this->urfa->put_string($user['icq']);
         $this->urfa->put_string($user['passport']);
-        $this->urfa->put_int($user['bank']);
-        $this->urfa->put_string($user['bank_account']);
+        $this->urfa->put_int($user['bank_id']);
+        $this->urfa->put_string($user['user_bank_account']);
 
         // var_dump($data['email']);
         $this->urfa->put_string($data['email']);
