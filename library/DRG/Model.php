@@ -28,7 +28,7 @@ abstract class DRG_Model
      * @param Zend_Db_Table_Abstract $dbTable
      * @param <int> $id
      */
-    public function __construct(Zend_Db_Table_Abstract $dbTable, $id = NULL)
+    public function __construct(Zend_Db_Table_Abstract $dbTable, $id = null)
     {
         $this->_dbTable = $dbTable;
         $this->_dbName = $dbTable->getDbName();
@@ -58,7 +58,7 @@ abstract class DRG_Model
      */
     public function save()
     {
-        $this->_row->save();
+        return $this->_row->save();
     }
 
     /**
@@ -66,7 +66,7 @@ abstract class DRG_Model
      */
     public function delete()
     {
-        $this->_row->delete();
+        return $this->_row->delete();
     }
 
     /**
