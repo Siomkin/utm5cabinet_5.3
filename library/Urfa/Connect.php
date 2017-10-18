@@ -126,7 +126,7 @@ class Urfa_Connect
         $attr = $packet->find(RA_SSL_REQUEST);
         if ($attr != FALSE) {
             $tmp = unpack('Nval', $attr['data']);
-            if ($tmp['val'] == RSR_SSL_SSL3 || $tmp['val'] == RSR_SSL_SSL3_ADMIN) {
+            if ($tmp['val'] == RSR_SSL_SSL3) {
                 $this->sock->enable_crypto(STREAM_CRYPTO_METHOD_SSLv3_CLIENT);
             } else {
                 if ($tmp['val'] == RSR_SSL_TLS1) {
@@ -170,7 +170,7 @@ class Urfa_Connect
     public function connect($host, $port)
     {
         if ($this->admin) {
-            $this->enable_ssl3();
+            $this->enable_tls1();
         }
         $this->host = $host;
         $this->port = $port;

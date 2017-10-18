@@ -30,7 +30,7 @@ class Urfa_Socket
             stream_context_set_option($context, 'ssl', 'capture_peer_cert', TRUE);
             stream_context_set_option($context, 'ssl', 'local_cert', APPLICATION_PATH.'/../library/Urfa/admin.crt');
             stream_context_set_option($context, 'ssl', 'passphrase', 'netup');
-            stream_context_set_option($context, 'ssl', 'ciphers', 'SSLv3');
+            stream_context_set_option($context, 'ssl', 'ciphers', 'TLSv1');
         } else {
             stream_context_set_option($context, 'ssl', 'ciphers', 'ADH-RC4-MD5');
         }
