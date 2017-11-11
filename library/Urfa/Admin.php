@@ -112,6 +112,50 @@ class Urfa_Admin
         </output>
     </function>
      */
+
+
+
+    /**
+     * Получение списка групп пользователя
+     * @param $user_id
+     * @return array|bool
+     */
+   public function rpcf_get_groups_list($user_id)
+    { //0x2550
+        $ret = array();
+        if (!$this->urfa->call(0x2400)) {
+            print "Error calling function " . __FUNCTION__ . "\n";
+            return FALSE;
+        }
+
+        $this->urfa->put_int($user_id);
+        $this->urfa->send();
+        $count = $this->urfa->get_int();
+        $ret['groups_size'] = $count;
+        for ($i = 0; $i < $count; $i++) {
+            $group['group_id'] = $this->urfa->get_int();
+            $group['group_name'] = $this->urfa->get_string();
+            $ret['group'][] = $group;
+        }
+
+        $this->urfa->finish();
+
+        return $ret;
+    }
+//<function name="rpcf_get_groups_list" id="0x2400">
+//    <input>
+//      <integer name="user_id" />
+//    </input>
+//    <output>
+//      <integer name="groups_count" />
+//      <for name="i" from="0" count="groups_count">
+//        <integer name="group_id" array_index="i" />
+//        <string name="group_name" array_index="i" />
+//      </for>
+//    </output>
+//  </function>
+
+
     /**
      * Получение списка групп пользователя
      * @param $user_id
