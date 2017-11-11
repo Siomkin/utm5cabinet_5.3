@@ -644,20 +644,20 @@ class Billing_IndexController extends Zend_Controller_Action
 
         $urfa = $this->reconnect();
 
-        $this->view->promiseCreditInfo = $urfa->getPromisePaymentInfo($aid);
+        $promiseCreditInfo = $urfa->getPromisePaymentInfo($aid);
 
-        $form = new Billing_Form_Credit($this->view->promiseCreditInfo['value']);
+        $form = new Billing_Form_Credit($promiseCreditInfo['value'], $promiseCreditInfo['flags'] & Urfa_Client::FLAG_TO_POSITIVE_BALANCE);
 
-        if ($this->view->promiseCreditInfo['can_change'] && $this->getRequest()->isPost()) {
+        if ($promiseCreditInfo['can_change'] && $this->getRequest()->isPost()) {
             if ($form->isValid($this->getRequest()->getPost())) {
-                $summa = $form->getValue('credit_sum');
+                $summa = (float)$form->getValue('credit_sum');
                 $urfa->addPromisePayment($aid, $summa);
                 $this->cache->remove($this->cache_basic_account);
                 $urfa->changeStatus($aid, 1);
                 $this->_helper->redirector('promise-payment', 'index', 'billing');
             }
         }
-
+        $this->view->promiseCreditInfo = $promiseCreditInfo;
         $this->view->form = $form;
     }
 
@@ -1058,7 +1058,6 @@ class Billing_IndexController extends Zend_Controller_Action
                 foreach ($subst as $key => $value) {
                     $text = str_replace($key, htmlspecialchars($value), $text);
                 }
-
                 $this->_helper->layout()->disableLayout();
                 $this->_helper->viewRenderer->setNoRender(true);
                 echo $text;
@@ -1358,7 +1357,7 @@ class Billing_IndexController extends Zend_Controller_Action
         ///--------------------------------------------------------
         echo 'Groups: Admin Function';
 
-        $data = $urfaAdmin->rpcf_get_groups_for_user($userInfo['basic_account']);
+        $data = $urfaAdmin->rpcf_get_groups_list($userInfo['basic_account']);
 
         Zend_Debug::dump($data);
         ///--------------------------------------------------------

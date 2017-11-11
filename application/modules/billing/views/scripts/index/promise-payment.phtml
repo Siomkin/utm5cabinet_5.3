@@ -6,67 +6,86 @@
         <tr>
             <td>Дата последнего платежа:</td>
             <td>
-                <span class="label label-info"><?= Urfa_Resolve::getDateFromTimestamp($this->promiseCreditInfo['last_payment_date'])?></span>
+                <span class="label label-info"><?= Urfa_Resolve::getDateFromTimestamp($this->promiseCreditInfo['last_payment_date']) ?></span>
             </td>
         </tr>
     <?php endif; ?>
 
     <tr>
         <td>Баланс:</td>
-        <td><?= round($this->promiseCreditInfo['balance'], 2)?> <?= $this->currencyName?></td>
+        <td><?= round($this->promiseCreditInfo['balance'], 2) ?> <?= $this->currencyName ?></td>
     </tr>
 
-    <?php if ($this->promiseCreditInfo['use_free_balance']) : ?>
-    <tr>
-        <td>Баланс для бесплатного внесения платежа:</td>
-        <td><?= $this->promiseCreditInfo['free_balance']?> <?= $this->currencyName?></td>
-    </tr>
+
+    <?php if ($this->promiseCreditInfo['can_change'] > 0 && !($this->promiseCreditInfo['flags'] & Urfa_Client::FLAG_TO_POSITIVE_BALANCE)): ?>
+        <tr>
+            <td>Максимальная сумма кредита:</td>
+            <td><?= $this->promiseCreditInfo['value'] ?> <?= $this->currencyName ?></td>
+        </tr>
+    <?php endif; ?>
+    <?php if ($this->promiseCreditInfo['can_change'] > 0 && ($this->promiseCreditInfo['flags'] & Urfa_Client::FLAG_TO_POSITIVE_BALANCE)): ?>
+        <tr>
+            <td>Максимальная сумма кредита:</td>
+            <td>До положительного баланса</td>
+        </tr>
     <?php endif; ?>
 
-    <tr>
-        <td>Максимальная сумма кредита:</td>
-        <td><?= $this->promiseCreditInfo['value']?> <?= $this->currencyName?></td>
-    </tr>
     <?php if ($this->promiseCreditInfo['use_min_balance']) : ?>
-    <tr>
-        <td>Минимальный баланс для платежа:</td>
-        <td>
-            <?php if ($this->promiseCreditInfo['can_change']): ?>
-                <?= $this->promiseCreditInfo['min_balance'] ?>  <?= $this->currencyName?>
-            <?php else : ?>
-                <span class="label label-danger"><?= $this->promiseCreditInfo['min_balance']?> <?= $this->currencyName?></span>
-            <?php endif;?>
-        </td>
-    </tr>
+        <tr>
+            <td>Минимальный баланс для платежа:</td>
+            <td>
+                <?php if ($this->promiseCreditInfo['can_change']): ?>
+                    <?= $this->promiseCreditInfo['min_balance'] ?>  <?= $this->currencyName ?>
+                <?php else : ?>
+                    <span class="label label-danger"><?= $this->promiseCreditInfo['min_balance'] ?> <?= $this->currencyName ?></span>
+                <?php endif; ?>
+            </td>
+        </tr>
+    <?php elseif ($this->promiseCreditInfo['use_free_balance']) : ?>
+        <tr>
+            <td>Баланс для бесплатного внесения платежа:</td>
+            <td><?= $this->promiseCreditInfo['free_balance'] ?> <?= $this->currencyName ?></td>
+        </tr>
     <?php endif; ?>
 
     <?php if ($this->promiseCreditInfo['cost']) : ?>
-    <tr>
-        <td>Комиссия за внесение платежа:</td>
-        <td><?= $this->promiseCreditInfo['cost']?> <?= $this->currencyName?></td>
-    </tr>
+        <tr>
+            <td>Комиссия за внесение платежа:</td>
+            <td><?= $this->promiseCreditInfo['cost'] ?> <?= $this->currencyName ?></td>
+        </tr>
     <?php endif; ?>
 
     <?php if ($this->promiseCreditInfo['duration']) : ?>
-    <tr>
-        <td>Продолжительность действия кредита (дней):</td>
-        <td><?= Urfa_Resolve::getDayFromSeconds($this->promiseCreditInfo['duration'])?> </td>
-    </tr>
+        <tr>
+            <td>Продолжительность действия кредита (дней):</td>
+            <td><?= Urfa_Resolve::getDayFromSeconds($this->promiseCreditInfo['duration']) ?> </td>
+        </tr>
     <?php endif; ?>
 
     <?php if ($this->promiseCreditInfo['interval']) : ?>
-    <tr>
-        <td>Интервал между платежами (дней):</td>
-        <td><?= Urfa_Resolve::getDayFromSeconds($this->promiseCreditInfo['interval'])?> </td>
-    </tr>
+        <tr>
+            <td>Интервал между платежами (дней):</td>
+            <td><?= Urfa_Resolve::getDayFromSeconds($this->promiseCreditInfo['interval']) ?> </td>
+        </tr>
     <?php endif; ?>
 
 </table>
 
 <?php if ((time() - $this->promiseCreditInfo['last_payment_date'] < $this->promiseCreditInfo['interval'])) : ?>
-    <?= $this->bootAlert(array('danger' => 'Следующий обещанный платёж может быть произведён не ранее '.Urfa_Resolve::getDateFromTimestamp($this->promiseCreditInfo['last_payment_date']+$this->promiseCreditInfo['interval']))) ?>
+    <?= $this->bootAlert(
+        array(
+            'danger' => 'Следующий обещанный платёж может быть произведён не ранее ' . Urfa_Resolve::getDateFromTimestamp(
+                    $this->promiseCreditInfo['last_payment_date'] + $this->promiseCreditInfo['interval']
+                )
+        )
+    ) ?>
 <?php endif; ?>
 
-<?php if ($this->promiseCreditInfo['can_change'] > 0 && !($this->promiseCreditInfo['flags'] & 1)) : ?>
+<?php if ($this->promiseCreditInfo['can_change'] > 0) : ?>
+    <?php if ($this->promiseCreditInfo['use_free_balance'] || $this->promiseCreditInfo['free_balance'] > $this->promiseCreditInfo['balance']) {
+        $this->form->setDefault('credit_sum', $this->promiseCreditInfo['cost']);
+    }
+    ?>
+
     <?= $this->form ?>
 <?php endif; ?>
