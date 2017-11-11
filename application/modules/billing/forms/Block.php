@@ -45,9 +45,10 @@ class Billing_Form_Block extends Zend_Form
             ->setJqueryParam('showOtherMonths', 'true')
             ->setJqueryParam('selectOtherMonths', 'true')
             ->addValidator(
-            new Zend_Validate_Date(
-                array('format' => 'dd.mm.yy'))
-        )
+                new Zend_Validate_Date(
+                    array('format' => 'dd.mm.yy')
+                )
+            )
             ->setRequired(TRUE);
 
         $endDate = new ZendX_JQuery_Form_Element_DatePicker('endDate');
@@ -61,27 +62,30 @@ class Billing_Form_Block extends Zend_Form
             ->setJqueryParam('selectOtherMonths', 'true')
             ->setJqueryParam('regional', 'ru')
             ->addValidator(
-            new Zend_Validate_Date(
-                array('format' => 'dd.mm.yy'))
-        )
+                new Zend_Validate_Date(
+                    array('format' => 'dd.mm.yy')
+                )
+            )
             ->setRequired(TRUE);
 
         $this->addElements(array($startDate->setValue($start_Date), $endDate->setValue($end_Date)));
 
 
         $this->addElement(
-            'checkbox', 'accepted', array(
-                                         'label'        => 'Подтвердить',
-                                         //'class' => 'focused span3',
-                                         'required'     => TRUE,
-                                         'validators'   => array(
-                                             array(new Zend_Validate_InArray(array(1)), FALSE)
-                                         ),
-                                         'ErrorMessages'=> array('Необходимо согласиться с условиями'),
-                                    )
+            'checkbox',
+            'accepted',
+            array(
+                'label' => 'Подтвердить',
+                //'class' => 'focused span3',
+                'required' => TRUE,
+                'validators' => array(
+                    array(new Zend_Validate_InArray(array(1)), FALSE)
+                ),
+                'ErrorMessages' => array('Необходимо согласиться с условиями'),
+            )
         );
 
-        $submit = new Zend_Form_Element_Submit('submit', array('class'=> 'btn btn-primary'));
+        $submit = new Zend_Form_Element_Submit('submit', array('class' => 'btn btn-primary'));
         $submit->setLabel('Установить')
             ->removeDecorator('DtDdWrapper');
 
