@@ -6,6 +6,8 @@ class Urfa_Client
 
     protected $config;
 
+    const FLAG_TO_POSITIVE_BALANCE = 1;
+
     public function __construct($host = null, $port = null, $ssl = false)
     {
         if (is_null($host) || is_null($port)) {
@@ -1108,8 +1110,9 @@ class Urfa_Client
         $this->urfa->put_double((double)$amount);
         $this->urfa->send();
         $result_pp = $this->urfa->get_int();
+        if(4294967295 === $result_pp) //64 bit PHP problem (see mantis #2575)
+            $result_pp = -1;
         $this->urfa->finish();
-
         return $result_pp;
     }
 
