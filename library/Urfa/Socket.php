@@ -32,7 +32,7 @@ class Urfa_Socket
             stream_context_set_option($context, 'ssl', 'passphrase', 'netup');
             stream_context_set_option($context, 'ssl', 'ciphers', 'TLSv1');
         } else {
-            stream_context_set_option($context, 'ssl', 'ciphers', 'ADH-RC4-MD5');
+            //stream_context_set_option($context, 'ssl', 'ciphers', 'ADH-RC4-MD5');
         }
         stream_context_set_option($context, 'ssl', 'verify_peer_name', false);
         stream_context_set_option($context, 'ssl', 'verify_peer', false);
