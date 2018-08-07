@@ -14,7 +14,7 @@ class Urfa_Admin
             $port = $this->config->urfaphp->port;
         }
         $this->urfa = new Urfa_Connect($admin);
-        if (!$this->urfa->connect($host, $port, $ssl)) {
+        if (!$this->urfa->connect($host, $port)) {
             throw new Urfa_Exception('Не возможно подключиться к биллингу. Попробуйте войти позже.');
         }
         $this->open_session();
