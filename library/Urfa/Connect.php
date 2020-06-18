@@ -129,14 +129,23 @@ class Urfa_Connect
         if ($attr != FALSE) {
             $tmp = unpack('Nval', $attr['data']);
 
-            $this->sock->enable_crypto(STREAM_CRYPTO_METHOD_ANY_CLIENT);
-//            if ($tmp['val'] == RSR_SSL_SSL3) {
-//                $this->sock->enable_crypto(STREAM_CRYPTO_METHOD_SSLv3_CLIENT);
-//            } else {
-//                if ($tmp['val'] == RSR_SSL_TLS1) {
-//                    $this->sock->enable_crypto(STREAM_CRYPTO_METHOD_TLS_CLIENT);
-//                }
-//            }
+            if (defined('STREAM_CRYPTO_METHOD_ANY_CLIENT')) {
+                $ssl_method = STREAM_CRYPTO_METHOD_ANY_CLIENT;
+            } elseif (defined('STREAM_CRYPTO_METHOD_SSLv23_CLIENT')) {
+                $ssl_method = STREAM_CRYPTO_METHOD_SSLv23_CLIENT;
+            } elseif (defined('STREAM_CRYPTO_METHOD_TLS_CLIENT')) {
+                $ssl_method = STREAM_CRYPTO_METHOD_TLS_CLIENT;
+            } elseif (defined('STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT')) {
+                $ssl_method = STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT;
+            } elseif (defined('STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT')) {
+                $ssl_method = STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT;
+            } elseif (defined('STREAM_CRYPTO_METHOD_TLSv1_0_CLIENT')) {
+                $ssl_method = STREAM_CRYPTO_METHOD_TLSv1_0_CLIENT;
+            } else {
+                throw new ErrorException('All known crypto methods are undefined');
+            }
+
+            $this->sock->enable_crypto($ssl_method);
 
         }
         if ($this->session_id == FALSE) {
